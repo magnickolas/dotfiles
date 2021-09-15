@@ -4,3 +4,4 @@ vim.opt.expandtab = true
 vim.opt.ignorecase = false
 vim.opt.number = true
 vim.opt.hidden = true
+vim.opt.completeopt = "menuone,noinsert,noselect"

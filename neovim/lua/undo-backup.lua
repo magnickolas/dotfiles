@@ -1,12 +1,10 @@
-if vim.fn.isdirectory(vim.fn.expand("~/.vim/undo")) == 0 then
-  vim.fn.mkdir(vim.fn.expand("~/.vim/undo"), "", 0700)
+local undo_dir = vim.fn.expand("~/.vim/undo")
+
+if vim.fn.isdirectory(undo_dir) == 0 then
+  vim.fn.mkdir(undo_dir, "")
 end
-vim.opt.undodir = vim.fn.expand("~/.vim/undo")
+vim.opt.undodir = undo_dir
 vim.opt.undofile = true
 
-if vim.fn.isdirectory(vim.fn.expand("~/.vim/backup")) == 0 then
-  vim.fn.mkdir(vim.fn.expand("~/.vim/backup"), "")
-end
-vim.opt.backupdir = vim.fn.expand("~/.vim/backup")
-vim.opt.writebackup = true
+vim.opt.writebackup = false
 vim.opt.backup      = false

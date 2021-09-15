@@ -15,15 +15,16 @@ require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
   use 'gosukiwi/vim-atom-dark'
+  use 'arcticicestudio/nord-vim'
   use 'junegunn/vim-easy-align'
   use 'romgrk/barbar.nvim'
   use 'akinsho/toggleterm.nvim'
   use 'magnickolas/vim-markdown'
   use 'chrisbra/Colorizer'
   use 'tpope/vim-fugitive'
-  use 'simnalamburt/vim-mundo'
   use 'lervag/vimtex'
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/nvim-compe'
+  use 'simrat39/rust-tools.nvim'
   use 'terrortylor/nvim-comment'
 end)
