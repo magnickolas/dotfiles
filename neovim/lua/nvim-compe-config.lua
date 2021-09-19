@@ -33,3 +33,5 @@ require('compe').setup {
     luasnip = true;
   };
 }
+
+vim.cmd[[inoremap <silent><expr> <C-Space> compe#confirm('<CR>')]]

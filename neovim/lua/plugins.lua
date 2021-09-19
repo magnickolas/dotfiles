@@ -19,7 +19,10 @@ require('packer').startup(function()
   use 'junegunn/vim-easy-align'
   use 'romgrk/barbar.nvim'
   use 'akinsho/toggleterm.nvim'
-  use 'magnickolas/vim-markdown'
+  use {
+    'magnickolas/vim-markdown',
+    requires = {'godlygeek/tabular', opt = true}
+  }
   use 'chrisbra/Colorizer'
   use 'tpope/vim-fugitive'
   use 'lervag/vimtex'
@@ -27,4 +30,6 @@ require('packer').startup(function()
   use 'hrsh7th/nvim-compe'
   use 'simrat39/rust-tools.nvim'
   use 'terrortylor/nvim-comment'
+  use 'hrsh7th/vim-vsnip'
+  use 'kabouzeid/nvim-lspinstall'
 end)
