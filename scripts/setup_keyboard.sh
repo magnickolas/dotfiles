@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 USER=magnickolas
-sudo -u $USER sh -c "export DISPLAY=:0; xset r rate 220 55"
-sudo -u $USER sh -c "export DISPLAY=:0; sleep 0.2; setxkbmap -layout us,ru -option 'grp:alt_space_toggle,compose:ralt'"
+export DISPLAY=:0
+export XAUTHORITY=/home/$USER/.Xauthority
+
+xset r rate 220 55
+setxkbmap -layout us,ru -option 'grp:alt_space_toggle,compose:ralt'

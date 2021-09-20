@@ -1,4 +1,6 @@
 vim.g.mapleader = "\\"
+vim.opt.background = "dark"
+vim.o.shell = "/bin/zsh"
 require('plugins')
 require('shortcuts')
 require('colorscheme')
