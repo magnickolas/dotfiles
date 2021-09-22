@@ -18,6 +18,9 @@ map('n', '<Leader>D', '"+D', opts)
 -- Disable highlight
 map('n', '<c-l>', ':noh<cr>', opts)
 
+-- Use '0' key to switch between beginning of line and first column
+map('n', '0', 'virtcol(".") == 1 ? "^" : "0"', { noremap = true, silent = true, expr = true })
+
 -- Mouse support
 vim.opt.mouse="a"
 
