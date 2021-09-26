@@ -32,4 +32,5 @@ require('packer').startup(function()
   use 'terrortylor/nvim-comment'
   use 'hrsh7th/vim-vsnip'
   use 'kabouzeid/nvim-lspinstall'
+  use 'lambdalisue/suda.vim'
 end)
