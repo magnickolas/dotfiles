@@ -33,4 +33,5 @@ require('packer').startup(function()
   use 'hrsh7th/vim-vsnip'
   use 'kabouzeid/nvim-lspinstall'
   use 'lambdalisue/suda.vim'
+  use 'ojroques/vim-oscyank'
 end)

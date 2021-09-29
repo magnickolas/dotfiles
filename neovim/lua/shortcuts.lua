@@ -2,8 +2,6 @@ map = vim.api.nvim_set_keymap
 opts = { noremap = true, silent = true }
 
 -- Copy to clipboard
-map('v', '<Leader>y', '"+y', opts)
-map('n', '<Leader>y', '"+y', opts)
 map('n', '<Leader>Y', '"+yg_', opts)
 
 -- Paste from clipboard
@@ -32,3 +30,4 @@ require('telescope-shortcuts')
 require('easyalign-shortcuts')
 require('barbar-shortcuts')
 require('lspconfig-shortcuts')
+require('oscyank-shortcuts')
