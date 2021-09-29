@@ -1,7 +1,7 @@
 ### Constants
 
-set $terminal          alacritty # https://github.com/alacritty/alacritty
-set $compositor        picom --backend glx --vsync --shadow-exclude 'bounding_shaped' # https://github.com/yshui/picom
+set $terminal          alacritty  # https://github.com/alacritty/alacritty
+set $compositor        picom      # https://github.com/yshui/picom
 set $clipboard_manager parcellite # https://github.com/rickyrockrat/parcellite
 set $browser           chrome
 set $calculator        alacritty -e ipython3
@@ -83,6 +83,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec sh -c '[ $(printf "yes\nno" | dmenu -i -p "Log out?") = "yes" ] && i3-msg exit'
+bindsym $mod+Shift+u exec --no-startup-id systemctl suspend
 
 mode "resize" {     
   bindsym j resize shrink width 10 px or 10 ppt
@@ -138,6 +139,8 @@ bindsym XF86AudioMute exec --no-startup-id $audio_mute
 bindsym XF86TouchpadToggle exec --no-startup-id $touchpad_toggle
 bindsym XF86Calculator exec --no-startup-id $calculator
 bindsym XF86AudioPlay exec --no-startup-id $spotify_toggle
+# Sound settings
+bindsym $mod+Shift+s exec --no-startup-id pavucontrol
 
 # Setup keyboard
 exec_always --no-startup-id ~/scripts/setup_keyboard.sh
