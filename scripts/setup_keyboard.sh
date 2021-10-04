@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 USER=magnickolas
 export DISPLAY=:0
 export XAUTHORITY=/home/$USER/.Xauthority

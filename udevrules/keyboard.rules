@@ -1,1 +1,1 @@
-SUBSYSTEMS=="usb", DRIVERS=="usb", RUN+="/home/magnickolas/scripts/setup_keyboard.sh"
+ACTION=="change", SUBSYSTEMS=="usb", DRIVERS=="usb", RUN+="/home/magnickolas/scripts/setup_keyboard.sh"
