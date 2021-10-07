@@ -1,0 +1,73 @@
+autoload -U select-word-style
+select-word-style bash
+export PROMPT="[%F{yellow}%~%f] "$'\n'"%F{cyan}$ %f"
+
+setopt histignorealldups sharehistory
+setopt interactivecomments
+
+function zshaddhistory() {
+  emulate -L zsh
+  if ! [[ "$1" =~ "(^#\s+|^\s+#|^ )" ]] ; then
+      print -sr -- "${1%%$'\n'}"
+      fc -p
+  else
+      return 1
+  fi
+}
+
+# Use emacs keybindings even if our EDITOR is set to vi
+bindkey -e
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+bindkey \^U backward-kill-line
+bindkey '^[[Z' undo                                     # Shift+tab
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=100000000
+SAVEHIST=100000000
+HISTFILE=~/.zsh_history
+
+fpath=( ~/.zfunc "${fpath[@]}" )
+
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -alFG'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+alias e='exit'
+alias q='exit'
+alias svim='sudoedit'
+alias gpu-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
+alias monitor='$HOME/scripts/setup_monitor.sh'
+alias feh='feh --scale-down'
