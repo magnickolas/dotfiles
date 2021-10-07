@@ -7,6 +7,8 @@ map('n', '<Leader>Y', '"+yg_', opts)
 -- Paste from clipboard
 map('n', '<Leader>p', '"+p', opts)
 map('n', '<Leader>P', '"+P', opts)
+map('v', '<Leader>p', '"+p', opts)
+map('v', '<Leader>P', '"+P', opts)
 
 -- Delete to clipboard
 map('v', '<Leader>d', '"+d', opts)
