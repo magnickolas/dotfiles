@@ -48,7 +48,7 @@ else
     echo "Usage:"
     echo "  sh $(basename "$0") [CMD] [DELTA:5] [SCALE:1.5]"
     echo "Parameters:"
-    echo "  CMD    {up, down}"
+    echo "  CMD    {inc, dec}"
     echo "  DELTA  Brightness alter value"
     echo "  SCALE  Brightness scale coefficient for soft altering"
     echo "         in case of small brightness"
