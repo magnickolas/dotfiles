@@ -15,6 +15,8 @@ set $brightness_down   ~/scripts/change_brightness.sh dec
 set $touchpad_toggle   (synclient -l | grep 'TouchpadOff .*=.*0') && synclient TouchpadOff=1 || synclient TouchpadOff=0
 set $lock_screen       xkb-switch -s us && i3lock-fancy -p # https://github.com/meskarune/i3lock-fancy
 
+focus_follows_mouse no
+
 # I3 internal shortcuts
 set $mod Mod4
 floating_modifier $mod
@@ -141,6 +143,8 @@ bindsym XF86Calculator exec --no-startup-id $calculator
 bindsym XF86AudioPlay exec --no-startup-id $spotify_toggle
 # Sound settings
 bindsym $mod+Shift+s exec --no-startup-id pavucontrol
+# Jump to some i3 window
+bindsym $mod+u exec --no-startup-id i3-easyfocus
 
 # Setup keyboard
 exec_always --no-startup-id ~/scripts/setup_keyboard.sh
