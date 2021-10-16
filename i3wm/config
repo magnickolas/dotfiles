@@ -109,6 +109,8 @@ bindsym $mod+i exec "i3-dmenu-desktop"
 font pango:Lucida Grande 9
 # I3 borders
 for_window [class="^.*"] border pixel 1
+for_window [class="Pavucontrol" instance="pavucontrol"] floating enable
+for_window [class="flameshot" instance="flameshot"] floating enable
 # Zoom display (https://github.com/tsoding/boomer)
 bindsym Ctrl+Shift+3 exec --no-startup-id "boomer 2>&1 >/dev/null"
 # Screenshots (https://github.com/flameshot-org/flameshot)
