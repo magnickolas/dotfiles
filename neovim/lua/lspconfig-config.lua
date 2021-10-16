@@ -4,7 +4,7 @@ lspinstall.setup()
 
 local servers = lspinstall.installed_servers()
 for _, server in pairs(servers) do
-  lspconfig[server].setup{}
+  lspconfig[server].setup{capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())}
 end 
 --lspconfig.pyright.setup{}
 --lspconfig.rust_analyzer.setup{

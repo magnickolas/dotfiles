@@ -31,6 +31,8 @@ require('compe').setup {
     vsnip = true;
     ultisnips = true;
     luasnip = true;
+    orgmode = true;
+    latex_symbols = true;
   };
 }
 

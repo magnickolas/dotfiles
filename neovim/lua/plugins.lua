@@ -27,11 +27,21 @@ require('packer').startup(function()
   use 'tpope/vim-fugitive'
   use 'lervag/vimtex'
   use 'neovim/nvim-lspconfig'
-  use 'hrsh7th/nvim-compe'
   use 'simrat39/rust-tools.nvim'
   use 'terrortylor/nvim-comment'
-  use 'hrsh7th/vim-vsnip'
   use 'kabouzeid/nvim-lspinstall'
   use 'lambdalisue/suda.vim'
   use 'ojroques/vim-oscyank'
+  use 'jenterkin/vim-autosource'
+  use {
+    'kristijanhusak/orgmode.nvim',
+    config = function() require('orgmode').setup{} end
+  }
+  use 'GoldsteinE/compe-latex-symbols'
+  use 'honza/vim-snippets'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-vsnip'
+  use 'hrsh7th/vim-vsnip'
 end)
