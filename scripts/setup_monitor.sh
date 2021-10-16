@@ -14,3 +14,4 @@ disconnect() {
 }
    
 xrandr | grep "HDMI-2 connected" && connect || disconnect
+feh --bg-scale $HOME/.config/i3/wallpaper.jpg

@@ -1,3 +1,5 @@
+- `alacritty_scheme_switcher`
+  Statically linked binary for switching [alacritty terminal](https://github.com/alacritty/alacritty) color schemes taken from https://github.com/magnickolas/alacritty-scheme-switcher.
 - `battery_notification.sh` 
   Send notification on low battery charge if it's in discharging state. (executed by crontab every minute).
 - `change_brightness.sh inc|dec` 
