@@ -12,7 +12,7 @@ set $audio_down        pactl set-sink-volume @DEFAULT_SINK@ -5%
 set $audio_mute        pactl set-sink-mute 0 toggle
 set $brightness_up     ~/scripts/change_brightness.sh inc
 set $brightness_down   ~/scripts/change_brightness.sh dec
-set $touchpad_toggle   (synclient -l | grep 'TouchpadOff .*=.*0') && synclient TouchpadOff=1 || synclient TouchpadOff=0
+set $touchpad_toggle   ~/scripts/toggle_touchpad.sh
 set $lock_screen       xkb-switch -s us && i3lock-fancy -p # https://github.com/meskarune/i3lock-fancy
 
 focus_follows_mouse no
