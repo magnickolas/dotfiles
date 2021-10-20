@@ -1,0 +1,35 @@
+source_env() {
+  local rcpath=${1/#\~/$HOME}
+  if has cygpath ; then
+    rcpath=$(cygpath -u "$rcpath")
+  fi
+
+  local REPLY
+  if [[ -d $rcpath ]]; then
+    rcpath=$rcpath/.envrc
+  fi
+  if [[ ! -e $rcpath ]]; then
+    log_status "referenced $rcpath does not exist"
+    return 1
+  fi
+
+  realpath.dirname "$rcpath"
+  local rcpath_dir=$REPLY
+  realpath.basename "$rcpath"
+  local rcpath_base=$REPLY
+
+  local rcfile
+  rcfile=$(user_rel_path "$rcpath")
+  watch_file "$rcpath"
+
+  pushd "$(pwd 2>/dev/null)" >/dev/null || return 1
+  pushd "$rcpath_dir" >/dev/null || return 1
+  if [[ -f ./$rcpath_base ]]; then
+    # shellcheck disable=SC1090
+    . "./$rcpath_base"
+  else
+    log_status "referenced $rcfile does not exist"
+  fi
+  popd >/dev/null || return 1
+  popd >/dev/null || return 1
+}
