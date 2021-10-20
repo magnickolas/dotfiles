@@ -4,6 +4,7 @@ export PROMPT="[%F{yellow}%~%f] "$'\n'"%F{cyan}$ %f"
 
 setopt histignorealldups sharehistory
 setopt interactivecomments
+setopt no_nomatch
 
 function zshaddhistory() {
   emulate -L zsh
@@ -71,3 +72,22 @@ alias svim='sudoedit'
 alias gpu-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
 alias monitor='$HOME/scripts/setup_monitor.sh'
 alias feh='feh --scale-down'
+# Git aliases
+alias gcm='git commit -m'
+alias gca='git commit --amend'
+alias gpush='git push'
+alias gpull='git pull'
+alias gmerge='git merge'
+alias gaa='git add . && git status'
+alias gss='git status'
+alias gdh='git diff HEAD'
+alias gdf='git difftool'
+alias gls='git ls-tree -r master --name-only'
+
+export EDITOR=nvim
+export PATH=$HOME/.local/bin:$PATH
+type direnv &> /dev/null && eval "$(direnv hook zsh)"
+
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
