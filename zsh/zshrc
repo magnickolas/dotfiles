@@ -87,7 +87,7 @@ type thefuck &>/dev/null && eval $(thefuck --alias)
 type direnv &>/dev/null && eval "$(direnv hook zsh)"
 
 # opam configuration
-test -r /home/magnickolas/.opam/opam-init/init.zsh && . /home/magnickolas/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" &> /dev/null
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
