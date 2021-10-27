@@ -743,4 +743,6 @@ key_bindings:
   - { key: F12,      mods: Super,         chars: "\x1b[24;3~"                      }
   - { key: NumpadEnter,                   chars: "\n"                              }
   - { key: F,        mods: Control,       command: {program: "alacritty_scheme_switcher"} }
+  - { key: 12,       mods: Control|Shift, command: {program: "alacritty_font_sizer", args: ["dec"]} }
+  - { key: 13,       mods: Control|Shift, command: {program: "alacritty_font_sizer", args: ["inc"]} }
   - { key: Return,   mods: Control|Shift, action: SpawnNewInstance }
