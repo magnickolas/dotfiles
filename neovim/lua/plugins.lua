@@ -45,4 +45,5 @@ require('packer').startup(function()
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
   use 'AlexeySachkov/llvm-vim'
+  use 'nvim-telescope/telescope-fzy-native.nvim'
 end)
