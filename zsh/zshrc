@@ -1,7 +1,4 @@
-autoload -U select-word-style
-select-word-style bash
-export PROMPT="[%F{yellow}%~%f] "$'\n'"%F{cyan}$ %f"
-
+#zmodload zsh/zprof
 setopt histignorealldups sharehistory
 setopt interactivecomments
 setopt no_nomatch
@@ -23,55 +20,29 @@ bindkey "^[[1;5D" backward-word
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
 bindkey \^U backward-kill-line
-bindkey '^[[Z' undo                                     # Shift+tab
+bindkey '^[[Z' undo # Shift+tab
 
-# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=100000000
 SAVEHIST=100000000
 HISTFILE=~/.zsh_history
 
-fpath=( ~/.zfunc "${fpath[@]}" )
+if type cm &>/dev/null; then
+function r {
+    ARGS="${@:1}"
+    cm 'rg -n "'"$ARGS"'"'
+}
 
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
-zstyle ':completion:*' menu select=long
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' verbose true
+function ri {
+    ARGS="${@:1}"
+    cm 'rg -in "'"$ARGS"'"'
+}
 
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
-
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+function re {
+    ARGS="${@:1}"
+    cm 'rg -n '"'""$ARGS""'"
+}
 fi
 
-# some more ls aliases
-alias ll='ls -alFG'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-alias e='exit'
-alias q='exit'
-alias svim='sudoedit'
-alias gpu-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
-alias monitor='$HOME/scripts/setup_monitor.sh'
-alias feh='feh --scale-down'
 # Git aliases
 alias gcm='git commit -m'
 alias gca='git commit --amend'
@@ -83,11 +54,66 @@ alias gss='git status'
 alias gdh='git diff HEAD'
 alias gdf='git difftool'
 alias gls='git ls-tree -r master --name-only'
+# Aliases
+alias ll='ls -alFG'
+alias la='ls -A'
+alias l='ls -CF'
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias .......="cd ../../../../../.."
+alias ........="cd ../../../../../../.."
+alias svim='sudoedit'
+alias prime-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
+[[ -x "$HOME/scripts/setup_monitor.sh" ]] && \
+    alias monitor="$HOME/scripts/setup_monitor.sh"
+type feh &>/dev/null && \
+    alias feh='feh --scale-down' # fit screen in image viewer
+type highlight &>/dev/null && \
+    alias dog='highlight -O ansi' # cat with syntax highlighting
+if type dircolors &>/dev/null; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
-export EDITOR=nvim
-export PATH=$HOME/.local/bin:$PATH
-type direnv &> /dev/null && eval "$(direnv hook zsh)"
+type thefuck &>/dev/null && eval $(thefuck --alias)
+type direnv &>/dev/null && eval "$(direnv hook zsh)"
 
-source /usr/share/fzf/key-bindings.zsh
-source /usr/share/fzf/completion.zsh
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# opam configuration
+test -r /home/magnickolas/.opam/opam-init/init.zsh && . /home/magnickolas/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+source "$HOME/.zinit/bin/zinit.zsh"
+### End of Zinit's installer chunk
+
+zinit wait lucid for \
+    atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+        zdharma/fast-syntax-highlighting \
+    blockf \
+        zsh-users/zsh-completions
+zinit pack"default+keys" for fzf
+
+zinit light-mode for \
+    zinit-zsh/z-a-rust \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-bin-gem-node
+
+autoload -U select-word-style
+select-word-style bash
+#zprof
