@@ -25,6 +25,7 @@ bindkey '^[[Z' undo # Shift+tab
 HISTSIZE=100000000
 SAVEHIST=100000000
 HISTFILE=~/.zsh_history
+setopt INC_APPEND_HISTORY
 
 if type cm &>/dev/null; then
 function r {
@@ -42,6 +43,11 @@ function re {
     cm 'rg -n '"'""$ARGS""'"
 }
 fi
+
+function mkcd {
+    mkdir -p "$1"
+    cd "$1"
+}
 
 # Git aliases
 alias gcm='git commit -m'
@@ -112,7 +118,17 @@ zinit light-mode for \
     zinit-zsh/z-a-rust \
     zinit-zsh/z-a-as-monitor \
     zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
+    zinit-zsh/z-a-bin-gem-node \
+    aperezdc/zsh-fzy
+
+bindkey '^P'  fzy-proc-widget
+
+# Switch alacritty scheme on shortcut
+alacritty_scheme_switcher_f() {
+    alacritty_scheme_switcher
+}
+zle -N alacritty_scheme_switcher_f
+bindkey '^F'  alacritty_scheme_switcher_f
 
 autoload -U select-word-style
 select-word-style bash
