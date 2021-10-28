@@ -1,0 +1,8 @@
+map('n', '<C-F>f', '<Plug>CtrlSFPrompt', {})
+map('v', '<C-F>f', '<Plug>CtrlSFVwordPath', {})
+map('v', '<C-F>F', '<Plug>CtrlSFVwordExec', {})
+map('n', '<C-F>n', '<Plug>CtrlSFCwordPath', {})
+map('n', '<C-F>p', '<Plug>CtrlSFPwordPath', {})
+map('n', '<C-F>o', ':CtrlSFOpen<CR>', { noremap = true })
+map('n', '<C-F>t', ':CtrlSFToggle<CR>', { noremap = true })
+map('i', '<C-F>t', '<Esc>:CtrlSFToggle<CR>', { noremap = true })
