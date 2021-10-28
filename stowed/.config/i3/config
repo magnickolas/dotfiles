@@ -144,9 +144,16 @@ bindsym XF86TouchpadToggle exec --no-startup-id $touchpad_toggle
 bindsym XF86Calculator exec --no-startup-id $calculator
 bindsym XF86AudioPlay exec --no-startup-id $spotify_toggle
 # Sound settings
-bindsym $mod+Shift+s exec --no-startup-id pavucontrol
+#bindsym $mod+Shift+s exec --no-startup-id pavucontrol
 # Jump to some i3 window
 bindsym $mod+u exec --no-startup-id i3-easyfocus
-
 # Setup keyboard
 exec_always --no-startup-id ~/scripts/setup_keyboard.sh
+# Setup audio
+exec --no-startup-id ~/scripts/setup_audio.sh
+# Setup display
+exec --no-startup-id ~/scripts/setup_monitor.sh
+# Keep mic volume
+exec --no-startup-id ~/scripts/keep_mic_volume.sh
+# NetworkManager frontend
+exec --no-startup-id nm-applet

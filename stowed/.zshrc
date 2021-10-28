@@ -1,4 +1,4 @@
-#zmodload zsh/zprof
+ #zmodload zsh/zprof
 setopt histignorealldups sharehistory
 setopt interactivecomments
 setopt no_nomatch
