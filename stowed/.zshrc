@@ -1,4 +1,4 @@
- #zmodload zsh/zprof
+#zmodload zsh/zprof
 setopt histignorealldups sharehistory
 setopt interactivecomments
 setopt no_nomatch
@@ -99,7 +99,7 @@ test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" &
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    command git clone https://github.com/magnickolas-clones/zinit "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -109,27 +109,33 @@ source "$HOME/.zinit/bin/zinit.zsh"
 
 zinit wait lucid for \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-        zdharma/fast-syntax-highlighting \
+        magnickolas-clones/fast-syntax-highlighting \
     blockf \
         zsh-users/zsh-completions
-zinit pack"default+keys" for fzf
 
 zinit light-mode for \
-    zinit-zsh/z-a-rust \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node \
+    magnickolas-clones/z-a-rust \
+    magnickolas-clones/z-a-as-monitor \
+    magnickolas-clones/z-a-patch-dl \
+    magnickolas-clones/z-a-bin-gem-node \
+    unixorn/fzf-zsh-plugin \
     aperezdc/zsh-fzy
 
-bindkey '^P'  fzy-proc-widget
+bindkey '^P' fzy-proc-widget
 
 # Switch alacritty scheme on shortcut
 alacritty_scheme_switcher_f() {
     alacritty_scheme_switcher
 }
 zle -N alacritty_scheme_switcher_f
-bindkey '^F'  alacritty_scheme_switcher_f
+bindkey '^F' alacritty_scheme_switcher_f
 
 autoload -U select-word-style
 select-word-style bash
+
+if [[ -f $HOME/.nvm ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 #zprof
