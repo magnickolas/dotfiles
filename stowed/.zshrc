@@ -121,6 +121,8 @@ zinit light-mode for \
     unixorn/fzf-zsh-plugin \
     aperezdc/zsh-fzy
 
+export FZF_CTRL_T_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*" 2> /dev/null'
+
 bindkey '^P' fzy-proc-widget
 
 # Switch alacritty scheme on shortcut
