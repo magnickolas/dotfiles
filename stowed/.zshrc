@@ -140,8 +140,9 @@ fi
 
 # Setup fzf
 if [ ! -f $HOME/.fzf/install ]; then
+    echo "Installing fzf..."
     git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
-    $HOME/.fzf/install
+    $HOME/.fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish &>/dev/null
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
