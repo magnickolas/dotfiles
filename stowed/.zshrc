@@ -118,10 +118,7 @@ zinit light-mode for \
     magnickolas-clones/z-a-as-monitor \
     magnickolas-clones/z-a-patch-dl \
     magnickolas-clones/z-a-bin-gem-node \
-    unixorn/fzf-zsh-plugin \
     aperezdc/zsh-fzy
-
-export FZF_CTRL_T_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*" 2> /dev/null'
 
 bindkey '^P' fzy-proc-widget
 
@@ -140,4 +137,12 @@ if [[ -f $HOME/.nvm ]]; then
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
+
+# Setup fzf
+if [ ! -f $HOME/.fzf/install ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    $HOME/.fzf/install
+fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #zprof
