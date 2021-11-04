@@ -120,6 +120,15 @@ zinit light-mode for \
     magnickolas-clones/z-a-bin-gem-node \
     aperezdc/zsh-fzy
 
+# Setup fzf
+if [[ ! -f $HOME/.fzf.zsh ]]; then
+    echo "Setup fzf..."
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --no-update-rc --key-bindings --completion --no-bash --no-fish &>/dev/null
+else
+    source ~/.fzf.zsh
+fi
+
 bindkey '^P' fzy-proc-widget
 
 # Switch alacritty scheme on shortcut
@@ -137,13 +146,5 @@ if [[ -f $HOME/.nvm ]]; then
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
-
-# Setup fzf
-if [ ! -f $HOME/.fzf/install ]; then
-    echo "Installing fzf..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
-    $HOME/.fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish &>/dev/null
-fi
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #zprof
+
