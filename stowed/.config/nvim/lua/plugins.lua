@@ -33,10 +33,6 @@ require('packer').startup(function()
   use 'lambdalisue/suda.vim'
   use 'ojroques/vim-oscyank'
   use 'jenterkin/vim-autosource'
-  use {
-    'kristijanhusak/orgmode.nvim',
-    config = function() require('orgmode').setup{} end
-  }
   use 'GoldsteinE/compe-latex-symbols'
   use 'honza/vim-snippets'
   use 'hrsh7th/cmp-nvim-lsp'
@@ -47,4 +43,5 @@ require('packer').startup(function()
   use 'AlexeySachkov/llvm-vim'
   use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'dyng/ctrlsf.vim'
+  use 'ray-x/lsp_signature.nvim'
 end)
