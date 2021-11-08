@@ -43,5 +43,4 @@ require('packer').startup(function()
   use 'AlexeySachkov/llvm-vim'
   use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'dyng/ctrlsf.vim'
-  use 'ray-x/lsp_signature.nvim'
 end)
