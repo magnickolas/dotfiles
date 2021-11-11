@@ -27,10 +27,14 @@ vim.opt.mouse="a"
 -- New tab
 vim.cmd('ca tn tabnew')
 
+-- Tabs
+map('n', 'tl', ':tabnext<cr>', opts)
+map('n', 'th', ':tabprev<cr>', opts)
+
 -- Shortcuts for plugins
 require('telescope-shortcuts')
 require('easyalign-shortcuts')
-require('barbar-shortcuts')
+--require('barbar-shortcuts')
 require('lspconfig-shortcuts')
 require('oscyank-shortcuts')
 require('ctrlsf-shortcuts')

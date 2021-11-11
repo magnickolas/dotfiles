@@ -17,7 +17,7 @@ require('packer').startup(function()
   use 'gosukiwi/vim-atom-dark'
   use 'arcticicestudio/nord-vim'
   use 'junegunn/vim-easy-align'
-  use 'romgrk/barbar.nvim'
+  --use 'romgrk/barbar.nvim'
   use 'akinsho/toggleterm.nvim'
   use {
     'magnickolas/vim-markdown',
@@ -43,4 +43,9 @@ require('packer').startup(function()
   use 'AlexeySachkov/llvm-vim'
   use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'dyng/ctrlsf.vim'
+  use 'tpope/vim-vinegar'
+  use {
+    'alvarosevilla95/luatab.nvim',
+    requires='kyazdani42/nvim-web-devicons'
+  }
 end)
