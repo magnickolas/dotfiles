@@ -138,9 +138,6 @@ alacritty_scheme_switcher_f() {
 zle -N alacritty_scheme_switcher_f
 bindkey '^F' alacritty_scheme_switcher_f
 
-autoload -U select-word-style
-select-word-style bash
-
 if [[ -f $HOME/.nvm ]]; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
