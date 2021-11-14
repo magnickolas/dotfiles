@@ -48,4 +48,11 @@ require('packer').startup(function()
     'alvarosevilla95/luatab.nvim',
     requires='kyazdani42/nvim-web-devicons'
   }
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {}
+    end
+  }
 end)
