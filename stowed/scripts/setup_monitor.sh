@@ -1,6 +1,5 @@
 #!/bin/sh
 HOME=$(echo ~magnickolas)
-export DISPLAY=:0
 export XAUTHORITY=$HOME/.Xauthority
 
 connect() {
