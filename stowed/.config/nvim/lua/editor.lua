@@ -6,3 +6,5 @@ vim.opt.number = true
 vim.opt.hidden = true
 vim.opt.completeopt = "menuone,noinsert,noselect"
 vim.opt.showmode = false
+vim.opt.splitbelow = true
+vim.opt.splitright = true
