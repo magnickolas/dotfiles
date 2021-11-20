@@ -50,7 +50,7 @@ function mkcd {
 }
 
 # Git aliases
-alias gcm='git commit -m'
+alias gcm='git commit --signoff -m'
 alias gca='git commit --amend'
 alias gpush='git push'
 alias gpull='git pull'
@@ -138,11 +138,20 @@ alacritty_scheme_switcher_f() {
 zle -N alacritty_scheme_switcher_f
 bindkey '^F' alacritty_scheme_switcher_f
 
+autoload -U select-word-style
+select-word-style bash
+
+zle -N backward-kill-space-word backward-kill-word-match
+zstyle :zle:backward-kill-space-word word-style space
+bindkey '^W' backward-kill-space-word
+
 if [[ -f $HOME/.nvm ]]; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
+
+NPM_CONFIG_PREFIX=~/.npm-global
 
 setopt rm_star_silent
 #zprof
