@@ -17,7 +17,6 @@ require('packer').startup(function()
   use 'gosukiwi/vim-atom-dark'
   use 'arcticicestudio/nord-vim'
   use 'junegunn/vim-easy-align'
-  --use 'romgrk/barbar.nvim'
   use 'akinsho/toggleterm.nvim'
   use {
     'magnickolas/vim-markdown',

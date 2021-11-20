@@ -28,8 +28,12 @@ vim.opt.mouse="a"
 vim.cmd('ca tn tabnew')
 
 -- Tabs
+map('n', '<a-l>', ':tabnext<cr>', opts)
 map('n', 'tl', ':tabnext<cr>', opts)
+map('n', '<a-h>', ':tabprev<cr>', opts)
 map('n', 'th', ':tabprev<cr>', opts)
+map('n', '<a-L>', ':tabm +1<cr>', { silent=true })
+map('n', '<a-H>', ':tabm -1<cr>', { silent=true })
 
 -- Shortcuts for plugins
 require('telescope-shortcuts')
