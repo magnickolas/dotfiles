@@ -13,13 +13,6 @@ stow --target $HOME stowed
 
 ## Hints
 
-### Tmux
-1. Install TPM
-  ```console
-  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-  ```
-2. (Re)start tmux
-
 ### Neovim (0.5+)
 1. Install [packer.nvim](https://github.com/wbthomason/packer.nvim)
   ```console
