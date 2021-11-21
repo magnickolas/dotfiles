@@ -38,7 +38,6 @@ map('n', '<a-H>', ':tabm -1<cr>', { silent=true })
 -- Shortcuts for plugins
 require('telescope-shortcuts')
 require('easyalign-shortcuts')
---require('barbar-shortcuts')
 require('lspconfig-shortcuts')
 require('oscyank-shortcuts')
 require('ctrlsf-shortcuts')
