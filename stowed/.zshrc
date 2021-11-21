@@ -1,17 +1,7 @@
 #zmodload zsh/zprof
-setopt histignorealldups sharehistory
 setopt interactivecomments
 setopt no_nomatch
-
-function zshaddhistory() {
-  emulate -L zsh
-  if ! [[ "$1" =~ "(^#\s+|^\s+#|^ )" ]] ; then
-      print -sr -- "${1%%$'\n'}"
-      fc -p
-  else
-      return 1
-  fi
-}
+setopt rm_star_silent
 
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
@@ -25,7 +15,10 @@ bindkey '^[[Z' undo # Shift+tab
 HISTSIZE=100000000
 SAVEHIST=100000000
 HISTFILE=~/.zsh_history
-setopt INC_APPEND_HISTORY
+setopt sharehistory
+setopt histignorespace
+setopt histignorealldups
+setopt autocd
 
 if type cm &>/dev/null; then
 function r {
@@ -50,7 +43,7 @@ function mkcd {
 }
 
 # Git aliases
-alias gcm='git commit --signoff -m'
+alias gcm='git commit -m'
 alias gca='git commit --amend'
 alias gpush='git push'
 alias gpull='git pull'
@@ -129,7 +122,7 @@ else
     source ~/.fzf.zsh
 fi
 
-bindkey '^P' fzy-proc-widget
+bindkey '^K' fzy-proc-widget
 
 # Switch alacritty scheme on shortcut
 alacritty_scheme_switcher_f() {
@@ -153,6 +146,4 @@ fi
 
 NPM_CONFIG_PREFIX=~/.npm-global
 
-setopt rm_star_silent
 #zprof
-
