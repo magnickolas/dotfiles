@@ -9,3 +9,5 @@ vim.o.showmode = false
 vim.o.foldmethod="indent"
 vim.o.foldlevel=99
 vim.o.autochdir=true
+vim.o.splitright=true
+vim.o.splitbelow=true
