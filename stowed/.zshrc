@@ -50,7 +50,6 @@ alias gpull='git pull'
 alias gmerge='git merge'
 alias gaa='git add . && git status'
 alias gss='git status'
-alias gdh='git diff HEAD'
 alias gdf='git difftool'
 alias gls='git ls-tree -r master --name-only'
 # Aliases
@@ -100,11 +99,30 @@ fi
 source "$HOME/.zinit/bin/zinit.zsh"
 ### End of Zinit's installer chunk
 
+
 zinit wait lucid for \
+    wfxr/forgit \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
         magnickolas-clones/fast-syntax-highlighting \
     blockf \
         zsh-users/zsh-completions
+
+# <<< wfxr/forgit config
+forgit_log=glog
+forgit_diff=gdh
+forgit_add=ga
+forgit_reset_head=igrh
+forgit_ignore=igi
+forgit_checkout_file=gcf
+forgit_checkout_branch=gcb
+forgit_checkout_commit=gco
+forgit_clean=igclean
+forgit_stash_show=igss
+forgit_cherry_pick=gcp
+forgit_rebase=grb
+forgit_fixup=gfu
+alias gdhc='gdh --cached'
+# wfxr/forgit config >>>
 
 zinit light-mode for \
     magnickolas-clones/z-a-rust \
@@ -112,6 +130,17 @@ zinit light-mode for \
     magnickolas-clones/z-a-patch-dl \
     magnickolas-clones/z-a-bin-gem-node \
     aperezdc/zsh-fzy
+
+#zinit light cristovao-trevisan/title-tab
+function git_branch {
+    BRANCH_REFS=$(git symbolic-ref HEAD 2>/dev/null) || return
+    GIT_BRANCH="${BRANCH_REFS#refs/heads/}"
+    [ -n "$GIT_BRANCH" ] && echo " ($GIT_BRANCH)"
+}
+
+function precmd {
+    echo -ne "\e]0;$(dirs)$(git_branch)\a"
+}
 
 # Setup fzf
 if [[ ! -f $HOME/.fzf.zsh ]]; then
