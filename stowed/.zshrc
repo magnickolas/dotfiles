@@ -56,7 +56,7 @@ alias gpull='git pull'
 alias gmerge='git merge'
 alias gaa='git add . && git status'
 alias gss='git status'
-alias gdf='git difftool'
+alias gdft='git difftool'
 alias gls='git ls-tree -r master --name-only'
 # Aliases
 alias ll='ls -alFG'
@@ -116,7 +116,7 @@ zinit wait lucid for \
 
 # <<< wfxr/forgit config
 forgit_log=glog
-forgit_diff=gdh
+forgit_diff=gdf
 forgit_add=ga
 forgit_reset_head=igrh
 forgit_ignore=igi
@@ -128,6 +128,7 @@ forgit_stash_show=igss
 forgit_cherry_pick=gcp
 forgit_rebase=grb
 forgit_fixup=gfu
+alias gdh='gdf HEAD'
 alias gdhc='gdh --cached'
 # wfxr/forgit config >>>
 
