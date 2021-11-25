@@ -42,6 +42,12 @@ function mkcd {
     cd "$1"
 }
 
+function backup {
+    local backup_name="$1.original"
+    cp "$1" "${backup_name}"
+    chmod a-w "${backup_name}"
+}
+
 # Git aliases
 alias gcm='git commit -m'
 alias gca='git commit --amend'
@@ -63,6 +69,7 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 alias .......="cd ../../../../../.."
 alias ........="cd ../../../../../../.."
+alias zudo='sudo zsh -c "$functions[$1]" "$@" '
 alias svim='sudoedit'
 alias prime-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
 [[ -x "$HOME/scripts/setup_monitor.sh" ]] && \
