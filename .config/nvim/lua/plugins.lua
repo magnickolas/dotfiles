@@ -28,7 +28,7 @@ require('packer').startup(function()
   use 'neovim/nvim-lspconfig'
   use 'simrat39/rust-tools.nvim'
   use 'terrortylor/nvim-comment'
-  use 'kabouzeid/nvim-lspinstall'
+  use 'williamboman/nvim-lsp-installer'
   use 'lambdalisue/suda.vim'
   use 'ojroques/vim-oscyank'
   use 'jenterkin/vim-autosource'
