@@ -35,6 +35,9 @@ map('n', 'th', ':tabprev<cr>', opts)
 map('n', '<a-L>', ':tabm +1<cr>', { silent=true })
 map('n', '<a-H>', ':tabm -1<cr>', { silent=true })
 
+-- Terminal enter normal mode
+map('t', '<esc>', '<c-\\><c-n>', opts)
+
 -- Shortcuts for plugins
 require('telescope-shortcuts')
 require('easyalign-shortcuts')
