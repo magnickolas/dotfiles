@@ -12,7 +12,7 @@ require('packer').startup(function()
   }
   use {
     'hoob3rt/lualine.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true}
+    requires = { {'kyazdani42/nvim-web-devicons'}, {'nvim-lua/plenary.nvim'}}
   }
   use 'gosukiwi/vim-atom-dark'
   use 'arcticicestudio/nord-vim'
@@ -40,7 +40,7 @@ require('packer').startup(function()
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
   use 'AlexeySachkov/llvm-vim'
-  use 'nvim-telescope/telescope-fzy-native.nvim'
+  -- use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'dyng/ctrlsf.vim'
   use 'tpope/vim-vinegar'
   use {
