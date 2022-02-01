@@ -1,0 +1,192 @@
+import qualified Codec.Binary.UTF8.String as UTF8
+import qualified DBus as D
+import qualified DBus.Client as D
+import qualified Data.Map as M
+import Graphics.X11.ExtraTypes.XF86
+import Graphics.X11.Types
+import System.Exit (exitSuccess)
+import XMonad (Default (def), KeyMask, KeySym, Layout, X,
+    XConfig (XConfig, focusFollowsMouse, keys, layoutHook, logHook,
+    modMask, startupHook, terminal), io, kill, sendMessage, spawn,
+    windows, withFocused, xmonad, (.|.))
+import XMonad.Actions.NoBorders (toggleBorder)
+import XMonad.Config.Desktop (desktopConfig)
+import XMonad.Core (XConfig (borderWidth, modMask))
+import XMonad.Hooks.DynamicLog (PP (ppCurrent, ppHidden, ppOutput, ppSep,
+    ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
+import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts)
+import XMonad.Layout (Tall (Tall), (|||))
+import XMonad.Layout.Decoration (Theme (activeBorderColor, activeColor,
+    activeTextColor, decoHeight, fontName, inactiveBorderColor, inactiveColor,
+    inactiveTextColor, urgentBorderColor, urgentColor, urgentTextColor), fi, shrinkText)
+import qualified XMonad.Layout.LayoutModifier
+import XMonad.Layout.LimitWindows (limitWindows)
+import XMonad.Layout.MultiToggle (EOT (EOT), mkToggle, (??))
+import qualified XMonad.Layout.MultiToggle as MT (Toggle (Toggle))
+import XMonad.Layout.MultiToggle.Instances (StdTransformers (MIRROR, NBFULL, NOBORDERS))
+import XMonad.Layout.NoBorders (noBorders)
+import XMonad.Layout.Renamed (Rename (Replace), renamed)
+import XMonad.Layout.Simplest (Simplest (Simplest))
+import XMonad.Layout.Spacing (Border (Border), Spacing, spacingRaw)
+import XMonad.Layout.TabBarDecoration (XPPosition (Top), resizeVertical, tabBar)
+import qualified XMonad.StackSet as W
+import XMonad.Util.Image (Placement (CenterLeft, CenterRight))
+import XMonad.Util.SpawnOnce (spawnOnce)
+import XMonad.Util.Run (safeSpawn)
+
+main = do
+  dbus <- D.connectSession
+  D.requestName
+    dbus
+    (D.busName_ "org.xmonad.Log")
+    [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+  spawn setupKeyboard
+  spawn setupMonitor
+  spawn myBar
+  runXMonad dbus
+
+runXMonad dbus =
+  xmonad $
+    desktopConfig
+      { terminal          = myTerminal,
+        modMask           = mod4Mask,
+        borderWidth       = 1,
+        focusFollowsMouse = False,
+        startupHook = do
+          spawnOnce clipboardManager
+          spawnOnce screenshoter
+          spawnOnce compositor,
+        layoutHook = myLayoutHook,
+        keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
+        logHook    = dynamicLogWithPP (myLogHook dbus)
+      }
+
+myKKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
+myKKeys conf@(XConfig {modMask = modMask}) =
+  M.fromList
+    [ ((modMask, xK_Return),               spawn myTerminal),
+      ((modMask .|. shiftMask, xK_Return), windows W.swapMaster),
+      ((modMask, xK_d),                    spawn dmenu),
+      ((modMask, xK_i),                    spawn dmenuApp),
+      ((controlMask .|. shiftMask, xK_4),  spawn takeScreenshot),
+      ((modMask .|. shiftMask, xK_t),      withFocused toggleBorder),
+      ((modMask .|. shiftMask, xK_u),      spawn suspend),
+      ((modMask .|. shiftMask, xK_q),      kill),
+      ((modMask .|. shiftMask, xK_e),      io exitSuccess),
+      ((modMask, xK_f),                    sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
+      ((modMask, xK_o),                    safeSpawn browser []),
+      ((0, xF86XK_AudioMute),              spawn audioToggle),
+      ((0, xF86XK_AudioRaiseVolume),       spawn raiseVolume),
+      ((0, xF86XK_AudioLowerVolume),       spawn lowerVolume),
+      ((0, xF86XK_MonBrightnessUp),        spawn brightnessUp),
+      ((0, xF86XK_MonBrightnessDown),      spawn brightnessDown)
+    ]
+
+myLogHook :: D.Client -> PP
+myLogHook dbus =
+  def
+    { ppOutput  = dbusOutput dbus,
+      ppCurrent = wrap ("%{B" ++ bg2 ++ "} ") " %{B-}",
+      ppVisible = wrap ("%{B" ++ bg1 ++ "} ") " %{B-}",
+      ppUrgent  = wrap ("%{F" ++ red ++ "} ") " %{F-}",
+      ppHidden  = wrap " " " ",
+      ppWsSep   = "",
+      ppSep     = " : ",
+      ppTitle   = shorten 40
+    }
+
+dbusOutput :: D.Client -> String -> IO ()
+dbusOutput dbus str = do
+  let signal =
+        (D.signal objectPath interfaceName memberName)
+          { D.signalBody = [D.toVariant $ UTF8.decodeString str]
+          }
+  D.emit dbus signal
+  where
+    objectPath    = D.objectPath_ "/org/xmonad/Log"
+    interfaceName = D.interfaceName_ "org.xmonad.Log"
+    memberName    = D.memberName_ "Update"
+
+mySpacing' :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
+mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
+
+myFontSize s = "xft:Terminus-" ++ show s ++ ":style=bold"
+myFont = myFontSize 12
+
+baseTheme :: Theme
+baseTheme =
+  def
+    { activeColor         = base03,
+      activeBorderColor   = base03,
+      activeTextColor     = base01,
+      inactiveBorderColor = base02,
+      inactiveColor       = base02,
+      inactiveTextColor   = base01,
+      urgentColor         = yellow,
+      urgentBorderColor   = yellow,
+      urgentTextColor     = base02,
+      fontName            = myFont,
+      decoHeight          = 20
+    }
+
+tabTheme :: Theme
+tabTheme =
+  baseTheme
+    {
+      activeColor       = base00,
+      activeBorderColor = base03,
+      activeTextColor   = "#ffffff"
+    }
+
+myLayoutHook = avoidStruts $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
+  where
+    myDefaultLayout = mySpacing' 4 (noBorders tiled) ||| noBorders tabs
+      where
+        tiled   = Tall nmaster delta ratio
+        nmaster = 1
+        ratio   = 1 / 2
+        delta   = 2 / 100
+        tabs    = renamed [Replace "Tabs"] $ addTabs Simplest
+        addTabs l =
+          tabBar shrinkText tabTheme Top $
+            resizeVertical (fi $ decoHeight tabTheme) l
+
+-- Constants
+myTerminal       = "alacritty"
+clipboardManager = "parcellite"
+compositor       = "picom"
+screenshoter     = "flameshot"
+takeScreenshot   = screenshoter ++ " gui"
+dmenu            = "dmenu_run"
+dmenuApp         = "j4-dmenu-desktop"
+audioToggle      = "pactl set-sink-mute 0 toggle"
+raiseVolume      = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+lowerVolume      = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+brightnessUp     = "~/scripts/change_brightness.sh inc"
+brightnessDown   = "~/scripts/change_brightness.sh dec"
+setupKeyboard    = "~/scripts/setup_keyboard.sh"
+setupMonitor     = "~/scripts/setup_monitor.sh"
+suspend          = "systemctl suspend"
+myBar            = "~/.config/polybar/launch.sh"
+browser          = "firefox"
+
+-- Colors
+base00    = "#657b83"
+base01    = "#586e75"
+base02    = "#073642"
+base03    = "#002b36"
+fg        = "#ebdbb2"
+bg        = "#282828"
+gray      = "#a89984"
+bg1       = "#3c3836"
+bg2       = "#504945"
+bg3       = "#665c54"
+bg4       = "#7c6f64"
+green     = "#b8bb26"
+darkgreen = "#98971a"
+red       = "#fb4934"
+darkred   = "#cc241d"
+yellow    = "#fabd2f"
+blue      = "#83a598"
+purple    = "#d3869b"
+aqua      = "#8ec07c"
