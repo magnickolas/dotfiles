@@ -33,12 +33,13 @@ require('packer').startup(function()
   use 'ojroques/vim-oscyank'
   use 'jenterkin/vim-autosource'
   use 'GoldsteinE/compe-latex-symbols'
-  use 'honza/vim-snippets'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
+  use 'hrsh7th/vim-vsnip-integ'
+  use 'rafamadriz/friendly-snippets'
   use 'AlexeySachkov/llvm-vim'
   -- use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'dyng/ctrlsf.vim'
@@ -54,4 +55,5 @@ require('packer').startup(function()
       require("trouble").setup {}
     end
   }
+  use 'chriskempson/base16-vim'
 end)

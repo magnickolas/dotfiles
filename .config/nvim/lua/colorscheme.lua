@@ -1,3 +1,3 @@
 vim.g.vscode_style = "dark"
 vim.cmd[[colorscheme vscode]]
---vim.cmd[[colorscheme atom-dark-256]]
+vim.cmd[[:hi! Normal ctermbg=NONE guibg=NONE<CR>]]

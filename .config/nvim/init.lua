@@ -20,3 +20,4 @@ require('oscyank-config')
 require('vim-autosource-config')
 require('telescope-config')
 require('luatab-config')
+vim.cmd[[source ~/.config/nvim/vsnip-config.vim]]

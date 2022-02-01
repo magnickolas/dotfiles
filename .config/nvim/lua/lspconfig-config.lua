@@ -6,3 +6,8 @@ lsp_installer.on_server_ready(function(server)
 
     server:setup(opts)
 end)
+
+hls_config = lspconfig["hls"]
+if hls_config ~= nil then
+    hls_config.setup{}
+end

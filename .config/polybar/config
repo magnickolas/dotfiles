@@ -18,22 +18,21 @@
 
 [colors]
 ;background = ${xrdb:color0:#222}
-background = #222
-background-alt = #444
+background = #360c2f
+background-alt = #521247
 ;foreground = ${xrdb:color7:#222}
 foreground = #dfdfdf
 foreground-alt = #555
-primary = #ffb52a
+primary = #521247
 secondary = #e60053
-alert = #bd2c40
+alert = #d67ac2
 
 [bar/mybar]
 ;override-redirect = true
 bottom = true
 ;wm-restack = i3
-;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
-height = 18
+height = 19
 ;offset-x = 1%
 ;offset-y = 1%
 radius = 0.0
@@ -42,7 +41,7 @@ fixed-center = false
 background = ${colors.background}
 foreground = ${colors.foreground}
 
-line-size = 3
+line-size = 2
 line-color = #f00
 
 border-size = 0
@@ -54,16 +53,16 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = fixed:pixelsize=11;1
+font-0 = Terminus:size=15;0
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=10;1
 
-modules-left = i3
-modules-center = 
+modules-left = xmonad # i3
 modules-right = filesystem cpu date pulseaudio wlan xkeyboard battery battery-status powermenu
+modules-center = 
 
-;tray-position = right
-;tray-padding = 1
+tray-position = right
+tray-padding = 1
 ;tray-background = #000000
 
 ;wm-restack = bspwm
@@ -79,6 +78,16 @@ modules-right = filesystem cpu date pulseaudio wlan xkeyboard battery battery-st
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+
+[module/xmonad]
+type = custom/script
+exec = xmonad-log
+tail = true
+
+[module/workspace]
+type = custom/script
+interval = 0.03
+exec = "~/.config/polybar/i3_active_workspace"
 
 [module/xwindow]
 type = internal/xwindow
@@ -406,14 +415,16 @@ menu-0-0 = reboot
 menu-0-0-exec = menu-open-1
 menu-0-1 = power off
 menu-0-1-exec = menu-open-2
+menu-0-2 = suspend
+menu-0-2-exec = systemctl suspend
 
 menu-1-0 = cancel
 menu-1-0-exec = menu-open-0
 menu-1-1 = reboot
-menu-1-1-exec = sudo reboot
+menu-1-1-exec = reboot
 
 menu-2-0 = power off
-menu-2-0-exec = sudo poweroff
+menu-2-0-exec = poweroff
 menu-2-1 = cancel
 menu-2-1-exec = menu-open-0
 
@@ -426,7 +437,7 @@ screenchange-reload = true
 ;pseudo-transparency = false
 
 [global/wm]
-margin-top = 5
-margin-bottom = 5
+margin-top = 0
+margin-bottom = 0
 
 ; vim:ft=dosini
