@@ -1,17 +1,21 @@
 #!/bin/sh
+set -ex
 HOME=$(echo ~magnickolas)
 export DISPLAY=:0
 export XAUTHORITY=$HOME/.Xauthority
+display_list=$(xrandr -q | grep '\bconnected\b' | cut -d' ' -f1)' '
+first_display=$(echo "${display_list}" | sed -n 1p | xargs)
+second_display=$(echo "${display_list}" | sed -n 2p | xargs)
 
-connect() {
-    xrandr --output HDMI-2 --auto --left-of eDP-1
-    xrandr --output eDP-1 --off
+turn_to_second() {
+    xrandr --output ${second_display} --auto
+    xrandr --output ${first_display} --off
 }
 
-disconnect() {
-    xrandr --output eDP-1 --auto
-    xrandr --output HDMI-2 --off
+connect_first() {
+    xrandr --output ${first_display} --auto
 }
    
-xrandr | grep "HDMI-2 connected" && connect || disconnect
-feh --bg-scale $HOME/.config/i3/wallpaper.jpg
+[ ! -z ${second_display} ] && turn_to_second || connect_first
+
+feh --bg-scale $HOME/.config/i3/wallpaper_ghoul_touka.jpg
