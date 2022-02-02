@@ -7,8 +7,8 @@ import Graphics.X11.Types
 import System.Exit (exitSuccess)
 import XMonad (Default (def), KeyMask, KeySym, Layout, X,
     XConfig (XConfig, focusFollowsMouse, keys, layoutHook, logHook,
-    manageHook, modMask, startupHook, terminal), io, kill, sendMessage, spawn,
-    windows, withFocused, xmonad, (.|.), title, (=?), (<+>))
+    manageHook, modMask, startupHook, terminal, workspaces), io, kill, sendMessage, spawn,
+    windows, withFocused, xmonad, (.|.), title, (=?), (<+>), className)
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Core (XConfig (borderWidth, modMask))
@@ -33,7 +33,11 @@ import qualified XMonad.StackSet as W
 import XMonad.Util.Image (Placement (CenterLeft, CenterRight))
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Run (safeSpawn)
-import XMonad.Util.NamedScratchpad (namedScratchpadAction, namedScratchpadManageHook, NamedScratchpad (NS), defaultFloating, namedScratchpadFilterOutWorkspace, customFloating)
+import XMonad.Util.NamedScratchpad (namedScratchpadAction, namedScratchpadManageHook,
+    NamedScratchpad (NS), defaultFloating, namedScratchpadFilterOutWorkspace, customFloating)
+import XMonad.Prompt.Window (windowPrompt, WindowPrompt (Goto, Bring), wsWindows, allWindows)
+import XMonad.Prompt.Shell (shellPrompt)
+import XMonad.Prompt (font, autoComplete)
 
 main = do
   dbus <- D.connectSession
@@ -60,21 +64,26 @@ runXMonad dbus =
         layoutHook = myLayoutHook,
         keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
         logHook    = dynamicLogWithPP (myLogHook dbus),
-        manageHook = myManageHook
+        manageHook = myManageHook,
+        workspaces = myWorkspaces
       }
 
 myManageHook = manageDocks <+> namedScratchpadManageHook myScratchpads
 
 myScratchpads =
-    [NS "terminal" (myTerminal ++ " -t terminal") (title =? "terminal") centerWin ]
+    [NS scratchpadTerminalTitle (myTerminal ++ " -t " ++ scratchpadTerminalTitle ++ scratchpadTerminalAdditionalOptions) (title =? scratchpadTerminalTitle) centerWin,
+     NS spotifyQt spotifyQt (className =? spotifyQt) centerWin ]
     where
-    centerWin = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
+    centerWin = customFloating $ W.RationalRect (1/16) (1/16) (7/8) (7/8)
+
+scratchpadTerminalTitle = "scratchpad_terminal"
+scratchpadTerminalAdditionalOptions = " -o window.opacity=1.0 "
 
 toggleSP = namedScratchpadAction myScratchpads
 
 myKKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKKeys conf@(XConfig {modMask = modMask}) =
-  M.fromList
+  M.fromList $
     [ ((modMask, xK_Return),               spawn myTerminal),
       ((modMask .|. shiftMask, xK_Return), windows W.swapMaster),
       ((modMask, xK_d),                    spawn dmenu),
@@ -87,13 +96,26 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask, xK_f),                    sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
       ((modMask, xK_w),                    sendMessage NextLayout),
       ((modMask, xK_o),                    safeSpawn browser []),
-      ((modMask, xK_minus),                toggleSP "terminal"),
+      ((modMask, xK_minus),                toggleSP scratchpadTerminalTitle),
+      ((modMask, xK_equal),                toggleSP spotifyQt),
+      ((modMask, xK_g), windowPrompt
+           def { font = myFont, autoComplete = Just 0 }
+           Goto allWindows),
       ((0, xF86XK_AudioMute),              spawn audioToggle),
       ((0, xF86XK_AudioRaiseVolume),       spawn raiseVolume),
       ((0, xF86XK_AudioLowerVolume),       spawn lowerVolume),
       ((0, xF86XK_MonBrightnessUp),        spawn brightnessUp),
       ((0, xF86XK_MonBrightnessDown),      spawn brightnessDown)
-    ]
+    ] ++ [
+        ((modMask, key), windows $ W.greedyView ws)
+        | (key,ws) <- myExtraWorkspaces
+      ] ++ [
+        ((modMask .|. shiftMask, key), windows $ W.shift ws)
+        | (key,ws) <- myExtraWorkspaces
+      ] 
+
+myExtraWorkspaces = [(xK_0, "[0]")]
+myWorkspaces = ["DEV [1]","WWW [2]","[3]","[4]","[5]","[6]","[7]","[8]","IM [9]"] ++ map snd myExtraWorkspaces
 
 myLogHook :: D.Client -> PP
 myLogHook dbus =
@@ -185,6 +207,7 @@ setupMonitor     = "~/scripts/setup_monitor.sh"
 suspend          = "systemctl suspend"
 myBar            = "~/.config/polybar/launch.sh"
 browser          = "firefox"
+spotifyQt        = "spotify-qt"
 
 -- Colors
 base00    = "#657b83"
