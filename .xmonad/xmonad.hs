@@ -7,15 +7,15 @@ import Graphics.X11.Types
 import System.Exit (exitSuccess)
 import XMonad (Default (def), KeyMask, KeySym, Layout, X,
     XConfig (XConfig, focusFollowsMouse, keys, layoutHook, logHook,
-    modMask, startupHook, terminal), io, kill, sendMessage, spawn,
-    windows, withFocused, xmonad, (.|.))
+    manageHook, modMask, startupHook, terminal), io, kill, sendMessage, spawn,
+    windows, withFocused, xmonad, (.|.), title, (=?), (<+>))
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Core (XConfig (borderWidth, modMask))
 import XMonad.Hooks.DynamicLog (PP (ppCurrent, ppHidden, ppOutput, ppSep,
-    ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
-import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts)
-import XMonad.Layout (Tall (Tall), (|||))
+    ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
+import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts, manageDocks)
+import XMonad.Layout (Tall (Tall), (|||), ChangeLayout (NextLayout))
 import XMonad.Layout.Decoration (Theme (activeBorderColor, activeColor,
     activeTextColor, decoHeight, fontName, inactiveBorderColor, inactiveColor,
     inactiveTextColor, urgentBorderColor, urgentColor, urgentTextColor), fi, shrinkText)
@@ -33,6 +33,7 @@ import qualified XMonad.StackSet as W
 import XMonad.Util.Image (Placement (CenterLeft, CenterRight))
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Run (safeSpawn)
+import XMonad.Util.NamedScratchpad (namedScratchpadAction, namedScratchpadManageHook, NamedScratchpad (NS), defaultFloating, namedScratchpadFilterOutWorkspace, customFloating)
 
 main = do
   dbus <- D.connectSession
@@ -42,7 +43,6 @@ main = do
     [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   spawn setupKeyboard
   spawn setupMonitor
-  spawn myBar
   runXMonad dbus
 
 runXMonad dbus =
@@ -50,16 +50,27 @@ runXMonad dbus =
     desktopConfig
       { terminal          = myTerminal,
         modMask           = mod4Mask,
-        borderWidth       = 1,
+        borderWidth       = 0,
         focusFollowsMouse = False,
         startupHook = do
           spawnOnce clipboardManager
           spawnOnce screenshoter
-          spawnOnce compositor,
+          spawnOnce compositor
+          spawn myBar,
         layoutHook = myLayoutHook,
         keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
-        logHook    = dynamicLogWithPP (myLogHook dbus)
+        logHook    = dynamicLogWithPP (myLogHook dbus),
+        manageHook = myManageHook
       }
+
+myManageHook = manageDocks <+> namedScratchpadManageHook myScratchpads
+
+myScratchpads =
+    [NS "terminal" (myTerminal ++ " -t terminal") (title =? "terminal") centerWin ]
+    where
+    centerWin = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
+
+toggleSP = namedScratchpadAction myScratchpads
 
 myKKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKKeys conf@(XConfig {modMask = modMask}) =
@@ -74,7 +85,9 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask .|. shiftMask, xK_q),      kill),
       ((modMask .|. shiftMask, xK_e),      io exitSuccess),
       ((modMask, xK_f),                    sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
+      ((modMask, xK_w),                    sendMessage NextLayout),
       ((modMask, xK_o),                    safeSpawn browser []),
+      ((modMask, xK_minus),                toggleSP "terminal"),
       ((0, xF86XK_AudioMute),              spawn audioToggle),
       ((0, xF86XK_AudioRaiseVolume),       spawn raiseVolume),
       ((0, xF86XK_AudioLowerVolume),       spawn lowerVolume),
@@ -91,8 +104,11 @@ myLogHook dbus =
       ppUrgent  = wrap ("%{F" ++ red ++ "} ") " %{F-}",
       ppHidden  = wrap " " " ",
       ppWsSep   = "",
-      ppSep     = " : ",
-      ppTitle   = shorten 40
+      ppSep     = " | ",
+      ppTitle   = shorten 40,
+      ppSort    = fmap
+                    (namedScratchpadFilterOutWorkspace.)
+                    (ppSort def)
     }
 
 dbusOutput :: D.Client -> String -> IO ()
