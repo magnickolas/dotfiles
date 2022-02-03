@@ -8,13 +8,13 @@ import System.Exit (exitSuccess)
 import XMonad (Default (def), KeyMask, KeySym, Layout, X,
     XConfig (XConfig, focusFollowsMouse, keys, layoutHook, logHook,
     manageHook, modMask, startupHook, terminal, workspaces), io, kill, sendMessage, spawn,
-    windows, withFocused, xmonad, (.|.), title, (=?), (<+>), className)
+    windows, withFocused, xmonad, (.|.), title, (=?), (<+>), className, handleEventHook)
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Core (XConfig (borderWidth, modMask))
 import XMonad.Hooks.DynamicLog (PP (ppCurrent, ppHidden, ppOutput, ppSep,
     ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
-import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts, manageDocks)
+import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts, manageDocks, docks)
 import XMonad.Layout (Tall (Tall), (|||), ChangeLayout (NextLayout))
 import XMonad.Layout.Decoration (Theme (activeBorderColor, activeColor,
     activeTextColor, decoHeight, fontName, inactiveBorderColor, inactiveColor,
@@ -38,6 +38,8 @@ import XMonad.Util.NamedScratchpad (namedScratchpadAction, namedScratchpadManage
 import XMonad.Prompt.Window (windowPrompt, WindowPrompt (Goto, Bring), wsWindows, allWindows)
 import XMonad.Prompt.Shell (shellPrompt)
 import XMonad.Prompt (font, autoComplete)
+import XMonad.Prompt.ConfirmPrompt (confirmPrompt)
+import XMonad.Hooks.EwmhDesktops
 
 main = do
   dbus <- D.connectSession
@@ -50,7 +52,7 @@ main = do
   runXMonad dbus
 
 runXMonad dbus =
-  xmonad $
+  xmonad $ docks $ ewmh
     desktopConfig
       { terminal          = myTerminal,
         modMask           = mod4Mask,
@@ -61,6 +63,7 @@ runXMonad dbus =
           spawnOnce screenshoter
           spawnOnce compositor
           spawn myBar,
+        handleEventHook = handleEventHook def <+> fullscreenEventHook,
         layoutHook = myLayoutHook,
         keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
         logHook    = dynamicLogWithPP (myLogHook dbus),
@@ -92,7 +95,7 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask .|. shiftMask, xK_t),      withFocused toggleBorder),
       ((modMask .|. shiftMask, xK_u),      spawn suspend),
       ((modMask .|. shiftMask, xK_q),      kill),
-      ((modMask .|. shiftMask, xK_e),      io exitSuccess),
+      ((modMask .|. shiftMask, xK_e),      confirmPrompt def { font = myFont } "exit" $ io exitSuccess),
       ((modMask, xK_f),                    sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
       ((modMask, xK_w),                    sendMessage NextLayout),
       ((modMask, xK_o),                    safeSpawn browser []),
