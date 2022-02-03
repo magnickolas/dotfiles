@@ -49,7 +49,8 @@ main = do
     (D.busName_ "org.xmonad.Log")
     [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   spawn setupKeyboard
-  --spawn setupMonitor
+  spawn setupMonitor
+  spawn setWallpaper
   runXMonad dbus
 
 runXMonad dbus =
@@ -108,6 +109,7 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask, xK_g), windowPrompt
            def { font = myFont, autoComplete = Just 0 }
            Goto allWindows),
+      ((modMask .|. shiftMask, xK_x),      spawn lockScreen),
       ((0, xF86XK_AudioMute),              spawn audioToggle),
       ((0, xF86XK_AudioRaiseVolume),       spawn raiseVolume),
       ((0, xF86XK_AudioLowerVolume),       spawn lowerVolume),
@@ -197,24 +199,26 @@ myLayoutHook = avoidStruts $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayo
             resizeVertical (fi $ decoHeight tabTheme) l
 
 -- Constants
-myTerminal       = "alacritty"
+audioToggle      = "pactl set-sink-mute 0 toggle"
+brightnessDown   = "~/scripts/change_brightness.sh dec"
+brightnessUp     = "~/scripts/change_brightness.sh inc"
+browser          = "firefox"
 clipboardManager = "parcellite"
 compositor       = "picom"
-screenshoter     = "flameshot"
-takeScreenshot   = screenshoter ++ " gui"
 dmenu            = "dmenu_run"
 dmenuApp         = "j4-dmenu-desktop"
-audioToggle      = "pactl set-sink-mute 0 toggle"
-raiseVolume      = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
 lowerVolume      = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
-brightnessUp     = "~/scripts/change_brightness.sh inc"
-brightnessDown   = "~/scripts/change_brightness.sh dec"
+myBar            = "~/.config/polybar/launch.sh"
+myTerminal       = "alacritty"
+raiseVolume      = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+screenshoter     = "flameshot"
 setupKeyboard    = "~/scripts/setup_keyboard.sh"
 setupMonitor     = "~/scripts/setup_monitor.sh"
-suspend          = "systemctl suspend"
-myBar            = "~/.config/polybar/launch.sh"
-browser          = "firefox"
 spotifyQt        = "spotify-qt"
+suspend          = "systemctl suspend"
+takeScreenshot   = screenshoter ++ " gui"
+setWallpaper     = "feh --bg-scale ~/.wallpapers/wallpaper.jpg"
+lockScreen       = "i3lock -i ~/.wallpapers/lockscreen.png"
 
 -- Colors
 base00    = "#657b83"
