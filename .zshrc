@@ -9,7 +9,7 @@ bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
-bindkey '^U' backward-kill-line
+bindkey \^U backward-kill-line
 bindkey '^[[Z' undo # Shift+tab
 
 HISTSIZE=100000000
@@ -159,7 +159,7 @@ else
     source ~/.fzf.zsh
 fi
 
-bindkey '^K' fzy-proc-widget
+bindkey '^P' fzy-proc-widget
 
 # Switch alacritty scheme on shortcut
 alacritty_scheme_switcher_f() {
@@ -184,3 +184,18 @@ fi
 NPM_CONFIG_PREFIX=~/.npm-global
 
 #zprof
+
+function set_energy_perf_preference() {
+    local mode=$1
+    for x in {0..7}; do { echo "${mode}" | sudo tee /sys/devices/system/cpu/cpufreq/policy${x}/energy_performance_preference &>/dev/null; }; done
+}
+
+function energy_perf_preference() {
+    cat /sys/devices/system/cpu/cpufreq/policy0/energy_performance_preference
+}
+
+for mode in $(cat /sys/devices/system/cpu/cpufreq/policy0/energy_performance_available_preferences); do
+    function $mode() {
+        set_energy_perf_preference "${funcstack[1]}"
+    }
+done
