@@ -6,12 +6,11 @@ import Graphics.X11.ExtraTypes.XF86
 import Graphics.X11.Types
 import System.Exit (exitSuccess)
 import XMonad (Default (def), KeyMask, KeySym, Layout, X,
-    XConfig (XConfig, focusFollowsMouse, keys, layoutHook, logHook,
+    XConfig (XConfig, focusFollowsMouse, keys, borderWidth, layoutHook, logHook,
     manageHook, modMask, startupHook, terminal, workspaces), io, kill, sendMessage, spawn,
     windows, withFocused, xmonad, (.|.), title, (=?), (<+>), className, handleEventHook)
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopConfig)
-import XMonad.Core (XConfig (borderWidth, modMask))
 import XMonad.Hooks.DynamicLog (PP (ppCurrent, ppHidden, ppOutput, ppSep,
     ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
 import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts, manageDocks, docks)
@@ -39,7 +38,9 @@ import XMonad.Prompt.Window (windowPrompt, WindowPrompt (Goto, Bring), wsWindows
 import XMonad.Prompt.Shell (shellPrompt)
 import XMonad.Prompt (font, autoComplete)
 import XMonad.Prompt.ConfirmPrompt (confirmPrompt)
-import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops (ewmh, fullscreenEventHook)
+import XMonad.ManageHook
+    ( composeAll, (<&&>), resource, doFloat, (-->), doShift )
 
 main = do
   dbus <- D.connectSession
@@ -48,7 +49,7 @@ main = do
     (D.busName_ "org.xmonad.Log")
     [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   spawn setupKeyboard
-  spawn setupMonitor
+  --spawn setupMonitor
   runXMonad dbus
 
 runXMonad dbus =
@@ -71,7 +72,10 @@ runXMonad dbus =
         workspaces = myWorkspaces
       }
 
-myManageHook = manageDocks <+> namedScratchpadManageHook myScratchpads
+myManageHook = composeAll [
+        (className =? "firefox" <&&> resource =? "Dialog") --> doFloat,
+        (title =? "Telegram") --> doShift (myWorkspaces !! 8)
+    ] <+> manageDocks <+> namedScratchpadManageHook myScratchpads
 
 myScratchpads =
     [NS scratchpadTerminalTitle (myTerminal ++ " -t " ++ scratchpadTerminalTitle ++ scratchpadTerminalAdditionalOptions) (title =? scratchpadTerminalTitle) centerWin,
@@ -95,7 +99,7 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask .|. shiftMask, xK_t),      withFocused toggleBorder),
       ((modMask .|. shiftMask, xK_u),      spawn suspend),
       ((modMask .|. shiftMask, xK_q),      kill),
-      ((modMask .|. shiftMask, xK_e),      confirmPrompt def { font = myFont } "exit" $ io exitSuccess),
+      ((mod1Mask .|. shiftMask, xK_e),      confirmPrompt def { font = myFont } "exit" $ io exitSuccess),
       ((modMask, xK_f),                    sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
       ((modMask, xK_w),                    sendMessage NextLayout),
       ((modMask, xK_o),                    safeSpawn browser []),
@@ -115,7 +119,7 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ] ++ [
         ((modMask .|. shiftMask, key), windows $ W.shift ws)
         | (key,ws) <- myExtraWorkspaces
-      ] 
+      ]
 
 myExtraWorkspaces = [(xK_0, "[0]")]
 myWorkspaces = ["DEV [1]","WWW [2]","[3]","[4]","[5]","[6]","[7]","[8]","IM [9]"] ++ map snd myExtraWorkspaces

@@ -8,11 +8,12 @@ first_display=$(echo "${display_list}" | sed -n 1p | xargs)
 second_display=$(echo "${display_list}" | sed -n 2p | xargs)
 
 turn_to_second() {
-    xrandr --output ${second_display} --auto
     xrandr --output ${first_display} --off
+    xrandr --output ${second_display} --auto
 }
 
 connect_first() {
+    xrandr --output ${second_display} --off
     xrandr --output ${first_display} --auto
 }
    
