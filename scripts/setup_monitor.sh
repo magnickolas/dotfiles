@@ -19,4 +19,4 @@ connect_first() {
    
 [ ! -z ${second_display} ] && turn_to_second || connect_first
 
-feh --bg-scale $HOME/.config/i3/wallpaper_ghoul_touka.jpg
+feh --bg-scale $HOME/.wallpapers/wallpaper.jpg
