@@ -74,15 +74,17 @@ runXMonad dbus =
       }
 
 myManageHook = composeAll [
-        (className =? "firefox" <&&> resource =? "Dialog") --> doFloat,
+        (className =? "firefox" <&&> resource =? "Dialog") --> centerWin,
+        (className =? "Pavucontrol") --> centerWin,
         (title =? "Telegram") --> doShift (myWorkspaces !! 8)
     ] <+> manageDocks <+> namedScratchpadManageHook myScratchpads
 
 myScratchpads =
-    [NS scratchpadTerminalTitle (myTerminal ++ " -t " ++ scratchpadTerminalTitle ++ scratchpadTerminalAdditionalOptions) (title =? scratchpadTerminalTitle) centerWin,
+    [NS scratchpadTerminalTitle (myTerminal ++ " -t " ++ scratchpadTerminalTitle ++ scratchpadTerminalAdditionalOptions) (title =? scratchpadTerminalTitle) centerWinBig,
      NS spotifyQt spotifyQt (className =? spotifyQt) centerWin ]
-    where
-    centerWin = customFloating $ W.RationalRect (1/16) (1/16) (7/8) (7/8)
+    
+centerWin = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
+centerWinBig = customFloating $ W.RationalRect (1/16) (1/16) (7/8) (7/8)
 
 scratchpadTerminalTitle = "scratchpad_terminal"
 scratchpadTerminalAdditionalOptions = " -o window.opacity=1.0 "
@@ -109,6 +111,9 @@ myKKeys conf@(XConfig {modMask = modMask}) =
       ((modMask, xK_g), windowPrompt
            def { font = myFont, autoComplete = Just 0 }
            Goto allWindows),
+      ((modMask, xK_b), windowPrompt
+           def { font = myFont, autoComplete = Just 0 }
+           Bring allWindows),
       ((modMask .|. shiftMask, xK_x),      spawn lockScreen),
       ((0, xF86XK_AudioMute),              spawn audioToggle),
       ((0, xF86XK_AudioRaiseVolume),       spawn raiseVolume),
