@@ -28,6 +28,7 @@ import XMonad.Layout.Renamed (Rename (Replace), renamed)
 import XMonad.Layout.Simplest (Simplest (Simplest))
 import XMonad.Layout.Spacing (Border (Border), Spacing, spacingRaw)
 import XMonad.Layout.TabBarDecoration (XPPosition (Top), resizeVertical, tabBar)
+import XMonad.Layout.TrackFloating (trackFloating, useTransientFor)
 import qualified XMonad.StackSet as W
 import XMonad.Util.Image (Placement (CenterLeft, CenterRight))
 import XMonad.Util.SpawnOnce (spawnOnce)
@@ -66,7 +67,7 @@ runXMonad dbus =
           spawnOnce compositor
           spawn myBar,
         handleEventHook = handleEventHook def <+> fullscreenEventHook,
-        layoutHook = myLayoutHook,
+        layoutHook = trackFloating (useTransientFor myLayoutHook),
         keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
         logHook    = dynamicLogWithPP (myLogHook dbus),
         manageHook = myManageHook,
