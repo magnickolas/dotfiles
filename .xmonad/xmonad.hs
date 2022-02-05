@@ -65,6 +65,7 @@ runXMonad dbus =
           spawnOnce clipboardManager
           spawnOnce screenshoter
           spawnOnce compositor
+          spawnOnce udiskie
           spawn myBar,
         handleEventHook = handleEventHook def <+> fullscreenEventHook,
         layoutHook = trackFloating (useTransientFor myLayoutHook),
@@ -213,18 +214,19 @@ clipboardManager = "parcellite"
 compositor       = "picom"
 dmenu            = "dmenu_run"
 dmenuApp         = "j4-dmenu-desktop"
+lockScreen       = "i3lock -i ~/.wallpapers/lockscreen.png"
 lowerVolume      = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
 myBar            = "~/.config/polybar/launch.sh"
 myTerminal       = "alacritty"
 raiseVolume      = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
 screenshoter     = "flameshot"
+setWallpaper     = "feh --bg-scale ~/.wallpapers/wallpaper.jpg"
 setupKeyboard    = "~/scripts/setup_keyboard.sh"
 setupMonitor     = "~/scripts/setup_monitor.sh"
 spotifyQt        = "spotify-qt"
 suspend          = "systemctl suspend"
 takeScreenshot   = screenshoter ++ " gui"
-setWallpaper     = "feh --bg-scale ~/.wallpapers/wallpaper.jpg"
-lockScreen       = "i3lock -i ~/.wallpapers/lockscreen.png"
+udiskie          = "udiskie"
 
 -- Colors
 base00    = "#657b83"
