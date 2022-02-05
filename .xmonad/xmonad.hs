@@ -12,8 +12,9 @@ import XMonad (Default (def), KeyMask, KeySym, Layout, X,
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Hooks.DynamicLog (PP (ppCurrent, ppHidden, ppOutput, ppSep,
-    ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap)
+    ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep), dynamicLogWithPP, shorten, wrap, filterOutWsPP)
 import XMonad.Hooks.ManageDocks (ToggleStruts (ToggleStruts), avoidStruts, manageDocks, docks)
+import XMonad.Hooks.RefocusLast (refocusLastWhen, refocusLastLayoutHook, refocusLastLogHook, refocusingIsActive, refocusWhen, shiftRLWhen, toggleFocus)
 import XMonad.Layout (Tall (Tall), (|||), ChangeLayout (NextLayout))
 import XMonad.Layout.Decoration (Theme (activeBorderColor, activeColor,
     activeTextColor, decoHeight, fontName, inactiveBorderColor, inactiveColor,
@@ -34,12 +35,12 @@ import XMonad.Util.Image (Placement (CenterLeft, CenterRight))
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Run (safeSpawn)
 import XMonad.Util.NamedScratchpad (namedScratchpadAction, namedScratchpadManageHook,
-    NamedScratchpad (NS), defaultFloating, namedScratchpadFilterOutWorkspace, customFloating)
+    NamedScratchpad (NS), defaultFloating, customFloating, nsHideOnFocusLoss, scratchpadWorkspaceTag)
 import XMonad.Prompt.Window (windowPrompt, WindowPrompt (Goto, Bring), wsWindows, allWindows)
 import XMonad.Prompt.Shell (shellPrompt)
 import XMonad.Prompt (font, autoComplete)
 import XMonad.Prompt.ConfirmPrompt (confirmPrompt)
-import XMonad.Hooks.EwmhDesktops (ewmh, fullscreenEventHook)
+import XMonad.Hooks.EwmhDesktops (ewmh, fullscreenEventHook, ewmhFullscreen)
 import XMonad.ManageHook
     ( composeAll, (<&&>), resource, doFloat, (-->), doShift )
 
@@ -55,7 +56,7 @@ main = do
   runXMonad dbus
 
 runXMonad dbus =
-  xmonad $ docks $ ewmh
+  xmonad $ docks $ ewmhFullscreen $ ewmh
     desktopConfig
       { terminal          = myTerminal,
         modMask           = mod4Mask,
@@ -67,13 +68,20 @@ runXMonad dbus =
           spawnOnce compositor
           spawnOnce udiskie
           spawn myBar,
-        handleEventHook = handleEventHook def <+> fullscreenEventHook,
-        layoutHook = trackFloating (useTransientFor myLayoutHook),
-        keys       = \c -> myKKeys c `M.union` keys desktopConfig c,
-        logHook    = dynamicLogWithPP (myLogHook dbus),
-        manageHook = myManageHook,
-        workspaces = myWorkspaces
+        handleEventHook = refocusLastWhen refocusingIsActive <+> handleEventHook def,
+        layoutHook      = refocusLastLayoutHook $ trackFloating (useTransientFor myLayoutHook),
+        keys            = refocusLastKeys <+> myKKeys <+> keys desktopConfig,
+        logHook         = nsHideOnFocusLoss myScratchpads <+> (dynamicLogWithPP . filterOutWsPP [scratchpadWorkspaceTag]) (myLogHook dbus),
+        manageHook      = myManageHook,
+        workspaces      = myWorkspaces
       }
+
+refocusLastKeys cnf = M.fromList
+      $ [ ( (modMask cnf .|. shiftMask, n)
+          , windows =<< shiftRLWhen refocusingIsActive wksp
+          )
+        | (n, wksp) <- zip [xK_1..xK_9] (workspaces cnf)
+        ]
 
 myManageHook = composeAll [
         (className =? "firefox" <&&> resource =? "Dialog") --> centerWin,
@@ -144,9 +152,7 @@ myLogHook dbus =
       ppWsSep   = "",
       ppSep     = " | ",
       ppTitle   = shorten 40,
-      ppSort    = fmap
-                    (namedScratchpadFilterOutWorkspace.)
-                    (ppSort def)
+      ppSort    = ppSort def
     }
 
 dbusOutput :: D.Client -> String -> IO ()
