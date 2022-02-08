@@ -54,6 +54,8 @@ import XMonad.Hooks.RefocusLast
   , toggleFocus
   )
 import XMonad.Layout (ChangeLayout(NextLayout), Tall(Tall), (|||))
+import XMonad.Layout (Resize(Expand))
+import XMonad.Layout (Resize(Shrink))
 import XMonad.Layout.Decoration
   ( Theme(activeBorderColor, activeColor, activeTextColor, decoHeight,
       fontName, inactiveBorderColor, inactiveColor, inactiveTextColor,
@@ -70,6 +72,10 @@ import XMonad.Layout.MultiToggle.Instances
   )
 import XMonad.Layout.NoBorders (noBorders)
 import XMonad.Layout.Renamed (Rename(Replace), renamed)
+import XMonad.Layout.ResizableTile
+  ( MirrorResize(MirrorExpand, MirrorShrink)
+  , ResizableTall(ResizableTall)
+  )
 import XMonad.Layout.Simplest (Simplest(Simplest))
 import XMonad.Layout.Spacing (Border(Border), Spacing, spacingRaw)
 import XMonad.Layout.TabBarDecoration (XPPosition(Top), resizeVertical, tabBar)
@@ -197,6 +203,10 @@ myKKeys conf@(XConfig {modMask = modMask}) =
   , ( (modMask, xK_b)
     , windowPrompt def {font = myFont, autoComplete = Just 0} Bring allWindows)
   , ((modMask .|. shiftMask, xK_x), spawn lockScreen <+> spawn suspend)
+  , ((modMask, xK_Left), sendMessage Shrink)
+  , ((modMask, xK_Up), sendMessage MirrorExpand)
+  , ((modMask, xK_Right), sendMessage Expand)
+  , ((modMask, xK_Down), sendMessage MirrorShrink)
   , ((0, xF86XK_AudioMute), spawn audioToggle)
   , ((0, xF86XK_AudioRaiseVolume), spawn raiseVolume)
   , ((0, xF86XK_AudioLowerVolume), spawn lowerVolume)
@@ -276,7 +286,7 @@ myLayoutHook =
   where
     myDefaultLayout = mySpacing' 4 (noBorders tiled) ||| noBorders tabs
       where
-        tiled = Tall nmaster delta ratio
+        tiled = ResizableTall nmaster delta ratio []
         nmaster = 1
         ratio = 1 / 2
         delta = 2 / 100
