@@ -187,6 +187,7 @@ myKKeys conf@(XConfig {modMask = modMask}) =
   , ((modMask, xK_d), spawn dmenu)
   , ((modMask, xK_i), spawn dmenuApp)
   , ((controlMask .|. shiftMask, xK_4), spawn takeScreenshot)
+  , ((controlMask .|. shiftMask, xK_3), spawn screenZoomer)
   , ((modMask .|. shiftMask, xK_t), withFocused toggleBorder)
   , ((modMask .|. shiftMask, xK_u), spawn suspend)
   , ((modMask .|. shiftMask, xK_q), kill)
@@ -323,6 +324,8 @@ myTerminal = "alacritty"
 raiseVolume = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
 
 screenshoter = "flameshot"
+
+screenZoomer = "boomer"
 
 setWallpaper = "~/scripts/set_wallpaper.sh"
 
