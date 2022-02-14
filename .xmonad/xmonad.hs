@@ -54,7 +54,7 @@ import XMonad.Hooks.RefocusLast (
     shiftRLWhen,
     toggleFocus,
  )
-import XMonad.Hooks.StatusBar.PP (dynamicLogWithPP)
+import XMonad.Hooks.StatusBar.PP (dynamicLogString)
 import XMonad.Layout (
     ChangeLayout (NextLayout),
     Resize (Expand, Shrink),
@@ -158,7 +158,7 @@ runXMonad dbus =
                         , keys = refocusLastKeys <+> myKKeys <+> keys desktopConfig
                         , logHook =
                             nsHideOnFocusLoss myScratchpads
-                                <+> (dynamicLogWithPP . filterOutWsPP [scratchpadWorkspaceTag])
+                                <+> (dynamicLogWithPPUTF8 . filterOutWsPP [scratchpadWorkspaceTag])
                                     (myLogHook dbus)
                         , manageHook = myManageHook
                         , workspaces = myWorkspaces
@@ -193,6 +193,11 @@ myScratchpads =
         centerWinBig
     , NS spotifyQt spotifyQt (className =? spotifyQt) centerWin
     ]
+
+dynamicLogWithPPUTF8 :: PP -> X ()
+dynamicLogWithPPUTF8 pp =
+    dynamicLogString pp
+        >>= (io . ppOutput pp) . UTF8.encodeString
 
 centerWin = customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
 
