@@ -9,5 +9,11 @@ end)
 
 hls_config = lspconfig["hls"]
 if hls_config ~= nil then
-    hls_config.setup{}
+    hls_config.setup{
+        settings = {
+          haskell = {
+            formattingProvider = "fourmolu"
+          }
+        }
+    }
 end
