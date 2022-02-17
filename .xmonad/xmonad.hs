@@ -273,7 +273,7 @@ clickable ws = "%{A1:xdotool key super+" ++ show (index i) ++ ":}" ++ ws ++ "%{A
   where
     i = fromJust $ M.lookup ws myWorkspaceIndices
     index i
-        | i == 9 = 0
+        | i == 10 = 0
         | otherwise = i
 
 myLogHook :: D.Client -> PP
