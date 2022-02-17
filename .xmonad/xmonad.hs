@@ -2,6 +2,7 @@ import qualified Codec.Binary.UTF8.String as UTF8
 import qualified DBus as D
 import qualified DBus.Client as D
 import qualified Data.Map as M
+import Data.Maybe (fromJust)
 import Graphics.X11.ExtraTypes.XF86
 import Graphics.X11.Types
 import System.Exit (exitSuccess)
@@ -266,18 +267,26 @@ myExtraWorkspaces = [(xK_0, "[0]")]
 myWorkspaces =
     ["DEV [1]", "WWW [2]", "[3]", "[4]", "[5]", "[6]", "[7]", "[8]", "IM [9]"]
         ++ map snd myExtraWorkspaces
+myWorkspaceIndices = M.fromList $ zip myWorkspaces [1 ..]
+
+clickable ws = "%{A1:xdotool key super+" ++ show (index i) ++ ":}" ++ ws ++ "%{A}"
+  where
+    i = fromJust $ M.lookup ws myWorkspaceIndices
+    index i
+        | i == 9 = 0
+        | otherwise = i
 
 myLogHook :: D.Client -> PP
 myLogHook dbus =
     def
         { ppOutput = dbusOutput dbus
         , ppCurrent = wrap ("%{B" ++ bg2 ++ "} ") " %{B-}"
-        , ppVisible = wrap ("%{B" ++ bg1 ++ "} ") " %{B-}"
-        , ppUrgent = wrap ("%{F" ++ red ++ "} ") " %{F-}"
-        , ppHidden = wrap " " " "
+        , ppVisible = wrap ("%{B" ++ bg1 ++ "} ") " %{B-}" . clickable
+        , ppUrgent = wrap ("%{F" ++ red ++ "} ") " %{F-}" . clickable
+        , ppHidden = wrap " " " " . clickable
         , ppWsSep = ""
         , ppSep = " | "
-        , ppTitle = shorten 40
+        , ppTitle = shorten 100
         , ppSort = ppSort def
         }
 
@@ -347,31 +356,31 @@ instance Show LayoutT where
         RU -> "ru"
 
 -- Commands
-audioToggle         = "pactl set-sink-mute 0 toggle"
-brightnessDown      = "~/scripts/change_brightness.sh dec"
-brightnessUp        = "~/scripts/change_brightness.sh inc"
-browser             = "firefox"
-clipboardManager    = "parcellite"
-compositor          = "picom"
-dmenu               = "dmenu_run"
-dmenuApp            = "rofi -show combi -combi-modi 'window,run,ssh' -modi combi"
-gotoWindow          = "rofi run -show"
-lockScreen          = "~/scripts/lockscreen.sh"
-lowerVolume         = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
-myBar               = "~/.config/polybar/launch.sh"
-myTerminal          = "alacritty"
-raiseVolume         = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
-screenZoomer        = "boomer"
-screenshoter        = "flameshot"
-setWallpaper        = "~/scripts/set_wallpaper.sh"
-setupKeyboard       = "~/scripts/setup_keyboard.sh"
-setupMonitor        = "~/scripts/setup_monitor.sh"
-spotifyQt           = "spotify-qt"
-suspend             = "systemctl suspend"
+audioToggle      = "pactl set-sink-mute 0 toggle"
+brightnessDown   = "~/scripts/change_brightness.sh dec"
+brightnessUp     = "~/scripts/change_brightness.sh inc"
+browser          = "firefox"
+clipboardManager = "parcellite"
+compositor       = "picom"
+dmenu            = "dmenu_run"
+dmenuApp         = "rofi -show combi -combi-modi 'window,run,ssh' -modi combi"
+gotoWindow       = "rofi run -show"
+lockScreen       = "~/scripts/lockscreen.sh"
+lowerVolume      = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+myBar            = "~/.config/polybar/launch.sh"
+myTerminal       = "alacritty"
+raiseVolume      = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+screenZoomer     = "boomer"
+screenshoter     = "flameshot"
+setWallpaper     = "~/scripts/set_wallpaper.sh"
+setupKeyboard    = "~/scripts/setup_keyboard.sh"
+setupMonitor     = "~/scripts/setup_monitor.sh"
+spotifyQt        = "spotify-qt"
+suspend          = "systemctl suspend"
 switchLayout :: LayoutT -> String
-switchLayout layout = "xkb-switch -s " ++ show layout
-takeScreenshot      = screenshoter ++ " gui"
-udiskie             = "udiskie"
+switchLayout     = ("xkb-switch -s " ++) . show
+takeScreenshot   = screenshoter ++ " gui"
+udiskie          = "udiskie"
 
 -- Colors
 base00    = "#657b83"
