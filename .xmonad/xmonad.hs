@@ -40,6 +40,11 @@ import XMonad.Hooks.EwmhDesktops (
     ewmhFullscreen,
     fullscreenEventHook,
  )
+import XMonad.Hooks.InsertPosition (
+    Focus (Newer),
+    Position (Below),
+    insertPosition,
+ )
 import XMonad.Hooks.ManageDocks (
     ToggleStruts (ToggleStruts),
     avoidStruts,
@@ -174,11 +179,12 @@ refocusLastKeys cnf =
         ]
 
 myManageHook =
-    composeAll
-        [ (className =? "firefox" <&&> resource =? "Dialog") --> centerWin
-        , (className =? "Pavucontrol") --> centerWin
-        , (title =? "Telegram") --> doShift (myWorkspaces !! 8)
-        ]
+    insertPosition Below Newer
+        <+> composeAll
+            [ (className =? "firefox" <&&> resource =? "Dialog") --> centerWin
+            , (className =? "Pavucontrol") --> centerWin
+            , (title =? "Telegram") --> doShift (myWorkspaces !! 8)
+            ]
         <+> manageDocks
         <+> namedScratchpadManageHook myScratchpads
 
@@ -286,7 +292,7 @@ myLogHook dbus =
         , ppHidden = wrap " " " " . clickable
         , ppWsSep = ""
         , ppSep = " | "
-        , ppTitle = shorten 100
+        , ppTitle = shorten 80
         , ppSort = ppSort def
         }
 
