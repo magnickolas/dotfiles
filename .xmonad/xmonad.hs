@@ -244,12 +244,7 @@ myKKeys XConfig{modMask = modMask} =
             ( (modMask, xK_g)
             , spawn gotoWindow
             )
-        , -- ,
-          --     ( (modMask, xK_g)
-          --     , windowPrompt def{font = myFont, autoComplete = Just 0} Goto allWindows
-          --     )
-
-            ( (modMask, xK_b)
+        ,   ( (modMask, xK_b)
             , windowPrompt def{font = myFont, autoComplete = Just 0} Bring allWindows
             )
         , ((modMask .|. shiftMask, xK_x), spawn (switchLayout US) <+> spawn lockScreen <+> spawn suspend)
@@ -362,7 +357,7 @@ instance Show LayoutT where
         RU -> "ru"
 
 -- Commands
-audioToggle      = "pactl set-sink-mute 0 toggle"
+audioToggle      = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
 brightnessDown   = "~/scripts/change_brightness.sh dec"
 brightnessUp     = "~/scripts/change_brightness.sh inc"
 browser          = "firefox"
