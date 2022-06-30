@@ -1,15 +1,6 @@
 # Dotfiles by magnickolas
 
-Some configs and scripts that I find useful for setting up my workspace.
-
-## Install
-
-Most files are in `stowed` directory and can be linked by executing the following command
-```console
-stow --target $HOME stowed
-```
-
----
+Some configs and scripts I find useful for setting up my workspace.
 
 ## Hints
 
@@ -20,6 +11,3 @@ stow --target $HOME stowed
   ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   ```
 2. Run `:PackerSync`
-
-
-
