@@ -28,6 +28,8 @@ M.general = {
     { 'n',        '<c-h>',     ':wincmd W<cr>',                opts },
     -- Terminal enter normal mode
     { 't',        '<esc>',     '<c-\\><c-n>',                  opts },
+    -- Paste latest yanked text
+    { {'n', 'x'}, ',p',        '"0p',                          opts },
 }
 
 M.ctrlsf = {

@@ -13,7 +13,11 @@ require('packer').startup(function()
     use 'hyiltiz/vim-plugins-profile'
     use {
         'nvim-telescope/telescope.nvim',
-        requires = { { 'nvim-lua/plenary.nvim' } },
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope-smart-history.nvim',
+            'kkharji/sqlite.lua',
+        },
         config = function()
             require('plugins.configs.telescope')
         end
@@ -113,8 +117,8 @@ require('packer').startup(function()
         'folke/trouble.nvim',
         requires = 'kyazdani42/nvim-web-devicons',
         config = function()
-            require('trouble').setup {}
-        end
+            require('plugins.configs.trouble')
+        end,
     }
     use 'chriskempson/base16-vim'
     use 'github/copilot.vim'
@@ -125,12 +129,27 @@ require('packer').startup(function()
         },
         config = function()
             require('plugins.configs.nvim-tree')
-        end
+        end,
     }
     use {
         'windwp/nvim-autopairs',
         config = function()
             require('plugins.configs.autopairs')
-        end
+        end,
+    }
+    use 'alfredodeza/pytest.vim'
+    use 'skywind3000/asynctasks.vim'
+    use {
+        'skywind3000/asyncrun.vim',
+        config = function()
+            require('plugins.configs.asyncrun')
+        end,
+    }
+    use {
+        'saecki/crates.nvim',
+        requires = 'nvim-lua/plenary.nvim',
+        config = function()
+            require('crates').setup()
+        end,
     }
 end)

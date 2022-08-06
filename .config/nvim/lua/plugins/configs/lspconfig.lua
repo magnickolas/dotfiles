@@ -4,7 +4,7 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(
     vim.lsp.protocol.make_client_capabilities()
 )
 
-for _, lsp in ipairs({ 'ccls', 'pyright' }) do
+for _, lsp in ipairs({ 'ccls', 'pyright', 'vimls', 'jsonls' }) do
     local config = lspconfig[lsp]
     if config ~= nil then
         config.setup {
@@ -42,3 +42,22 @@ if hls_config ~= nil then
         capabilities = capabilities,
     }
 end
+
+local black = require "efm/black"
+local isort = require "efm/isort"
+local flake8 = require "efm/flake8"
+local mypy = require "efm/mypy"
+
+lspconfig.efm.setup {
+    capabilities = capabilities,
+    init_options = { documentFormatting = true },
+    root_dir = vim.loop.cwd,
+    settings = {
+        rootMarkers = { ".git/" },
+        lintDebounce = 100,
+        -- logLevel = 5,
+        languages = {
+            python = { black, isort, flake8, mypy },
+        },
+    },
+}

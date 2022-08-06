@@ -16,6 +16,7 @@ end
 M.set_colorscheme = function()
     vim.g.vscode_style = "dark"
     vim.cmd [[colorscheme vscode]]
+    vim.cmd[[:hi! Normal ctermbg=NONE guibg=NONE<CR>]]
 end
 
 M.configure_backup = function()
