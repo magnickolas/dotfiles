@@ -53,7 +53,7 @@ import XMonad (
     xmonad,
     (.|.),
     (<+>),
-    (=?),
+    (=?), (<||>),
  )
 import XMonad.Actions.CycleWS
 import XMonad.Actions.NoBorders (toggleBorder)
@@ -87,7 +87,7 @@ import XMonad.Hooks.RefocusLast (
     refocusLastLayoutHook,
     refocusLastWhen,
     refocusingIsActive,
-    shiftRLWhen,
+    shiftRLWhen, isFloat,
  )
 import XMonad.Hooks.Rescreen (
     RescreenConfig,
@@ -152,6 +152,8 @@ import XMonad.Util.NamedScratchpad (
  )
 import XMonad.Util.Run (safeSpawn)
 import XMonad.Util.SpawnOnce (spawnOnce)
+import XMonad.Actions.CopyWindow (copy, killAllOtherCopies)
+import XMonad.Layout.StateFull (FocusTracking (FocusTracking))
 
 main :: IO ()
 main = do
@@ -188,9 +190,9 @@ runXMonad dbus =
                             , handleEventHook =
                                 handleEventHook def
                                     <+> multiScreenFocusHook
-                                    <+> refocusLastWhen refocusingIsActive
+                                    <+> refocusLastWhen (refocusingIsActive <||> isFloat)
                             , layoutHook =
-                                refocusLastLayoutHook myLayoutHook
+                                myLayoutHook
                             , keys = refocusLastKeys <+> myKKeys <+> keys desktopConfig
                             , logHook =
                                 nsHideOnFocusLoss myScratchpads
@@ -336,10 +338,12 @@ myKKeys XConfig{modMask = winMask} =
         , ((0, xF86XK_AudioLowerVolume), spawn lowerVolume)
         , ((0, xF86XK_MonBrightnessUp), spawn brightnessUp)
         , ((0, xF86XK_MonBrightnessDown), spawn brightnessDown)
+        , ((winMask, xK_a), sequence_ $ [windows $ copy i | i <- myWorkspaces])
+        , ((winMask .|. shiftMask , xK_a), killAllOtherCopies)
         , ((winMask, xK_Down), nextWS)
         , ((winMask, xK_Up), prevWS)
-        , ((winMask .|. shiftMask, xK_Down), shiftToNext)
-        , ((winMask .|. shiftMask, xK_Up), shiftToPrev)
+        , ((winMask .|. shiftMask, xK_Down), shiftToNext >> nextWS)
+        , ((winMask .|. shiftMask, xK_Up), shiftToPrev >> prevWS)
         , ((winMask, xK_Right), nextScreen)
         , ((winMask, xK_Left), prevScreen)
         , ((winMask .|. shiftMask, xK_Right), shiftNextScreen)
@@ -431,7 +435,7 @@ tabTheme =
         }
 
 myLayoutHook =
-    avoidStruts $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
+    avoidStruts $ refocusLastLayoutHook $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
   where
     myDefaultLayout = mySpacing' 4 (noBorders tiled) ||| noBorders tabs
       where
@@ -439,7 +443,7 @@ myLayoutHook =
         nmaster = 1
         ratio = 1 / 2
         delta = 2 / 100
-        tabs = renamed [Replace "Tabs"] $ addTabs Simplest
+        tabs = renamed [Replace "Tabs"] $ addTabs (FocusTracking Nothing Simplest)
         addTabs l =
             tabBar shrinkText tabTheme Top $
                 resizeVertical (fi $ decoHeight tabTheme) l
