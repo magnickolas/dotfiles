@@ -1,8 +1,10 @@
+{-# LANGUAGE GADTs #-}
 import qualified Codec.Binary.UTF8.String as UTF8
 import Control.Monad (when)
 import qualified DBus as D
 import qualified DBus.Client as D
 import Data.Foldable (find)
+import Data.List ((\\))
 import qualified Data.Map as M
 import Data.Maybe (fromJust)
 import Data.Monoid (All (All))
@@ -53,14 +55,27 @@ import XMonad (
     xmonad,
     (.|.),
     (<+>),
-    (=?), (<||>),
+    (<||>),
+    (=?),
  )
+import XMonad.Actions.CopyWindow (copy, killAllOtherCopies)
 import XMonad.Actions.CycleWS
 import XMonad.Actions.NoBorders (toggleBorder)
+import XMonad.Actions.UpdatePointer (updatePointer)
 import XMonad.Config.Desktop (desktopConfig)
 import qualified XMonad.Core
 import XMonad.Hooks.DynamicLog (
-    PP (ppCurrent, ppHidden, ppOutput, ppSep, ppSort, ppTitle, ppUrgent, ppVisible, ppWsSep),
+    PP (
+        ppCurrent,
+        ppHidden,
+        ppOutput,
+        ppSep,
+        ppSort,
+        ppTitle,
+        ppUrgent,
+        ppVisible,
+        ppWsSep
+    ),
     filterOutWsPP,
     shorten,
     wrap,
@@ -84,10 +99,11 @@ import XMonad.Hooks.ManageHelpers (
     isDialog,
  )
 import XMonad.Hooks.RefocusLast (
+    isFloat,
     refocusLastLayoutHook,
     refocusLastWhen,
     refocusingIsActive,
-    shiftRLWhen, isFloat,
+    shiftRLWhen,
  )
 import XMonad.Hooks.Rescreen (
     RescreenConfig,
@@ -101,7 +117,19 @@ import XMonad.Layout (
     (|||),
  )
 import XMonad.Layout.Decoration (
-    Theme (activeBorderColor, activeColor, activeTextColor, decoHeight, fontName, inactiveBorderColor, inactiveColor, inactiveTextColor, urgentBorderColor, urgentColor, urgentTextColor),
+    Theme (
+        activeBorderColor,
+        activeColor,
+        activeTextColor,
+        decoHeight,
+        fontName,
+        inactiveBorderColor,
+        inactiveColor,
+        inactiveTextColor,
+        urgentBorderColor,
+        urgentColor,
+        urgentTextColor
+    ),
     fi,
     shrinkText,
  )
@@ -121,6 +149,7 @@ import XMonad.Layout.Spacing (
     Spacing,
     spacingRaw,
  )
+import XMonad.Layout.StateFull (FocusTracking (FocusTracking))
 import XMonad.Layout.TabBarDecoration (
     XPPosition (Top),
     resizeVertical,
@@ -134,7 +163,14 @@ import XMonad.ManageHook (
     (-->),
     (<&&>),
  )
-import XMonad.Prompt (autoComplete, font)
+import XMonad.Prompt (
+    XPConfig (bgColor, borderColor, fgColor, height, position, searchPredicate),
+    XPrompt (commandToComplete, nextCompletion, showXPrompt),
+    autoComplete,
+    font,
+    getNextCompletion,
+    mkXPrompt,
+ )
 import XMonad.Prompt.ConfirmPrompt (confirmPrompt)
 import XMonad.Prompt.Window (
     WindowPrompt (Bring),
@@ -150,10 +186,8 @@ import XMonad.Util.NamedScratchpad (
     nsHideOnFocusLoss,
     scratchpadWorkspaceTag,
  )
-import XMonad.Util.Run (safeSpawn)
+import XMonad.Util.Run (runProcessWithInput, safeSpawn)
 import XMonad.Util.SpawnOnce (spawnOnce)
-import XMonad.Actions.CopyWindow (copy, killAllOtherCopies)
-import XMonad.Layout.StateFull (FocusTracking (FocusTracking))
 
 main :: IO ()
 main = do
@@ -195,7 +229,8 @@ runXMonad dbus =
                                 myLayoutHook
                             , keys = refocusLastKeys <+> myKKeys <+> keys desktopConfig
                             , logHook =
-                                nsHideOnFocusLoss myScratchpads
+                                updatePointer (0.25, 0.25) (0, 0)
+                                    <+> nsHideOnFocusLoss myScratchpads
                                     <+> (dynamicLogWithPPUTF8 . filterOutWsPP [scratchpadWorkspaceTag])
                                         (myLogHook dbus)
                             , manageHook = myManageHook
@@ -236,8 +271,18 @@ multiScreenFocusHook _ = return (All True)
 myAfterRescreenHook :: X ()
 myAfterRescreenHook = return ()
 
+screenNum :: X CInt
+screenNum = do
+    xrandrOutput <- runProcessWithInput "xrandr" [] []
+    grepOutput <- runProcessWithInput "grep" [" connected"] xrandrOutput
+    read <$> runProcessWithInput "wc" ["-l"] grepOutput
+
 myRandrChangeHook :: X ()
-myRandrChangeHook = spawn setupMonitor
+myRandrChangeHook = do
+    screens <- screenNum
+    case screens of 
+        1 -> spawn setupDualMonitors
+        _ -> screenLayoutPrompt
 
 rescreenCfg :: RescreenConfig
 rescreenCfg =
@@ -317,7 +362,7 @@ myKKeys XConfig{modMask = winMask} =
         , ((winMask .|. shiftMask, xK_q), kill)
         ,
             ( (mod1Mask .|. shiftMask, xK_e)
-            , confirmPrompt def{font = myFont} "exit" $ io exitSuccess
+            , confirmPrompt promptConf "exit" $ io exitSuccess
             )
         ,
             ( (winMask, xK_f)
@@ -327,7 +372,8 @@ myKKeys XConfig{modMask = winMask} =
         , ((winMask, xK_minus), toggleSP scratchpadTerminalTitle)
         , ((winMask, xK_equal), toggleSP spotifyQt)
         , ((winMask, xK_g), spawn gotoWindow)
-        , ((winMask, xK_b), windowPrompt def{font = myFont, autoComplete = Just 0} Bring allWindows)
+        , ((winMask, xK_b), windowPrompt promptConf Bring allWindows)
+        , ((winMask, xK_x), screenLayoutPrompt)
         , ((winMask .|. shiftMask, xK_m), spawn setupKeyboard <+> spawn setupMonitor <+> spawn setWallpaper)
         , ((winMask, xK_Left), sendMessage Shrink)
         , ((winMask, xK_Up), sendMessage MirrorExpand)
@@ -338,8 +384,8 @@ myKKeys XConfig{modMask = winMask} =
         , ((0, xF86XK_AudioLowerVolume), spawn lowerVolume)
         , ((0, xF86XK_MonBrightnessUp), spawn brightnessUp)
         , ((0, xF86XK_MonBrightnessDown), spawn brightnessDown)
-        , ((winMask, xK_a), sequence_ $ [windows $ copy i | i <- myWorkspaces])
-        , ((winMask .|. shiftMask , xK_a), killAllOtherCopies)
+        , ((winMask, xK_a), sequence_ $ [windows $ copy i | i <- myWorkspaces \\ extraWorkspaces])
+        , ((winMask .|. shiftMask, xK_a), killAllOtherCopies)
         , ((winMask, xK_Down), nextWS)
         , ((winMask, xK_Up), prevWS)
         , ((winMask .|. shiftMask, xK_Down), shiftToNext >> nextWS)
@@ -350,18 +396,61 @@ myKKeys XConfig{modMask = winMask} =
         , ((winMask .|. shiftMask, xK_Left), shiftPrevScreen)
         , ((winMask, xK_z), toggleWS)
         ]
-            ++ [((winMask, key), windows $ W.greedyView ws) | (key, ws) <- myExtraWorkspaces]
+            ++ [((winMask, key), windows $ W.greedyView ws) | (key, ws) <- extraWorkspacesBindings]
             ++ [ ((winMask .|. shiftMask, key), windows $ W.shift ws)
-               | (key, ws) <- myExtraWorkspaces
+               | (key, ws) <- extraWorkspacesBindings
                ]
 
-myExtraWorkspaces :: [(KeySym, String)]
-myExtraWorkspaces = [(xK_0, "[0]")]
+-- prompt
+data SwitchLayout c where
+    SwitchLayout :: (Eq c, Num c, Show c) => c -> SwitchLayout c
+instance XPrompt (SwitchLayout c) where
+    showXPrompt (SwitchLayout c) =
+        "Layout [" ++ show c ++ " screen" ++ suf c ++ "]: "
+        where
+        suf 1 = ""
+        suf _ = "s"
+    commandToComplete _ c = c
+    nextCompletion _ = getNextCompletion
+
+screenLayoutPrompt :: X ()
+screenLayoutPrompt = do
+    c <- screenNum
+    let t = SwitchLayout c
+    mkXPrompt t conf compl action
+  where
+    conf = promptConf
+    layouts = [horizontal, vertical, single]
+    horizontal = "horizontal"
+    vertical = "vertical"
+    single = "single"
+    action layout =
+        spawn $ setupDualMonitors ++ " --layout " ++ [head layout]
+    compl s =
+        return $ filter (searchPredicate conf s) layouts
+
+promptConf :: XPConfig
+promptConf =
+    def
+        { font = myFont
+        , autoComplete = Just 0
+        , bgColor = "#000000"
+        , fgColor = "#f5ff6e"
+        , borderColor = "#2b2b2b"
+        , position = Top
+        , height = 30
+        }
+
+extraWorkspaces :: [String]
+extraWorkspaces = ["[0]"]
+
+extraWorkspacesBindings :: [(KeySym, String)]
+extraWorkspacesBindings = [xK_0] `zip` extraWorkspaces
 
 myWorkspaces :: [String]
 myWorkspaces =
     ["DEV [1]", "WWW [2]", "[3]", "[4]", "[5]", "[6]", "[7]", "[8]", "IM [9]"]
-        ++ map snd myExtraWorkspaces
+        ++ extraWorkspaces
 
 myWorkspaceIndices :: M.Map String Integer
 myWorkspaceIndices = M.fromList $ zip myWorkspaces [1 ..]
@@ -400,15 +489,15 @@ dbusOutput dbus str = do
     interfaceName = D.interfaceName_ "org.xmonad.Log"
     memberName = D.memberName_ "Update"
 
-mySpacing' ::
+spacing ::
     Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
+spacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 myFontSize :: Show a => a -> [Char]
-myFontSize s = "xft:TerminessTTF Nerd Font Mono-" ++ show s ++ ":style=bold"
+myFontSize s = "xft:Iosevka Nerd Font Mono-" ++ show s ++ ":style=term"
 
 myFont :: [Char]
-myFont = myFontSize (12 :: Integer)
+myFont = myFontSize (14 :: Integer)
 
 baseTheme :: Theme
 baseTheme =
@@ -437,7 +526,7 @@ tabTheme =
 myLayoutHook =
     avoidStruts $ refocusLastLayoutHook $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
   where
-    myDefaultLayout = mySpacing' 4 (noBorders tiled) ||| noBorders tabs
+    myDefaultLayout = spacing 4 (noBorders tiled) ||| noBorders tabs
       where
         tiled = ResizableTall nmaster delta ratio []
         nmaster = 1
@@ -477,6 +566,7 @@ screensaver = "xscreensaver-command -lock"
 setWallpaper = "~/scripts/set_wallpaper.sh"
 setupKeyboard = "~/scripts/setup_keyboard.sh"
 setupMonitor = "~/scripts/setup_monitor.sh"
+setupDualMonitors = "~/scripts/setup_multimonitors.sh"
 spotifyQt = "spotify-qt"
 suspend = "systemctl suspend"
 switchLayout :: LayoutT -> String
