@@ -306,6 +306,8 @@ myManageHook =
         <+> composeAll
             [ (className =? "firefox" <&&> resource =? "Dialog") --> centerWin
             , (className =? "Pavucontrol") --> centerWin
+            , (className =? "flameshot") --> centerWin
+            , (title =? "webcam") --> webCam
             , (title =? "Telegram") --> doShift (myWorkspaces !! 8)
             , isDialog --> doF W.swapUp
             ]
@@ -333,6 +335,9 @@ dynamicLogWithPPUTF8 pp =
 
 centerWin :: XMonad.Core.ManageHook
 centerWin = customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
+
+webCam :: XMonad.Core.ManageHook
+webCam = customFloating $ W.RationalRect (3 / 4) (3 / 4 - 1 / 9) (1 / 4) (1 / 4)
 
 centerWinBig :: XMonad.Core.ManageHook
 centerWinBig = customFloating $ W.RationalRect (1 / 16) (1 / 16) (7 / 8) (7 / 8)
@@ -374,6 +379,7 @@ myKKeys XConfig{modMask = winMask} =
         , ((winMask, xK_g), spawn gotoWindow)
         , ((winMask, xK_b), windowPrompt promptConf Bring allWindows)
         , ((winMask, xK_x), screenLayoutPrompt)
+        , ((winMask, xK_p), spawn passPrompt)
         , ((winMask .|. shiftMask, xK_m), spawn setupKeyboard <+> spawn setupMonitor <+> spawn setWallpaper)
         , ((winMask, xK_Left), sendMessage Shrink)
         , ((winMask, xK_Up), sendMessage MirrorExpand)
@@ -386,14 +392,8 @@ myKKeys XConfig{modMask = winMask} =
         , ((0, xF86XK_MonBrightnessDown), spawn brightnessDown)
         , ((winMask, xK_a), sequence_ $ [windows $ copy i | i <- myWorkspaces \\ extraWorkspaces])
         , ((winMask .|. shiftMask, xK_a), killAllOtherCopies)
-        , ((winMask, xK_Down), nextWS)
-        , ((winMask, xK_Up), prevWS)
-        , ((winMask .|. shiftMask, xK_Down), shiftToNext >> nextWS)
-        , ((winMask .|. shiftMask, xK_Up), shiftToPrev >> prevWS)
-        , ((winMask, xK_Right), nextScreen)
-        , ((winMask, xK_Left), prevScreen)
-        , ((winMask .|. shiftMask, xK_Right), shiftNextScreen)
-        , ((winMask .|. shiftMask, xK_Left), shiftPrevScreen)
+        , ((winMask, xK_n), nextScreen)
+        , ((winMask .|. shiftMask, xK_n), shiftNextScreen)
         , ((winMask, xK_z), toggleWS)
         ]
             ++ [((winMask, key), windows $ W.greedyView ws) | (key, ws) <- extraWorkspacesBindings]
@@ -553,11 +553,12 @@ clipboardManager = "parcellite"
 compositor = "picom"
 dmenu = "dmenu_run"
 dmenuApp = "rofi -show combi -combi-modi 'window,run,ssh,drun' -modi combi -show-icons"
-gotoWindow = "rofi run -show"
+gotoWindow = "rofi -modi window -show window -show-icons"
 lockScreen = "~/scripts/lockscreen.sh"
 lowerVolume = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
 myBar = "~/.config/polybar/launch.sh"
 myTerminal = "alacritty"
+passPrompt = "rofi-pass"
 raiseVolume = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
 screenZoomer = "boomer"
 screenshoter = "flameshot"
