@@ -1,0 +1,2 @@
+#/bin/bash
+NVIM_LISTEN_ADDRESS=$(mktemp -u) bash -c "&>/dev/null nvr --remote-send '<esc><c-w>w'; &>/dev/null nvr -s $@" "$@"

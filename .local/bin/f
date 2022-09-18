@@ -1,0 +1,7 @@
+#!/bin/bash
+f=$(mktemp -u)
+tex2svg "$*" > "$f".svg && \
+    svgexport "$f".svg "$f".png 32x >/dev/null && \
+    xclip -selection clipboard -t image/png -i "$f".png
+rm -f "$f".svg
+rm -f "$f".png
