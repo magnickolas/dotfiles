@@ -18,6 +18,8 @@ M.set_colorscheme = function()
     if not vim.g.neovide then
         vim.cmd [[:hi! Normal ctermbg=NONE guibg=NONE<CR>]]
     end
+    vim.cmd [[highlight CursorLine cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE]]
+    vim.o.cursorline = true
 end
 
 M.setup_neovide = function()
