@@ -126,7 +126,6 @@ source "$HOME/.zinit/bin/zinit.zsh"
 
 zinit wait lucid for \
     wfxr/forgit \
-    _local/forarc \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
         magnickolas-clones/fast-syntax-highlighting \
     blockf \

@@ -18,6 +18,7 @@ M.set_colorscheme = function()
     if not vim.g.neovide then
         vim.cmd [[:hi! Normal ctermbg=NONE guibg=NONE<CR>]]
     end
+    vim.cmd [[highlight CursorLineNr cterm=NONE ctermbg=15 ctermfg=8 gui=NONE guibg=NONE guifg=NONE]]
     vim.cmd [[highlight CursorLine cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE]]
     vim.o.cursorline = true
 end
@@ -39,7 +40,7 @@ M.setup_neovide = function()
     end
 
     ResetGuiFont = function()
-        GUI_FONT_SIZE = 18
+        GUI_FONT_SIZE = 17
         GUI_FONT_FACE = "Iosevka Nerd Font Mono"
         RefreshGuiFont()
     end
