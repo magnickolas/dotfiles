@@ -1,5 +1,6 @@
 vim.g.gutentags_cache_dir = vim.fn.expand('~/.cache/vim/ctags/')
 vim.g.gutentags_generate_on_write = 1
+vim.g.gutentags_trace = 0
 vim.g.gutentags_ctags_extra_args = {
    '--tag-relative=yes',
    '--fields=+ailmnS'

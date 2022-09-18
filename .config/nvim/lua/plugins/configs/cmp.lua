@@ -9,8 +9,16 @@ cmp.setup({
         end,
     },
     mapping = {
-        ['<C-p>']     = cmp.mapping.select_prev_item(),
-        ['<C-n>']     = cmp.mapping.select_next_item(),
+        -- ['<C-p>']     = cmp.mapping.select_prev_item(),
+        -- ['<C-n>']     = cmp.mapping.select_next_item(),
+        ["<C-n>"] = function(fallback)
+            if cmp.visible() then
+                return cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert }(fallback)
+            else
+                return cmp.mapping.complete { reason = cmp.ContextReason.Auto }(fallback)
+            end
+        end,
+        ["<C-p>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert },
         ['<C-d>']     = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
         ['<C-f>']     = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
         ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -19,19 +27,29 @@ cmp.setup({
             i         = cmp.mapping.abort(),
             c         = cmp.mapping.close(),
         }),
-        ['<CR>']      = cmp.mapping.confirm({ select = false }),
-        ['<Tab>']     = cmp.mapping(function(fallback)
-            if require('luasnip').expand_or_jumpable() then
-                vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
-            elseif cmp.visible() then
-                cmp.select_next_item()
+        --['<CR>']      = cmp.mapping.confirm({ select = true }),
+        ["<CR>"] = function(fallback)
+            if cmp.visible() then
+                return cmp.mapping.confirm {
+                    behavior = cmp.ConfirmBehavior.Insert,
+                    select = true,
+                }(fallback)
             else
-                fallback()
+                return fallback()
             end
-        end, {
-            'i',
-            's',
-        }),
+        end,
+        -- ['<Tab>']     = cmp.mapping(function(fallback)
+        --     if require('luasnip').expand_or_jumpable() then
+        --         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
+        --     elseif cmp.visible() then
+        --         cmp.select_next_item()
+        --     else
+        --         fallback()
+        --     end
+        -- end, {
+        --     'i',
+        --     's',
+        -- }),
         ['<S-Tab>']   = cmp.mapping(function(fallback)
             if require('luasnip').jumpable(-1) then
                 vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
@@ -46,9 +64,41 @@ cmp.setup({
         }),
     },
     sources = {
-        { name = 'luasnip' },
-        { name = 'nvim_lsp' },
-        { name = 'nvim_lua' },
+        { name = "path", priority_weight = 110 },
+        { name = "orgmode", priority_weight = 110 },
+        { name = "nvim_lsp", max_item_count = 20, priority_weight = 100 },
+        { name = "nvim_lua", priority_weight = 90 },
+        { name = "luasnip", priority_weight = 80 },
+        { name = "buffer", max_item_count = 5, priority_weight = 70 },
+        {
+            name = "rg",
+            keyword_length = 5,
+            max_item_count = 5,
+            priority_weight = 60,
+            option = {
+                additional_arguments = "--smart-case --hidden",
+            },
+        },
+        { name = "tmux", max_item_count = 5, option = { all_panes = false }, priority_weight = 50 },
+        {
+            name = "look",
+            keyword_length = 5,
+            max_item_count = 5,
+            option = { convert_case = true, loud = true },
+            priority_weight = 40,
+        },
+    },
+    window = {
+        documentation = {
+            border = vim.g.floating_window_border_dark,
+        },
+        completion = {
+            border = vim.g.floating_window_border_dark,
+        },
+    },
+
+    experimental = {
+        ghost_text = true,
     },
 })
 

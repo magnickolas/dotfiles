@@ -58,7 +58,7 @@ require('packer').startup(function()
         'simrat39/rust-tools.nvim',
         config = function()
             require('plugins.configs.rust-tools')
-        end
+        end,
     }
     use {
         'terrortylor/nvim-comment',
@@ -73,12 +73,6 @@ require('packer').startup(function()
         end
     }
     use 'lambdalisue/suda.vim'
-    use {
-        'ojroques/vim-oscyank',
-        config = function()
-            require('plugins.configs.oscyank')
-        end
-    }
     use {
         'jenterkin/vim-autosource',
         config = function()
@@ -102,10 +96,10 @@ require('packer').startup(function()
     use 'hrsh7th/cmp-nvim-lua'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-cmdline'
     use 'hrsh7th/cmp-path'
     use 'AlexeySachkov/llvm-vim'
     use 'dyng/ctrlsf.vim'
-    use 'tpope/vim-vinegar'
     use {
         'alvarosevilla95/luatab.nvim',
         requires = 'kyazdani42/nvim-web-devicons',
@@ -123,33 +117,80 @@ require('packer').startup(function()
     use 'chriskempson/base16-vim'
     use 'github/copilot.vim'
     use {
-        'kyazdani42/nvim-tree.lua',
-        requires = {
-            'kyazdani42/nvim-web-devicons',
-        },
-        config = function()
-            require('plugins.configs.nvim-tree')
-        end,
-    }
-    use {
         'windwp/nvim-autopairs',
         config = function()
             require('plugins.configs.autopairs')
         end,
     }
     use 'alfredodeza/pytest.vim'
-    use 'skywind3000/asynctasks.vim'
-    use {
-        'skywind3000/asyncrun.vim',
-        config = function()
-            require('plugins.configs.asyncrun')
-        end,
-    }
     use {
         'saecki/crates.nvim',
         requires = 'nvim-lua/plenary.nvim',
         config = function()
             require('crates').setup()
+        end,
+    }
+    -- use {
+    --     '~/arcadia/junk/magnickolas/arcblamer.nvim',
+    --     config = function()
+    --         vim.g.arcblamer_relative_time = 1
+    --         vim.g.arcblamer_template = '<commit-short> <author> <author-time> • <summary>'
+    --     end,
+    -- }
+    use 'sakhnik/nvim-gdb'
+    use 'nvim-telescope/telescope-file-browser.nvim'
+    use 'folke/tokyonight.nvim'
+    use {'kevinhwang91/nvim-bqf', ft='qf'}
+    use {'junegunn/fzf', run = function() vim.fn['fzf#install']() end }
+    use 'junegunn/fzf.vim'
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate',
+        config = function()
+            require "nvim-treesitter.configs".setup {
+              query_linter = {
+                enable = true,
+                use_virtual_text = true,
+                lint_events = {"BufWrite", "CursorHold"},
+              },
+            }
+        end,
+    }
+    use {
+        'nvim-treesitter/playground',
+        requires='nvim-treesitter/nvim-treesitter',
+        run = ':TSInstall query',
+    }
+    use 'tpope/vim-dispatch'
+    use {
+        'folke/which-key.nvim',
+        config = function()
+            require("which-key").setup {}
+        end
+    }
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
+    use {
+        'mfussenegger/nvim-dap',
+        config = function()
+            require('plugins.configs.dap')
+        end,
+    }
+    use {
+        'rcarriga/nvim-dap-ui',
+        requires = {'mfussenegger/nvim-dap'},
+        config = function()
+            require('dapui').setup()
+        end,
+    }
+    use {
+        'theHamsta/nvim-dap-virtual-text',
+        config = function()
+            require('nvim-dap-virtual-text').setup()
         end,
     }
 end)
