@@ -1,5 +1,8 @@
 {-# LANGUAGE GADTs #-}
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
+
 import qualified Codec.Binary.UTF8.String as UTF8
+import Config
 import Control.Monad (when)
 import qualified DBus as D
 import qualified DBus.Client as D
@@ -118,17 +121,7 @@ import XMonad.Layout (
  )
 import XMonad.Layout.Decoration (
     Theme (
-        activeBorderColor,
-        activeColor,
-        activeTextColor,
-        decoHeight,
-        fontName,
-        inactiveBorderColor,
-        inactiveColor,
-        inactiveTextColor,
-        urgentBorderColor,
-        urgentColor,
-        urgentTextColor
+        decoHeight
     ),
     fi,
     shrinkText,
@@ -164,10 +157,8 @@ import XMonad.ManageHook (
     (<&&>),
  )
 import XMonad.Prompt (
-    XPConfig (bgColor, borderColor, fgColor, height, position, searchPredicate),
+    XPConfig (searchPredicate),
     XPrompt (commandToComplete, nextCompletion, showXPrompt),
-    autoComplete,
-    font,
     getNextCompletion,
     mkXPrompt,
  )
@@ -206,21 +197,21 @@ runXMonad dbus =
                 ewmhFullscreen $
                     ewmh
                         desktopConfig
-                            { terminal = myTerminal
+                            { terminal = myTerminal cfg
                             , modMask = mod4Mask
                             , rootMask = rootMask def .|. pointerMotionMask
                             , borderWidth = 0
                             , focusFollowsMouse = True
                             , startupHook =
                                 do
-                                    spawnOnce clipboardManager
-                                    spawnOnce screenshoter
-                                    spawnOnce compositor
-                                    spawnOnce udiskie
-                                    spawnOnce screensaverBg
-                                    spawn setupKeyboard
-                                    spawn setWallpaper
-                                    spawn myBar
+                                    spawnOnce $ clipboardManager cfg
+                                    spawnOnce $ screenshoter cfg
+                                    spawnOnce $ compositor cfg
+                                    spawnOnce $ udiskie cfg
+                                    spawnOnce $ screensaverBg cfg
+                                    spawn $ setupKeyboard cfg
+                                    spawn $ setWallpaper cfg
+                                    spawn $ myBar cfg
                             , handleEventHook =
                                 handleEventHook def
                                     <+> multiScreenFocusHook
@@ -280,8 +271,8 @@ screenNum = do
 myRandrChangeHook :: X ()
 myRandrChangeHook = do
     screens <- screenNum
-    case screens of 
-        1 -> spawn setupDualMonitors
+    case screens of
+        1 -> spawn $ setupDualMonitors cfg
         _ -> screenLayoutPrompt
 
 rescreenCfg :: RescreenConfig
@@ -317,15 +308,15 @@ myManageHook =
 myScratchpads :: [NamedScratchpad]
 myScratchpads =
     [ NS
-        scratchpadTerminalTitle
-        ( myTerminal
+        (scratchpadTerminalTitle cfg)
+        ( myTerminal cfg
             ++ " -t "
-            ++ scratchpadTerminalTitle
-            ++ scratchpadTerminalAdditionalOptions
+            ++ scratchpadTerminalTitle cfg
+            ++ scratchpadTerminalAdditionalOptions cfg
         )
-        (title =? scratchpadTerminalTitle)
+        (title =? scratchpadTerminalTitle cfg)
         centerWinBig
-    , NS spotifyQt spotifyQt (className =? spotifyQt) centerWin
+    , NS (spotifyQt cfg) (spotifyQt cfg) (className =? spotifyQt cfg) centerWin
     ]
 
 dynamicLogWithPPUTF8 :: PP -> X ()
@@ -342,28 +333,22 @@ webCam = customFloating $ W.RationalRect (3 / 4) (3 / 4 - 1 / 9) (1 / 4) (1 / 4)
 centerWinBig :: XMonad.Core.ManageHook
 centerWinBig = customFloating $ W.RationalRect (1 / 16) (1 / 16) (7 / 8) (7 / 8)
 
-scratchpadTerminalTitle :: String
-scratchpadTerminalTitle = "scratchpad_terminal"
-
-scratchpadTerminalAdditionalOptions :: String
-scratchpadTerminalAdditionalOptions = " -o window.opacity=1.0 "
-
 toggleSP :: String -> X ()
 toggleSP = namedScratchpadAction myScratchpads
 
 myKKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKKeys XConfig{modMask = winMask} =
     M.fromList $
-        [ ((winMask, xK_Return), spawn myTerminal)
+        [ ((winMask, xK_Return), spawn $ myTerminal cfg)
         , ((winMask .|. shiftMask, xK_Return), windows W.swapMaster)
-        , ((winMask, xK_d), spawn dmenu)
-        , ((winMask, xK_i), spawn dmenuApp)
-        , ((controlMask .|. shiftMask, xK_4), spawn takeScreenshot)
-        , ((winMask .|. shiftMask, xK_s), spawn takeScreenshot)
-        , ((controlMask .|. shiftMask, xK_3), spawn screenZoomer)
+        , ((winMask, xK_d), spawn $ dmenu cfg)
+        , ((winMask, xK_i), spawn $ dmenuApp cfg)
+        , ((controlMask .|. shiftMask, xK_4), spawn $ takeScreenshot cfg)
+        , ((winMask .|. shiftMask, xK_s), spawn $ takeScreenshot cfg)
+        , ((controlMask .|. shiftMask, xK_3), spawn $ screenZoomer cfg)
         , ((winMask .|. shiftMask, xK_t), withFocused toggleBorder)
-        , ((winMask .|. shiftMask, xK_u), spawn suspend)
-        , ((winMask .|. shiftMask, xK_x), spawn (switchLayout US) <+> spawn screensaver)
+        , ((winMask .|. shiftMask, xK_u), spawn $ suspend cfg)
+        , ((winMask .|. shiftMask, xK_x), spawn (switchLayout US) <+> spawn (screensaver cfg))
         , ((winMask .|. shiftMask, xK_q), kill)
         ,
             ( (mod1Mask .|. shiftMask, xK_e)
@@ -373,23 +358,23 @@ myKKeys XConfig{modMask = winMask} =
             ( (winMask, xK_f)
             , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts
             )
-        , ((winMask, xK_o), safeSpawn browser [])
-        , ((winMask, xK_minus), toggleSP scratchpadTerminalTitle)
-        , ((winMask, xK_equal), toggleSP spotifyQt)
-        , ((winMask, xK_g), spawn gotoWindow)
+        , ((winMask, xK_o), safeSpawn (browser cfg) [])
+        , ((winMask, xK_minus), toggleSP $ scratchpadTerminalTitle cfg)
+        , ((winMask, xK_equal), toggleSP $ spotifyQt cfg)
+        , ((winMask, xK_g), spawn $ gotoWindow cfg)
         , ((winMask, xK_b), windowPrompt promptConf Bring allWindows)
-        , ((winMask, xK_x), screenLayoutPrompt)
-        , ((winMask, xK_p), spawn passPrompt)
-        , ((winMask .|. shiftMask, xK_m), spawn setupKeyboard <+> spawn setupMonitor <+> spawn setWallpaper)
+        , ((winMask, xK_x), spawn (switchLayout US) <+> screenLayoutPrompt)
+        , ((winMask, xK_p), spawn $ passPrompt cfg)
+        , ((winMask .|. shiftMask, xK_m), spawn (setupKeyboard cfg) <+> spawn (setupMonitor cfg) <+> spawn (setWallpaper cfg))
         , ((winMask, xK_Left), sendMessage Shrink)
         , ((winMask, xK_Up), sendMessage MirrorExpand)
         , ((winMask, xK_Right), sendMessage Expand)
         , ((winMask, xK_Down), sendMessage MirrorShrink)
-        , ((0, xF86XK_AudioMute), spawn audioToggle)
-        , ((0, xF86XK_AudioRaiseVolume), spawn raiseVolume)
-        , ((0, xF86XK_AudioLowerVolume), spawn lowerVolume)
-        , ((0, xF86XK_MonBrightnessUp), spawn brightnessUp)
-        , ((0, xF86XK_MonBrightnessDown), spawn brightnessDown)
+        , ((0, xF86XK_AudioMute), spawn $ audioToggle cfg)
+        , ((0, xF86XK_AudioRaiseVolume), spawn $ raiseVolume cfg)
+        , ((0, xF86XK_AudioLowerVolume), spawn $ lowerVolume cfg)
+        , ((0, xF86XK_MonBrightnessUp), spawn $ brightnessUp cfg)
+        , ((0, xF86XK_MonBrightnessDown), spawn $ brightnessDown cfg)
         , ((winMask, xK_a), sequence_ $ [windows $ copy i | i <- myWorkspaces \\ extraWorkspaces])
         , ((winMask .|. shiftMask, xK_a), killAllOtherCopies)
         , ((winMask, xK_n), nextScreen)
@@ -407,7 +392,7 @@ data SwitchLayout c where
 instance XPrompt (SwitchLayout c) where
     showXPrompt (SwitchLayout c) =
         "Layout [" ++ show c ++ " screen" ++ suf c ++ "]: "
-        where
+      where
         suf 1 = ""
         suf _ = "s"
     commandToComplete _ c = c
@@ -425,21 +410,9 @@ screenLayoutPrompt = do
     vertical = "vertical"
     single = "single"
     action layout =
-        spawn $ setupDualMonitors ++ " --layout " ++ [head layout]
+        spawn $ setupDualMonitors cfg ++ " --layout " ++ [head layout]
     compl s =
         return $ filter (searchPredicate conf s) layouts
-
-promptConf :: XPConfig
-promptConf =
-    def
-        { font = myFont
-        , autoComplete = Just 0
-        , bgColor = "#000000"
-        , fgColor = "#f5ff6e"
-        , borderColor = "#2b2b2b"
-        , position = Top
-        , height = 30
-        }
 
 extraWorkspaces :: [String]
 extraWorkspaces = ["[0]"]
@@ -467,9 +440,9 @@ myLogHook :: D.Client -> PP
 myLogHook dbus =
     def
         { ppOutput = dbusOutput dbus
-        , ppCurrent = wrap ("%{B" ++ bg2 ++ "} ") " %{B-}"
-        , ppVisible = wrap ("%{B" ++ bg1 ++ "} ") " %{B-}" . clickable
-        , ppUrgent = wrap ("%{F" ++ red ++ "} ") " %{F-}" . clickable
+        , ppCurrent = wrap ("%{B" ++ bg2 colors ++ "} ") " %{B-}"
+        , ppVisible = wrap ("%{B" ++ bg1 colors ++ "} ") " %{B-}" . clickable
+        , ppUrgent = wrap ("%{F" ++ red colors ++ "} ") " %{F-}" . clickable
         , ppHidden = wrap " " " " . clickable
         , ppWsSep = ""
         , ppSep = " | "
@@ -493,36 +466,6 @@ spacing ::
     Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 spacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
-myFontSize :: Show a => a -> [Char]
-myFontSize s = "xft:Iosevka Nerd Font Mono-" ++ show s ++ ":style=term"
-
-myFont :: [Char]
-myFont = myFontSize (14 :: Integer)
-
-baseTheme :: Theme
-baseTheme =
-    def
-        { activeColor = base03
-        , activeBorderColor = base03
-        , activeTextColor = base01
-        , inactiveBorderColor = base02
-        , inactiveColor = base02
-        , inactiveTextColor = base01
-        , urgentColor = yellow
-        , urgentBorderColor = yellow
-        , urgentTextColor = base02
-        , fontName = myFont
-        , decoHeight = 20
-        }
-
-tabTheme :: Theme
-tabTheme =
-    baseTheme
-        { activeColor = base00
-        , activeBorderColor = base03
-        , activeTextColor = "#ffffff"
-        }
-
 myLayoutHook =
     avoidStruts $ refocusLastLayoutHook $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
   where
@@ -545,53 +488,5 @@ instance Show LayoutT where
         RU -> "ru"
 
 -- Commands
-audioToggle = "pactl set-sink-mute 0 toggle"
-brightnessDown = "~/scripts/change_brightness.sh dec"
-brightnessUp = "~/scripts/change_brightness.sh inc"
-browser = "firefox"
-clipboardManager = "parcellite"
-compositor = "picom"
-dmenu = "dmenu_run"
-dmenuApp = "rofi -show combi -combi-modi 'window,run,ssh,drun' -modi combi -show-icons"
-gotoWindow = "rofi -modi window -show window -show-icons"
-lockScreen = "~/scripts/lockscreen.sh"
-lowerVolume = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
-myBar = "~/.config/polybar/launch.sh"
-myTerminal = "alacritty"
-passPrompt = "rofi-pass"
-raiseVolume = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
-screenZoomer = "boomer"
-screenshoter = "flameshot"
-screensaverBg = "xscreensaver -no-splash"
-screensaver = "xscreensaver-command -lock"
-setWallpaper = "~/scripts/set_wallpaper.sh"
-setupKeyboard = "~/scripts/setup_keyboard.sh"
-setupMonitor = "~/scripts/setup_monitor.sh"
-setupDualMonitors = "~/scripts/setup_multimonitors.sh"
-spotifyQt = "spotify-qt"
-suspend = "systemctl suspend"
 switchLayout :: LayoutT -> String
 switchLayout = ("xkb-switch -s " ++) . show
-takeScreenshot = screenshoter ++ " gui"
-udiskie = "udiskie"
-
--- Colors
-base00 = "#657b83"
-base01 = "#586e75"
-base02 = "#073642"
-base03 = "#002b36"
-fg = "#ebdbb2"
-bg = "#282828"
-gray = "#a89984"
-bg1 = "#3c3836"
-bg2 = "#504945"
-bg3 = "#665c54"
-bg4 = "#7c6f64"
-green = "#b8bb26"
-darkgreen = "#98971a"
-red = "#fb4934"
-darkred = "#cc241d"
-yellow = "#fabd2f"
-blue = "#83a598"
-purple = "#d3869b"
-aqua = "#8ec07c"

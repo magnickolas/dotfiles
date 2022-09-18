@@ -1,0 +1,7 @@
+cradle:
+  stack:
+    - path: "."
+    - path: "xmonad-contrib-git/./"
+      component: "xmonad-contrib:lib"
+    - path: "xmonad-git/src"
+      component: "xmonad:lib"
