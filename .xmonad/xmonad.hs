@@ -7,7 +7,7 @@ import Control.Monad (when)
 import qualified DBus as D
 import qualified DBus.Client as D
 import Data.Foldable (find)
-import Data.List ((\\))
+import Data.List ((\\), intersperse)
 import qualified Data.Map as M
 import Data.Maybe (fromJust)
 import Data.Monoid (All (All))
@@ -156,6 +156,7 @@ import XMonad.ManageHook (
     (-->),
     (<&&>),
  )
+import XMonad.Prompt.Pass (passOTPPrompt)
 import XMonad.Prompt (
     XPConfig (searchPredicate),
     XPrompt (commandToComplete, nextCompletion, showXPrompt),
@@ -266,7 +267,7 @@ screenNum :: X CInt
 screenNum = do
     xrandrOutput <- runProcessWithInput "xrandr" [] []
     grepOutput <- runProcessWithInput "grep" [" connected"] xrandrOutput
-    read <$> runProcessWithInput "wc" ["-l"] grepOutput
+    (return . fromIntegral . length . lines) grepOutput
 
 myRandrChangeHook :: X ()
 myRandrChangeHook = do
@@ -365,6 +366,7 @@ myKKeys XConfig{modMask = winMask} =
         , ((winMask, xK_b), windowPrompt promptConf Bring allWindows)
         , ((winMask, xK_x), spawn (switchLayout US) <+> screenLayoutPrompt)
         , ((winMask, xK_p), spawn $ passPrompt cfg)
+        , ((winMask .|. controlMask, xK_p), passOTPPrompt promptConf)
         , ((winMask .|. shiftMask, xK_m), spawn (setupKeyboard cfg) <+> spawn (setupMonitor cfg) <+> spawn (setWallpaper cfg))
         , ((winMask, xK_Left), sendMessage Shrink)
         , ((winMask, xK_Up), sendMessage MirrorExpand)
@@ -385,7 +387,6 @@ myKKeys XConfig{modMask = winMask} =
             ++ [ ((winMask .|. shiftMask, key), windows $ W.shift ws)
                | (key, ws) <- extraWorkspacesBindings
                ]
-
 -- prompt
 data SwitchLayout c where
     SwitchLayout :: (Eq c, Num c, Show c) => c -> SwitchLayout c

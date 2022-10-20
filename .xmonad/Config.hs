@@ -20,7 +20,7 @@ cfg =
         , myBar = "~/.config/polybar/launch.sh"
         , myFont = "xft:Iosevka Nerd Font Mono-14:style=term"
         , myTerminal = "alacritty"
-        , passPrompt = "rofi-pass"
+        , passPrompt = "passmenu"
         , raiseVolume = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
         , scratchpadTerminalAdditionalOptions = " -o window.opacity=1.0 "
         , scratchpadTerminalTitle = "scratchpad_terminal"
