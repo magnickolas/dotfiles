@@ -18,7 +18,7 @@ dap.configurations.python = {
 dap.adapters.cppdbg = {
   id = 'cppdbg',
   type = 'executable',
-  command = vim.fn.expand('~') .. '/.config/nvim/dap/cpp/OpenDebugAD7',
+  command = vim.env.HOME .. '/.config/nvim/dap/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
 }
 dap.configurations.cpp = {
   {
@@ -66,7 +66,7 @@ dap.configurations.c = dap.configurations.cpp
 dap.adapters.rustdbg = {
   id = 'rustdbg',
   type = 'executable',
-  command = vim.fn.expand('~') .. '/.config/nvim/dap/rust/codelldb',
+  command = vim.env.HOME .. '/.config/nvim/dap/codelldb/extension/adapter/codelldb',
 }
 dap.configurations.rust = {
   {

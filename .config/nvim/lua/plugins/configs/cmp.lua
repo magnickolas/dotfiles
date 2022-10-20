@@ -27,17 +27,17 @@ cmp.setup({
             i         = cmp.mapping.abort(),
             c         = cmp.mapping.close(),
         }),
-        --['<CR>']      = cmp.mapping.confirm({ select = true }),
-        ["<CR>"] = function(fallback)
-            if cmp.visible() then
-                return cmp.mapping.confirm {
-                    behavior = cmp.ConfirmBehavior.Insert,
-                    select = true,
-                }(fallback)
-            else
-                return fallback()
-            end
-        end,
+        ['<CR>']      = cmp.mapping.confirm({ select = false }),
+        -- ["<CR>"] = function(fallback)
+        --     if cmp.visible() then
+        --         return cmp.mapping.confirm {
+        --             behavior = cmp.ConfirmBehavior.Insert,
+        --             select = true,
+        --         }(fallback)
+        --     else
+        --         return fallback()
+        --     end
+        -- end,
         -- ['<Tab>']     = cmp.mapping(function(fallback)
         --     if require('luasnip').expand_or_jumpable() then
         --         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')

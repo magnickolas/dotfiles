@@ -8,7 +8,7 @@ local lspconfig = require('lspconfig')
 local has_capabilities, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
 local capabilities = nil
 if has_capabilities then
-    capabilities = cmp_nvim_lsp.update_capabilities(
+    capabilities = cmp_nvim_lsp.default_capabilities(
         vim.lsp.protocol.make_client_capabilities()
     )
 end
@@ -33,7 +33,7 @@ for _, server in ipairs(servers) do
         elseif server.name == "rust_analyzer" then
             config.setup {
                 settings = { },
-                cmd = { "ra-multiplex" },
+                --cmd = { "ra-multiplex" },
                 capabilities = capabilities,
             }
         elseif server.name == "hls" then

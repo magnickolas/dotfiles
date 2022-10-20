@@ -1,8 +1,8 @@
 local rt = require("rust-tools")
 -- Update this path
-local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.7.4/'
-local codelldb_path = extension_path .. 'adapter/codelldb'
-local liblldb_path = extension_path .. 'lldb/lib/liblldb.so'
+local extension_path = vim.env.HOME .. '/.config/nvim/dap/codelldb/extension'
+local codelldb_path = extension_path .. '/adapter/codelldb'
+local liblldb_path = extension_path .. '/lldb/lib/liblldb.so'
 
 rt.setup {
     tools = {

@@ -130,13 +130,6 @@ require('packer').startup(function()
             require('crates').setup()
         end,
     }
-    -- use {
-    --     '~/arcadia/junk/magnickolas/arcblamer.nvim',
-    --     config = function()
-    --         vim.g.arcblamer_relative_time = 1
-    --         vim.g.arcblamer_template = '<commit-short> <author> <author-time> • <summary>'
-    --     end,
-    -- }
     use 'sakhnik/nvim-gdb'
     use 'nvim-telescope/telescope-file-browser.nvim'
     use 'folke/tokyonight.nvim'

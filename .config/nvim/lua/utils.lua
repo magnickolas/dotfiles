@@ -73,34 +73,37 @@ end
 
 M.configure_editor = function()
     local function paste_keep_cursor_column(above)
-        local col = vim.fn.virtcol(".")
-        vim.cmd(string.format("normal! %s", above and "P" or "p"))
-        if vim.fn.getregtype() == "V" then
-            vim.fn.cursor(".", col)
-        end
+        vim.cmd(
+            "normal! " ..
+            (above and "P" or "p") ..
+            vim.fn.col(".") .. "|"
+        )
     end
 
     vim.keymap.set('n', "p", function() paste_keep_cursor_column(false) end, { noremap = true, silent = true })
     vim.keymap.set('n', "P", function() paste_keep_cursor_column(true) end, { noremap = true, silent = true })
 
-    vim.o.startofline    = false
-    vim.o.tabstop        = 4
-    vim.o.shiftwidth     = 4
-    vim.o.expandtab      = true
-    vim.o.autoindent     = false
-    vim.o.smartindent    = false
-    vim.o.ignorecase     = false
-    vim.o.number         = true
-    vim.o.hidden         = true
-    vim.o.completeopt    = 'menuone,noinsert,noselect'
-    vim.o.showmode       = false
-    vim.o.foldmethod     = 'marker'
-    vim.o.foldlevel      = 0
-    vim.o.autochdir      = false
-    vim.o.splitright     = true
-    vim.o.splitbelow     = true
-    vim.o.updatetime     = 750
-    vim.o.mouse          = 'a'
+    vim.o.title       = true
+    vim.o.startofline = false
+    vim.o.tabstop     = 4
+    vim.o.shiftwidth  = 4
+    vim.o.expandtab   = true
+    vim.o.autoindent  = false
+    vim.o.smartindent = false
+    vim.o.ignorecase  = false
+    vim.o.number      = true
+    vim.o.hidden      = true
+    vim.o.completeopt = 'menuone,noinsert,noselect'
+    vim.o.showmode    = false
+    vim.o.foldmethod  = 'marker'
+    vim.o.foldlevel   = 0
+    vim.o.autochdir   = false
+    vim.o.splitright  = true
+    vim.o.splitbelow  = true
+    vim.o.updatetime  = 750
+    vim.o.mouse       = 'a'
+
+    vim.cmd [[autocmd TermOpen * setlocal nonumber norelativenumber]]
     -- vim.opt.list = true
     -- vim.cmd [[
     --     highlight WhiteSpaceAol guifg=#f7768e
