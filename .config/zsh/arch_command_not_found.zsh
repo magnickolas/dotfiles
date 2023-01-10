@@ -1,0 +1,1 @@
+/home/magnickolas/.config/zsh/arch_command_not_found.zsh

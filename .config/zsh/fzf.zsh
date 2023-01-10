@@ -1,0 +1,1 @@
+/home/magnickolas/.config/zsh/fzf.zsh
