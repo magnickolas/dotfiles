@@ -1,7 +1,0 @@
-repos:
-  - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 2.1.5
-    hooks:
-      - id: shellcheck
-      - id: shfmt
-    
