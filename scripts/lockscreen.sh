@@ -8,10 +8,10 @@ display_resolution=$(xrandr --current | grep "\*" | uniq | awk '{print $1}')
 
 resized_lockscreen_path="${lockscreen_prefix}_${display_resolution}.${lockscreen_ext}"
 
-[[ -f "${resized_lockscreen_path}" ]] ||
-	convert "${wallpaper_path}" -resize "${display_resolution}" -font Liberation-Sans \
-		-pointsize 26 -fill white -gravity center \
-		-annotate +0+110 "Type Password to Unlock" "${lock_path}" \
-		-gravity center -composite "${resized_lockscreen_path}"
+[[ -f "${resized_lockscreen_path}" ]] || \
+    convert "${wallpaper_path}" -resize "${display_resolution}" -font Liberation-Sans \
+        -pointsize 26 -fill white -gravity center \
+        -annotate +0+110 "Type Password to Unlock" "${lock_path}" \
+        -gravity center -composite "${resized_lockscreen_path}"
 
 i3lock -i "${resized_lockscreen_path}"
