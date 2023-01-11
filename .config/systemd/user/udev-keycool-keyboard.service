@@ -1,0 +1,7 @@
+[Unit]
+Description=Keycool keyboard
+
+[Service]
+ExecStart=kmonad %h/.config/kmonad/config_keycool.kbd
+Type=oneshot
+RemainAfterExit=no

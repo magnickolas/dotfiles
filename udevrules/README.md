@@ -1,4 +1,4 @@
 Put inside `/etc/udev/rules.d`, then either reboot or run
 ```console
-udevadm control --reload-rules && udevadm trigger
+sudo udevadm control --reload-rules && sudo udevadm trigger
 ```

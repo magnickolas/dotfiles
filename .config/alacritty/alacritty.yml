@@ -118,12 +118,12 @@ font:
     #   - (Linux) monospace
     #   - (Windows) Consolas
     #family: TerminessTTF Nerd Font Mono 
-    family: Terminess Powerline
+    family: Iosevka Term
     #family: DejaVu Sans Mono for Powerline
     #family: Fira Mono for Powerline
 
     # The `style` can be specified to pick a specific face.
-    style: Bold
+    style: Regular
     #style: Book
 
   # Bold font face
@@ -178,7 +178,7 @@ font:
   #
   # This is a global setting and will require a log out or restart to take
   # effect.
-  use_thin_strokes: true
+  # use_thin_strokes: true
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
@@ -372,7 +372,9 @@ bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
+window:
+  opacity: 0.4
+  dynamic_title: true
 
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
@@ -381,7 +383,6 @@ selection:
   save_to_clipboard: false
 
 # Allow terminal applications to change Alacritty's window title.
-  window.dynamic_title: true
 
 cursor:
   # Cursor style

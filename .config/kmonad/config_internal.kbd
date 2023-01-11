@@ -1,0 +1,109 @@
+(defcfg
+  input  (device-file "/dev/input/by-path/platform-i8042-serio-0-event-kbd")
+  output (uinput-sink
+          "KMonad kbd"
+          "/home/magnickolas/.local/bin/x setup-keyboard"))
+
+
+(defsrc
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12    prnt pause del
+  `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
+  tab   q    w    e    r    t    y    u    i    o    p    [     ]      \          pgup
+  caps  a    s    d    f    g    h    j    k    l    ;    '     ret               pgdn
+  lsft  z    x    c    v    b    n    m    ,    .    /    rsft         up         end
+  lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
+  )
+
+(defalias
+  sym (tap-next bspc (layer-toggle syms))
+  cym (tap-next bspc (layer-toggle colsyms))
+  col (layer-switch colemakdh)
+  bas (layer-switch base))
+
+(defalias
+  sl (sticky-key 300 lsft)
+  sr (sticky-key 300 rsft))
+
+#| ---
+(defalias
+  a (tap-next a lmet))
+   ---  |#
+(defalias
+  a (tap-hold 190 a lctl))
+(defalias
+  r (tap-hold 190 r lalt))
+(defalias
+  s (tap-hold 190 s lsft))
+(defalias
+  t (tap-hold 190 t lmet))
+(defalias
+  n (tap-hold 190 n rmet))
+(defalias
+  e (tap-hold 190 e rsft))
+(defalias
+  i (tap-hold 190 i ralt))
+(defalias
+  o (tap-hold 190 o rctl))
+(defalias
+  g (tap-hold 190 g (layer-toggle nums)))
+(defalias
+  m (tap-hold 190 m (layer-toggle nums)))
+
+
+(deflayer base
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12    prnt pause del
+  `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
+  tab   q    w    e    r    t    y    u    i    o    p    [     ]      \          pgup
+  lmet  a    s    d    f    g    h    j    k    l    ;    '     ret               pgdn
+  lsft  z    x    c    v    b    n    m    ,    .    /    @sr          up         end
+  lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
+  )
+
+(deflayer colemakdh
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12    prnt pause del
+  `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
+  tab   q    w    f    p    d    j    l    u    y    ;    [     ]      \          pgup
+  @cym  @a   @r   @s   @t   @g   @m   @n   @e   @i   @o    '     ret               pgdn
+  @sl   z    x    c    v    b    k    h    ,    .    /    @sr          up         end
+  lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
+  )
+  
+
+(deflayer syms
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
+  @col  _    _    _    _    _    _    _    _    _    _    _     _      _          _
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
+  _     _    _    _    _    _    {    \(   \)   }    _    _     _                 _   
+  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
+  _     _    _         _                   _    _    _          _      _      _
+  )
+
+(deflayer colsyms
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
+  @bas  _    _    _    _    _    _    _    _    _    _    _     _      _          _
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
+  _     _    _    _    _    _    {    \(   \)   }    _    _     _                 _   
+  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
+  _     _    _         _                   _    _    _          _      _      _
+  )
+
+(deflayer nums
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _
+  _     1    2    3    4    5    6    7    8    9    0    _     _      _          _   
+  _     _    _    _    _    _    _    _    _    _    _    _     _                 _   
+  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
+  _     _    _         _                   _    _    _          _      _      _
+  )
+
+#| ---
+(deflayer nums
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _
+  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
+  _     _    _    _    _    _    _    _    _    _    _    _     _                 _   
+  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
+  _     _    _         _                   _    _    _          _      _      _
+  )
+   --- |#
+
