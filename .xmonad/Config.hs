@@ -66,7 +66,7 @@ cfg =
             messenger = 8,
             experiment = 9
           },
-      xmobar = "myxmobar"
+      xmobar = "~/.cabal/bin/myxmobar"
     }
   where
     sClass = "wezterm.scratchpad"
