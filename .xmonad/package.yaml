@@ -1,0 +1,23 @@
+name:                my-xmonad
+version:             0.1.0.0
+github:              "githubuser/my-xmonad"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2022 Author name here"
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+dependencies:
+- base >= 4.7 && < 5
+- xmonad
+- xmonad-contrib
+- dbus
+- containers
+- X11
+- utf8-string
+
+library:
+  source-dirs: .
