@@ -1,36 +1,36 @@
 function pathappend() {
-	for arg in "$@"; do
-		if [[ -d "$arg" ]]; then
-			PATH=${PATH//":$arg:"/:}
-			PATH=${PATH/#"$arg:"/}
-			PATH=${PATH/%":$arg"/}
-			export PATH="${PATH:+"$PATH:"}$arg"
-		fi
-	done
+  for arg in "$@"; do
+    if [[ -d "$arg" ]]; then
+        PATH=${PATH//":$arg:"/:}
+        PATH=${PATH/#"$arg:"/}
+        PATH=${PATH/%":$arg"/}
+        export PATH="${PATH:+"$PATH:"}$arg"
+    fi
+  done
 }
 
 function pathprepend() {
-	for arg in "$@"; do
-		if [[ -d "$arg" ]]; then
-			PATH=${PATH//:"$arg:"/:}
-			PATH=${PATH/#"$arg:"/}
-			PATH=${PATH/%":$arg"/}
-			export PATH="$arg${PATH:+":${PATH}"}"
-		fi
-	done
+  for arg in "$@"; do
+    if [[ -d "$arg" ]]; then
+        PATH=${PATH//:"$arg:"/:}
+        PATH=${PATH/#"$arg:"/}
+        PATH=${PATH/%":$arg"/}
+        export PATH="$arg${PATH:+":${PATH}"}"
+    fi
+  done
 }
 
 pathprepend \
-	"$HOME/.local/bin" \
-	"$HOME/.nimble/bin" \
-	"$HOME/.local/share/junest/bin" \
-	"/usr/local/go/bin" \
-	"$GOPATH/bin" \
-	"$HOME/.cargo/bin" \
-	"$HOME/.local/share/gem/ruby/3.0.0/bin"
+    "$HOME/.local/bin" \
+    "$HOME/.nimble/bin" \
+    "$HOME/.local/share/junest/bin" \
+    "/usr/local/go/bin" \
+    "$GOPATH/bin" \
+    "$HOME/.cargo/bin" \
+    "$HOME/.local/share/gem/ruby/3.0.0/bin"
 
 pathappend \
-	"$HOME/.junest/usr/bin_wrappers"
+    "$HOME/.junest/usr/bin_wrappers"
 
 export PROMPT="%F{cyan}(%F{yellow}%~%f%F{cyan}) "$'\n'"%F{cyan}🎄 %f"
 export EDITOR=nvim

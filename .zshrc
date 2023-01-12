@@ -94,10 +94,6 @@ bindkey '^W' backward-kill-space-word
 
 zstyle ':completion:*' file-sort date
 
-autoload -Uz compinit && compinit
-autoload -Uz bashcompinit && bashcompinit
-complete -C x x
-
 perfdir=/sys/devices/system/cpu/cpufreq
 if [[ -f "${perfdir}"/policy0/energy_performance_preference ]]; then
 	function set_energy_perf_preference() {
@@ -109,7 +105,6 @@ if [[ -f "${perfdir}"/policy0/energy_performance_preference ]]; then
 	}
 fi
 
-_have direnv && eval "$(direnv hook zsh)"
 _source_if "$HOME/.ghcup/env"
 _source_if /home/magnickolas/.nix-profile/etc/profile.d/nix.sh
 
@@ -120,25 +115,40 @@ if [[ -d ${config_dir} ]]; then
 	done
 fi
 
-# unset -f node
-# unset -f yarn
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "installing zinit..."
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "done" || \
+fi
 
-# >>> plugins
-typeset -a plugins
-PLUGS="/usr/share/zsh/plugins"
-plugins=(
-	"${PLUGS}/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
-	"${PLUGS}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-	"${PLUGS}/zsh-fzy/zsh-fzy.plugin.zsh"
-)
-_have git && plugins+=(
-	"${PLUGS}/forgit-git/forgit.plugin.zsh"
-)
-for plugin in "${plugins[@]}"; do
-	_source_if "${plugin}"
-done
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+zinit wait lucid for \
+            atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay; \
+            autoload -Uz bashcompinit && bashcompinit && \
+            complete -C x x" \
+               zdharma-continuum/fast-syntax-highlighting \
+            blockf \
+               zsh-users/zsh-completions \
+            atload"!_zsh_autosuggest_start" \
+               zsh-users/zsh-autosuggestions \
+            atload"bindkey '^]' fzy-proc-widget" \
+            aperezdc/zsh-fzy \
+            Aloxaf/fzf-tab \
+            wfxr/forgit
+
+zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+    pick"direnv" src="zhook.zsh" for \
+        direnv/direnv
+
+# 
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:*' popup-min-size 20 20
 # plugins <<<
-#
-bindkey '^]' fzy-proc-widget
 
 [ ${PERF} = 1 ] && zprof
