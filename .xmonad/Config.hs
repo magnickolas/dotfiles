@@ -26,6 +26,7 @@ cfg =
       font' = "xft:Iosevka Term-14:style=term",
       gotoWindow = "rofi -modi window -show window -show-icons",
       kmonad = "kmonad ~/.config/kmonad/config_internal.kbd",
+      kmonadKeycool = "kmonad ~/.config/kmonad/config_keycool.kbd",
       layoutExtra = "x layout extra",
       layoutSwitch = "x layout switch",
       liveWallpaperServer = "x live-wallpaper run-server",
@@ -66,6 +67,7 @@ cfg =
             messenger = 8,
             experiment = 9
           },
+      xcolor = "xcolor -s primary",
       xmobar = "~/.cabal/bin/myxmobar"
     }
   where
@@ -159,6 +161,7 @@ data Config = Config
     font' :: String,
     gotoWindow :: String,
     kmonad :: String,
+    kmonadKeycool :: String,
     layoutExtra :: String,
     layoutSwitch :: String,
     liveWallpaperServer :: String,
@@ -187,6 +190,7 @@ data Config = Config
     takeScreenshot :: String,
     udiskie :: String,
     workspace :: Workspace,
+    xcolor :: String,
     xmobar :: String
   }
 

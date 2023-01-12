@@ -199,6 +199,7 @@ main = do
                   do
                     spawnOnce $ setupKeyboard cfg
                     spawnOnce $ kmonad cfg
+                    spawnOnce $ kmonadKeycool cfg
                     spawnOnce $ xmobar cfg
                     spawnOnce $ compositor cfg
                     spawn $ setWallpaper cfg
@@ -335,14 +336,15 @@ myKKeys XConfig {modMask = winMask} =
   M.fromList $
     [ ((winMask, xK_Return), spawn $ terminal' cfg),
       ((winMask .|. shiftMask, xK_Return), windows W.swapMaster),
-      ((winMask, xK_d), spawn $ dmenu cfg),
-      ((winMask, xK_i), spawn $ dmenuApp cfg),
+      ((winMask, xK_d), us <+> spawn (dmenu cfg)),
+      ((winMask, xK_i), us <+> spawn (dmenuApp cfg)),
       ((controlMask .|. shiftMask, xK_4), spawn $ takeScreenshot cfg),
       ((winMask .|. shiftMask, xK_s), spawn $ takeScreenshot cfg),
+      ((winMask .|. shiftMask, xK_c), us <+> spawn (xcolor cfg)),
       ((controlMask .|. shiftMask, xK_3), spawn $ screenZoomer cfg),
       ((winMask .|. shiftMask, xK_t), withFocused toggleBorder),
       ((winMask .|. shiftMask, xK_u), spawn $ suspend cfg),
-      ((winMask .|. shiftMask, xK_x), spawn (switchLayout US) <+> spawn (screensaver cfg)),
+      ((winMask .|. shiftMask, xK_x), us <+> spawn (screensaver cfg)),
       ((winMask .|. shiftMask, xK_q), kill),
       ((mod1Mask .|. shiftMask, xK_e), confirmPrompt promptConf "exit" $ io exitSuccess),
       ((mod1Mask, xK_space), spawn $ layoutSwitch cfg),
@@ -352,15 +354,15 @@ myKKeys XConfig {modMask = winMask} =
       ((winMask, xK_minus), toggleSP $ scratchpadClass cfg),
       ((winMask, xK_equal), toggleSP $ spotifyQt cfg),
       ((winMask, xK_g), spawn $ gotoWindow cfg),
-      ((winMask, xK_c), windowPrompt promptConf Bring allWindows),
-      ((winMask, xK_x), spawn (switchLayout US) <+> screenLayoutPrompt),
-      ((winMask, xK_p), spawn $ passPromptType cfg),
-      ((winMask, xK_v), spawn (switchLayout US) <+> splitLayoutPrompt),
-      ((winMask .|. shiftMask, xK_p), spawn $ passPrompt cfg),
-      ((winMask, xK_e), spawn $ emojiYank cfg),
-      ((winMask, xK_b), spawn $ bookmarkChoose cfg),
-      ((winMask .|. shiftMask, xK_b), spawn $ bookmarkAdd cfg),
-      ((winMask .|. controlMask, xK_p), passOTPPrompt promptConf),
+      ((winMask, xK_c), us <+> windowPrompt promptConf Bring allWindows),
+      ((winMask, xK_x), us <+> screenLayoutPrompt),
+      ((winMask, xK_p), us <+> spawn (passPromptType cfg)),
+      ((winMask, xK_v), us <+> splitLayoutPrompt),
+      ((winMask .|. shiftMask, xK_p), us <+> spawn (passPrompt cfg)),
+      ((winMask, xK_e), us <+> spawn (emojiYank cfg)),
+      ((winMask, xK_b), us <+> spawn (bookmarkChoose cfg)),
+      ((winMask .|. shiftMask, xK_b), us <+> spawn (bookmarkAdd cfg)),
+      ((winMask .|. controlMask, xK_p), us <+> passOTPPrompt promptConf),
       ((winMask, xK_Left), sendMessage Shrink),
       ((winMask, xK_Up), sendMessage MirrorExpand),
       ((winMask, xK_Right), sendMessage Expand),
@@ -488,3 +490,6 @@ myLayoutHook =
         addTabs l =
           tabBar shrinkText tabTheme Top $
             resizeVertical (fi $ decoHeight tabTheme) l
+
+us :: X ()
+us = spawn (switchLayout US)
