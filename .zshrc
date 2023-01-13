@@ -126,7 +126,7 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-zinit wait lucid for \
+zinit wait lucid light-mode for \
             atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay; \
             autoload -Uz bashcompinit && bashcompinit && \
             complete -C x x" \
@@ -137,8 +137,8 @@ zinit wait lucid for \
                zsh-users/zsh-autosuggestions \
             atload"bindkey '^]' fzy-proc-widget" \
             aperezdc/zsh-fzy \
-            Aloxaf/fzf-tab \
-            wfxr/forgit
+                Aloxaf/fzf-tab \
+                wfxr/forgit
 
 zinit from"gh-r" as"program" mv"direnv* -> direnv" \
     atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
@@ -148,7 +148,7 @@ zinit from"gh-r" as"program" mv"direnv* -> direnv" \
 # 
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-zstyle ':fzf-tab:*' popup-min-size 20 20
+zstyle ':fzf-tab:*' popup-min-size 100 200
 # plugins <<<
 
 [ ${PERF} = 1 ] && zprof

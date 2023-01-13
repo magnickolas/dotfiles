@@ -28,6 +28,12 @@ local M = {
           vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
           vim.keymap.set({ "n", "v" }, "<a-c>", ":RustRunnables<CR>", { buffer = bufnr })
           vim.keymap.set({ "n", "v" }, "<F5>", ":RustDebuggables<CR>", { buffer = bufnr })
+          vim.api.nvim_create_autocmd({ "BufEnter" }, {
+            pattern = "*.rs",
+            callback = function()
+              rt.inlay_hints.enable()
+            end,
+          })
         end,
         settings = {
           ["rust-analyzer"] = {

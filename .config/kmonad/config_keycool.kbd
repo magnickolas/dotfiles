@@ -1,8 +1,7 @@
 (defcfg
   input  (device-file "/dev/input/by-id/usb-Keychron_K1_KEYCOOL_Keyboard-event-kbd")
   output (uinput-sink
-          "KMonad kbd"
-          "/home/magnickolas/.local/bin/x setup-keyboard"))
+          "KMonad kbd"))
 
 
 (defsrc

@@ -1,1 +1,0 @@
-ACTION=="bind", SUBSYSTEM=="hid", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}="udev-keyboard.service"

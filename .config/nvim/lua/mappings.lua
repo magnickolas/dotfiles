@@ -7,18 +7,18 @@ local function paste_keep_cursor_column(above)
   end
 end
 
+local u = require("utils").update
+
 M.general = {
   { { "n" }, "p", paste_keep_cursor_column(false), opts },
   { { "n" }, "P", paste_keep_cursor_column(true), opts },
-  -- Copy to clipboard
-  { "v", "<leader>y", '"+yg_', {} },
-  -- Paste from clipboard
-  { { "n", "v" }, "<leader>p", '"+p', {} },
-  { { "n", "v" }, "<leader>P", '"+P', {} },
-  -- Delete to clipboard
-  { "v", "<leader>d", '"+d', {} },
-  { "n", "<leader>d", '"+d', {} },
-  { "n", "<leader>D", '"+D', {} },
+  { "v", "<leader>y", '"+yg_', { desc = "Yank to clipboard" } },
+  { { "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" } },
+  { { "n", "v" }, "<leader>P", '"+P', { desc = "Paste from clipboard" } },
+  { { "n", "v" }, "<leader>d", '"+d', { desc = "Delete to clipboard" } },
+  { "n", "<leader>D", '"+D', { desc = "Delete to clipboard" } },
+  -- Don't move cursor after visual yank
+  { "v", "y", "ygv<esc>", {} },
   -- Disable highlight
   { "n", "<esc>", ":noh<cr>", opts },
   -- Use '0' key to switch between beginning of line and first column
@@ -51,11 +51,15 @@ M.general = {
   { { "n" }, "<S-Down>", "<cmd>resize -2<CR>", opts },
   { { "n" }, "<S-Left>", "<cmd>vertical resize -2<CR>", opts },
   { { "n" }, "<S-Right>", "<cmd>vertical resize +2<CR>", opts },
-  -- Cycle through last search
-  { { "n", "x" }, "gw", "*N", opts },
-  -- Remap s -> f since f is taken by `leap`
-  { { "n", "v" }, "s", "f", opts },
-  -- toggle
+
+  { { "n", "v" }, "<leader>wj", "<C-w>j", u(opts, { desc = "Move to pane below" }) },
+  { { "n", "v" }, "<leader>wk", "<C-w>k", u(opts, { desc = "Move to pane above" }) },
+  { { "n", "v" }, "<leader>wh", "<C-w>h", u(opts, { desc = "Move to pane left" }) },
+  { { "n", "v" }, "<leader>wl", "<C-w>l", u(opts, { desc = "Move to pane right" }) },
+
+  { { "n", "x" }, "gw", "*N", u(opts, { desc = "Cycle through last search" }) },
+  { { "n", "v" }, "s", "f", opts }, -- remap s -> f since f is taken by `leap`
+
   { { "n" }, "<leader>tf", require("plugins.lsp.format").toggle, { desc = "Toggle format on Save" } },
 }
 

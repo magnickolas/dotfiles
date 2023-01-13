@@ -46,6 +46,10 @@ function command_not_found_handler() {
    fi
     # Else, print pacman suggestions first, then paru suggestions
     printf "\e[31mcommand '%s' not found, but can be installed with:\e[0m\n" "$binary"
-    printf "%s\n" "$pacman_suggestions"
-    printf "%s\n" "$paru_suggestions"
+    if [ -n "$pacman_suggestions" ]; then
+        printf "%s\n" "$pacman_suggestions"
+    fi
+    if [ -n "$paru_suggestions" ]; then
+        printf "%s\n" "$paru_suggestions"
+    fi
 }

@@ -21,7 +21,7 @@ return {
         dim_inactive = false,
         transparent_mode = true,
       })
-      require("utils").set_colorscheme("gruvbox")
+      require("init_utils").set_colorscheme("gruvbox")
     end,
   },
 }

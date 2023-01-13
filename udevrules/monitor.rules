@@ -1,1 +1,0 @@
-ACTION=="change", KERNEL=="card0", SUBSYSTEMS=="drm", RUN+="/home/magnickolas/scripts/setup_monitor.sh"

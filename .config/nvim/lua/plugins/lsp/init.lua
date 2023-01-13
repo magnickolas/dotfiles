@@ -1,20 +1,5 @@
 return {
   {
-    "folke/neodev.nvim",
-    opts = {
-      debug = false,
-      experimental = {
-        pathStrict = true,
-      },
-    },
-  },
-
-  {
-    "j-hui/fidget.nvim",
-    config = true,
-  },
-
-  {
     "L3MON4D3/LuaSnip",
     dependencies = {
       "rafamadriz/friendly-snippets",
@@ -73,12 +58,13 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
+      { "folke/neodev.nvim" },
       "mason.nvim",
+      "jayp0521/mason-nvim-dap.nvim",
       "williamboman/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "WhoIsSethDaniel/toggle-lsp-diagnostics.nvim",
-      "j-hui/fidget.nvim",
+      { "j-hui/fidget.nvim", config = true },
       "jose-elias-alvarez/null-ls.nvim",
     },
     opts = {
@@ -162,7 +148,8 @@ return {
       },
       setup = {},
     },
-    config = function(plugin, opts)
+    config = function(_, opts)
+      require("neodev").setup()
       require("plugins.lsp.util").on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
         require("plugins.lsp.format").on_attach(client, buffer)
@@ -170,6 +157,11 @@ return {
       local servers = opts.servers
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+      require("mason").setup()
+      require("mason-nvim-dap").setup({
+        automatic_setup = true,
+      })
+      require("mason-nvim-dap").setup_handlers()
       require("mason-lspconfig").setup({ ensure_installed = vim.tbl_keys(servers) })
       require("mason-lspconfig").setup_handlers({
         function(server)

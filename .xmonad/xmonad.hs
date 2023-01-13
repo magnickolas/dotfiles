@@ -197,7 +197,6 @@ main = do
                 focusFollowsMouse = True,
                 startupHook =
                   do
-                    spawnOnce $ setupKeyboard cfg
                     spawnOnce $ kmonad cfg
                     spawnOnce $ kmonadKeycool cfg
                     spawnOnce $ xmobar cfg
@@ -208,7 +207,10 @@ main = do
                     spawnOnce $ udiskie cfg
                     spawnOnce $ screensaverBg cfg
                     spawnOnce $ liveWallpaperServer cfg
-                    spawnOnce $ rustLspMultiplex cfg,
+                    spawnOnce $ rustLspMultiplex cfg
+                    -- workaround fixing text insertion
+                    -- https://github.com/jordansissel/xdotool/issues/49
+                    spawnOnce "setxkbmap",
                 handleEventHook =
                   handleEventHook def
                     <+> multiScreenFocusHook
@@ -299,6 +301,7 @@ myManageHook =
         (className =? "flameshot") --> centerWin,
         (title =? "webcam") --> webCam,
         (title =? "Telegram") --> doShift (ws messenger),
+        (className =? "obsidian") --> doShift (ws book),
         {- requires https://github.com/dasJ/spotifywm since spotify sets
         its class name too late for xmonad to catch it.
         It can also be achieved through `onTitleChange`, but this way
