@@ -301,7 +301,8 @@ myManageHook =
         (className =? "flameshot") --> centerWin,
         (title =? "webcam") --> webCam,
         (title =? "Telegram") --> doShift (ws messenger),
-        (className =? "obsidian") --> doShift (ws book),
+        (className =? "obsidian") --> doShift (ws write),
+        (className =? "obs") --> doShift (ws experiment),
         {- requires https://github.com/dasJ/spotifywm since spotify sets
         its class name too late for xmonad to catch it.
         It can also be achieved through `onTitleChange`, but this way

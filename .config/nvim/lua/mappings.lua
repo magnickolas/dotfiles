@@ -18,7 +18,7 @@ M.general = {
   { { "n", "v" }, "<leader>d", '"+d', { desc = "Delete to clipboard" } },
   { "n", "<leader>D", '"+D', { desc = "Delete to clipboard" } },
   -- Don't move cursor after visual yank
-  { "v", "y", "ygv<esc>", {} },
+  -- { "v", "y", "ygv<esc>", {} },
   -- Disable highlight
   { "n", "<esc>", ":noh<cr>", opts },
   -- Use '0' key to switch between beginning of line and first column

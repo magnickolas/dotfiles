@@ -42,10 +42,6 @@ function M.init()
     require("dapui").toggle({})
   end, { desc = "Dap UI" })
 
-  vim.keymap.set("n", "<leader>ds", function()
-    require("osv").launch({ port = 8086 })
-  end, { desc = "Launch Lua Debugger Server" })
-
   vim.keymap.set("n", "<leader>dl", function()
     require("osv").run_this()
   end, { desc = "Launch Lua Debugger" })
@@ -108,7 +104,7 @@ function M.config()
     dapui.close({})
   end
 
-  vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
+  vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "", linehl = "", numhl = "" })
 end
 
 return M

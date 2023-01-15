@@ -5,8 +5,8 @@ width=${1:-1280}
 height=${2:-720}
 fps=${3:-60}
 mode="${width}x${height}_${fps}.00"
-primary_display="eDP-1"
-virt_display="HDMI-1"
+primary_display="eDP-1-1"
+virt_display="HDMI-1-1"
 xrandr --newmode $(gtf "${width}" "${height}" "${fps}" | sed -ne 's/"//g;s/ Modeline //p') || true
 xrandr --output "${virt_display}" --off
 xrandr --addmode "${virt_display}" "${mode}"

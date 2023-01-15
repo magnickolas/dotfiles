@@ -40,6 +40,9 @@ export MOST_PROMPT=" "
 export MOST_HIDE_CURSOR=1
 export GOPATH="$HOME/.go"
 export GO111MODULE=on
-export fpath=(~/.zsh/completion $fpath)
+
+### pure plugin
+export PURE_PROMPT_SYMBOL=🎄
+
 
 skip_global_compinit=1

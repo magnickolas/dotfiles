@@ -1,4 +1,5 @@
 return {
+  enabled = true,
   icons = {
     diagnostics = {
       Error = " ",

@@ -23,6 +23,8 @@ setopt sharehistory
 setopt histignorespace
 setopt histignorealldups
 
+export fpath=(~/.zsh/completion $fpath)
+
 function _have {
 	type "$1" &>/dev/null
 }
@@ -115,40 +117,40 @@ if [[ -d ${config_dir} ]]; then
 	done
 fi
 
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    print -P "installing zinit..."
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "done" || \
-fi
+# >>> plugins
+eval "$(sheldon source)"
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-zinit wait lucid light-mode for \
-            atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay; \
-            autoload -Uz bashcompinit && bashcompinit && \
-            complete -C x x" \
-               zdharma-continuum/fast-syntax-highlighting \
-            blockf \
-               zsh-users/zsh-completions \
-            atload"!_zsh_autosuggest_start" \
-               zsh-users/zsh-autosuggestions \
-            atload"bindkey '^]' fzy-proc-widget" \
-            aperezdc/zsh-fzy \
-                Aloxaf/fzf-tab \
-                wfxr/forgit
-
-zinit from"gh-r" as"program" mv"direnv* -> direnv" \
-    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
-    pick"direnv" src="zhook.zsh" for \
-        direnv/direnv
-
-# 
+# completions
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-zstyle ':fzf-tab:*' popup-min-size 100 200
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:*' popup-min-size 200 0
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
+	fzf-preview 'echo ${(P)word}'
+zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview \
+	'git diff $word | delta'
+zstyle ':fzf-tab:complete:git-log:*' fzf-preview \
+	'git log --color=always $word'
+zstyle ':fzf-tab:complete:git-help:*' fzf-preview \
+	'git help $word | bat -plman --color=always'
+zstyle ':fzf-tab:complete:git-show:*' fzf-preview \
+	'case "$group" in
+	"commit tag") git show --color=always $word ;;
+	*) git show --color=always $word | delta ;;
+	esac'
+zstyle ':fzf-tab:complete:git-checkout:*' fzf-preview \
+	'case "$group" in
+	"modified file") git diff $word | delta ;;
+	"recent commit object name") git show --color=always $word | delta ;;
+	*) git log --color=always $word ;;
+	esac'
+zstyle ':fzf-tab:complete:tldr:argument-1' fzf-preview 'tldr --color always $word'
+
+# prompt
+zstyle ":prompt:pure:path" color "#fabd2f"
+zstyle ":prompt:pure:path_brackets" color "#8ec07c"
 # plugins <<<
+
+eval "$(direnv hook zsh)"
 
 [ ${PERF} = 1 ] && zprof
