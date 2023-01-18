@@ -1,7 +1,9 @@
 (defcfg
   input  (device-file "/dev/input/by-id/usb-Keychron_K1_KEYCOOL_Keyboard-event-kbd")
   output (uinput-sink
-          "KMonad kbd"))
+          "KMonad kbd")
+  allow-cmd true
+  fallthrough true)
 
 
 (defsrc
@@ -13,96 +15,63 @@
   lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
   )
 
-(defalias
-  sym (tap-next bspc (layer-toggle syms))
-  cym (tap-next bspc (layer-toggle colsyms))
-  col (layer-switch colemakdh)
-  bas (layer-switch base))
-
-(defalias
-  sl (sticky-key 300 lsft)
-  sr (sticky-key 300 rsft))
-
-#| ---
-(defalias
-  a (tap-next a lmet))
-   ---  |#
-(defalias
-  a (tap-hold 190 a lctl))
-(defalias
-  r (tap-hold 190 r lalt))
-(defalias
-  s (tap-hold 190 s lsft))
-(defalias
-  t (tap-hold 190 t lmet))
-(defalias
-  n (tap-hold 190 n rmet))
-(defalias
-  e (tap-hold 190 e rsft))
-(defalias
-  i (tap-hold 190 i ralt))
-(defalias
-  o (tap-hold 190 o rctl))
-(defalias
-  g (tap-hold 190 g (layer-toggle nums)))
-(defalias
-  m (tap-hold 190 m (layer-toggle nums)))
-
+(defalias 
+  meb (tap-hold-next-release 200 C-a lmet)
+  'en (tap-hold-next-release 200 ' C-e)
+  act (layer-toggle act)
+)
 
 (deflayer base
   esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12    prnt pause del
   `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
   tab   q    w    e    r    t    y    u    i    o    p    [     ]      \          pgup
-  lmet  a    s    d    f    g    h    j    k    l    ;    '     ret               pgdn
-  lsft  z    x    c    v    b    n    m    ,    .    /    @sr          up         end
-  lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
+  @meb  a    s    d    f    g    h    j    k    l    ;    @'en  ret               pgdn
+  lsft  z    x    c    v    b    n    m    ,    .    /    rsft         up         end
+  lctl  lmet @act      spc                 ralt cmps rctl       left   down   rght
   )
 
-(deflayer colemakdh
-  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12    prnt pause del
-  `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
-  tab   q    w    f    p    d    j    l    u    y    ;    [     ]      \          pgup
-  @cym  @a   @r   @s   @t   @g   @m   @n   @e   @i   @o    '     ret               pgdn
-  @sl   z    x    c    v    b    k    h    ,    .    /    @sr          up         end
-  lctl  lmet lalt      spc                 ralt cmps rctl       left   down   rght
-  )
-  
+(defalias 
+  xls (cmd-button "x layout switch")
+  xle (cmd-button "x layout extra")
+)
 
-(deflayer syms
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
-  @col  _    _    _    _    _    _    _    _    _    _    _     _      _          _
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
-  _     _    _    _    _    _    {    \(   \)   }    _    _     _                 _   
-  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
-  _     _    _         _                   _    _    _          _      _      _
+(deflayer act
+  @alt_esc   @alt_f1   @alt_f2   @alt_f3   @alt_f4   @alt_f5   @alt_f6   @alt_f7   @alt_f8   @alt_f9   @alt_f10  @alt_f11   @alt_f12    @alt_prnt @alt_pause @alt_del
+  @xle     @alt_1    @alt_2    @alt_3    @alt_4    @alt_5    @alt_6    @alt_7    @alt_8    @alt_9    @alt_0    @alt_-     @alt_=      @alt_bspc       @alt_home
+  @alt_tab   @alt_q    @alt_w    @alt_e    @alt_r    @alt_t    @alt_y    @alt_u    @alt_i    @alt_o    @alt_p    @alt_[     @alt_]      @alt_\          @alt_pgup
+  @alt_caps  @alt_a    @alt_s    @alt_d    @alt_f    @alt_g    @alt_h    @alt_j    @alt_k    @alt_l    @alt_;    @alt_'     @alt_ret               @alt_pgdn
+  @alt_lsft  @alt_z    @alt_x    @alt_c    @alt_v    @alt_b    @alt_n    @alt_m    @alt_,    @alt_.    @alt_/    @alt_rsft         @alt_up         @alt_end
+  @alt_lctl  @alt_lmet @alt_lalt      @xls                 @alt_ralt @alt_cmps @alt_rctl       @alt_left   @alt_down   @alt_rght
   )
 
-(deflayer colsyms
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
-  @bas  _    _    _    _    _    _    _    _    _    _    _     _      _          _
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
-  _     _    _    _    _    _    {    \(   \)   }    _    _     _                 _   
-  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
-  _     _    _         _                   _    _    _          _      _      _
-  )
-
-(deflayer nums
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _
-  _     1    2    3    4    5    6    7    8    9    0    _     _      _          _   
-  _     _    _    _    _    _    _    _    _    _    _    _     _                 _   
-  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
-  _     _    _         _                   _    _    _          _      _      _
-  )
-
-#| ---
-(deflayer nums
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _    _     _ 
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _
-  _     _    _    _    _    _    _    _    _    _    _    _     _      _          _   
-  _     _    _    _    _    _    _    _    _    _    _    _     _                 _   
-  _     _    _    _    _    _    _    _    _    _    _    _            _          _  
-  _     _    _         _                   _    _    _          _      _      _
-  )
-   --- |#
-
+;; alt-fallthrough
+(defalias 
+  alt_esc (around lalt esc) alt_f1 (around lalt f1) alt_f2 (around lalt f2)
+  alt_f3 (around lalt f3) alt_f4 (around lalt f4) alt_f5 (around lalt f5)
+  alt_f6 (around lalt f6) alt_f7 (around lalt f7) alt_f8 (around lalt f8)
+  alt_f9 (around lalt f9) alt_f10 (around lalt f10) alt_f11 (around lalt f11)
+  alt_f12 (around lalt f12) alt_prnt (around lalt prnt) alt_pause (around lalt pause)
+  alt_del (around lalt del) alt_` (around lalt `) alt_1 (around lalt 1)
+  alt_2 (around lalt 2) alt_3 (around lalt 3) alt_4 (around lalt 4)
+  alt_5 (around lalt 5) alt_6 (around lalt 6) alt_7 (around lalt 7)
+  alt_8 (around lalt 8) alt_9 (around lalt 9) alt_0 (around lalt 0)
+  alt_- (around lalt -) alt_= (around lalt =) alt_bspc (around lalt bspc)
+  alt_home (around lalt home) alt_tab (around lalt tab) alt_q (around lalt q)
+  alt_w (around lalt w) alt_e (around lalt e) alt_r (around lalt r)
+  alt_t (around lalt t) alt_y (around lalt y) alt_u (around lalt u)
+  alt_i (around lalt i) alt_o (around lalt o) alt_p (around lalt p)
+  alt_[ (around lalt [) alt_] (around lalt ]) alt_\ (around lalt \\)
+  alt_pgup (around lalt pgup) alt_caps (around lalt caps) alt_a (around lalt a)
+  alt_s (around lalt s) alt_d (around lalt d) alt_f (around lalt f)
+  alt_g (around lalt g) alt_h (around lalt h) alt_j (around lalt j)
+  alt_k (around lalt k) alt_l (around lalt l) alt_; (around lalt ;)
+  alt_' (around lalt ') alt_ret (around lalt ret) alt_pgdn (around lalt pgdn)
+  alt_lsft (around lalt lsft) alt_z (around lalt z) alt_x (around lalt x)
+  alt_c (around lalt c) alt_v (around lalt v) alt_b (around lalt b)
+  alt_n (around lalt n) alt_m (around lalt m) alt_, (around lalt ,)
+  alt_. (around lalt .) alt_/ (around lalt /) alt_rsft (around lalt rsft)
+  alt_up (around lalt up) alt_end (around lalt end) alt_lctl (around lalt lctl)
+  alt_lmet (around lalt lmet) alt_lalt (around lalt lalt) alt_spc (around lalt spc)
+  alt_ralt (around lalt ralt) alt_cmps (around lalt cmps) alt_rctl (around lalt rctl)
+  alt_left (around lalt left) alt_down (around lalt down) alt_rght (around lalt rght)
+)

@@ -351,8 +351,6 @@ myKKeys XConfig {modMask = winMask} =
       ((winMask .|. shiftMask, xK_x), us <+> spawn (screensaver cfg)),
       ((winMask .|. shiftMask, xK_q), kill),
       ((mod1Mask .|. shiftMask, xK_e), confirmPrompt promptConf "exit" $ io exitSuccess),
-      ((mod1Mask, xK_space), spawn $ layoutSwitch cfg),
-      ((winMask, xK_grave), spawn $ layoutExtra cfg),
       ((winMask, xK_f), sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
       ((winMask, xK_o), safeSpawnProg (browser cfg)),
       ((winMask, xK_minus), toggleSP $ scratchpadClass cfg),

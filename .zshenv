@@ -42,7 +42,8 @@ export GOPATH="$HOME/.go"
 export GO111MODULE=on
 
 ### pure plugin
-export PURE_PROMPT_SYMBOL=🎄
-
+export PURE_PROMPT_SYMBOL=" "
+export PURE_GIT_PULL=0
+export PURE_CMD_MAX_EXEC_TIME=1000000000
 
 skip_global_compinit=1

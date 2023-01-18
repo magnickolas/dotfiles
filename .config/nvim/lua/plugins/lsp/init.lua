@@ -162,7 +162,9 @@ return {
         automatic_setup = true,
       })
       require("mason-nvim-dap").setup_handlers()
-      require("mason-lspconfig").setup({ ensure_installed = vim.tbl_keys(servers) })
+      local ensure_installed = vim.tbl_keys(servers)
+      ensure_installed.asm_lsp = nil
+      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
       require("mason-lspconfig").setup_handlers({
         function(server)
           local server_opts = servers[server] or {}

@@ -52,6 +52,7 @@ if type dircolors &>/dev/null; then
 	alias fgrep='fgrep --color=auto'
 	alias egrep='egrep --color=auto'
 fi
+alias rm='rm -i'
 _alias_if emacs emacsclient -a 'emacs' -t
 _alias_if keyboard "$HOME/scripts/setup_keyboard.sh"
 _alias_if monitor "$HOME/scripts/setup_monitor.sh"

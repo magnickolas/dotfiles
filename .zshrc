@@ -1,5 +1,5 @@
 PERF=0
-[ ${PERF} = 1 ] && zmodload zsh/zprof
+if [ ${PERF} = 1 ]; then zmodload zsh/zprof; fi
 
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
@@ -15,6 +15,10 @@ bindkey "^[[1;3C" forward-word  # Alt + Right
 bindkey "^[[1;3D" backward-word # Alt + Left
 bindkey "^U" backward-kill-line
 bindkey '^[[Z' undo # Shift+tab
+# Alt + Backspace
+bindkey '^[[3;3~' backward-kill-word
+# Ctrl + Backspace behave like Ctrl + W
+bindkey -M emacs '^[[3^' kill-word
 
 HISTSIZE=100000000
 SAVEHIST=100000000
@@ -122,7 +126,7 @@ eval "$(sheldon source)"
 
 # completions
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ':fzf-tab:*' popup-min-size 200 0
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
@@ -149,8 +153,9 @@ zstyle ':fzf-tab:complete:tldr:argument-1' fzf-preview 'tldr --color always $wor
 # prompt
 zstyle ":prompt:pure:path" color "#fabd2f"
 zstyle ":prompt:pure:path_brackets" color "#8ec07c"
+zstyle ":prompt:pure:prompt:success" color "#8ec07c"
 # plugins <<<
 
-eval "$(direnv hook zsh)"
+zsh-defer eval "$(direnv hook zsh)"
 
-[ ${PERF} = 1 ] && zprof
+if [ ${PERF} = 1 ]; then zprof; fi

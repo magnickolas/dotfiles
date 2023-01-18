@@ -6,7 +6,7 @@ defer = """{% for file in files %}zsh-defer source "{{ file }}"\n{% endfor %}"""
 # completions
 
 [plugins.zsh-completions]
-github = 'zsh-users/zsh-completions'
+github = "zsh-users/zsh-completions"
 
 # sourced
 
@@ -14,6 +14,7 @@ github = 'zsh-users/zsh-completions'
 github = "romkatv/zsh-defer"
 
 [plugins.pure]
+# github = "rossmacarthur/pure"
 local = "~/.config/zsh/plugins/pure"
 use = ["{async,pure}.zsh"]
 
@@ -29,7 +30,7 @@ use = ["{{ name }}.zsh"]
 apply = ["defer"]
 
 [plugins.fast-syntax-highlighting]
-github = 'zdharma-continuum/fast-syntax-highlighting'
+github = "zdharma-continuum/fast-syntax-highlighting"
 apply = ["defer"]
 
 [plugins.forgit]
@@ -37,7 +38,7 @@ github = "wfxr/forgit"
 apply = ["defer"]
 
 [plugins.compinit]
-inline = 'autoload -Uz compinit && compinit'
+inline = "autoload -Uz compinit && compinit"
 
 [plugins.bashcompinit]
-inline = 'autoload -Uz bashcompinit && bashcompinit && complete -C x x'
+inline = "autoload -Uz bashcompinit && bashcompinit && complete -C x x"
