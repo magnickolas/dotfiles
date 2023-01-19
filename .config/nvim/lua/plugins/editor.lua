@@ -147,4 +147,6 @@ return {
     },
   },
   "NoahTheDuke/vim-just",
+  "tikhomirov/vim-glsl",
+  "tpope/vim-fugitive",
 }

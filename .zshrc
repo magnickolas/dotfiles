@@ -64,6 +64,10 @@ function backup {
 	chmod a-w "${backup_name}"
 }
 
+function is_in {
+    [[ "${$(pwd)##*/}" == "$1" ]] 
+}
+
 # use https://github.com/tsoding/cm
 # for interactive selection of ripgrep results
 if _have cm; then
@@ -157,5 +161,4 @@ zstyle ":prompt:pure:prompt:success" color "#8ec07c"
 # plugins <<<
 
 zsh-defer eval "$(direnv hook zsh)"
-
 if [ ${PERF} = 1 ]; then zprof; fi

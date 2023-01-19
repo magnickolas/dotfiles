@@ -26,8 +26,8 @@ M.configure_backup = function()
   end
   vim.opt.undodir = undo_dir
   vim.opt.undofile = true
-  vim.opt.writebackup = false
-  vim.opt.backup = false
+  vim.opt.backup = true
+  vim.opt.backupdir = vim.fn.stdpath("state") .. "/backup"
 end
 
 M.configure_editor = function()
