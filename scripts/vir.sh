@@ -1,8 +1,8 @@
 #!/bin/sh
-set -e
+set -ex
 
 monitor_exists() {
-	xrandr --listactivemonitors | grep -q "$1 "
+	xrandr --listactivemonitors | grep -q "$1"
 }
 
 layout=$1

@@ -18,7 +18,6 @@
 (defalias 
   meb (tap-hold-next-release 200 C-a lmet)
   act (layer-toggle act)
-  sft (layer-toggle sft)
 )
 
 (deflayer base
@@ -26,97 +25,51 @@
   `     1    2    3    4    5    6    7    8    9    0    -     =      bspc       home
   tab   q    w    e    r    t    y    u    i    o    p    [     ]      \          pgup
   @meb  a    s    d    f    g    h    j    k    l    ;    '     ret               pgdn
-  @sft  z    x    c    v    b    n    m    ,    .    /    rsft         up         end
+  lsft  z    x    c    v    b    n    m    ,    .    /    rsft         up         end
   lctl  lmet @act      spc                 ralt cmps rctl       left   down   rght
   )
 
 (defalias 
-  xls (cmd-button "x layout switch")
-  xle (cmd-button "x layout extra")
+  xls (cmd-button "~/.local/bin/x layout switch")
+  xle (cmd-button "~/.local/bin/x layout extra")
 )
 
 (deflayer act
-  @alt_esc   @alt_f1   @alt_f2   @alt_f3   @alt_f4   @alt_f5   @alt_f6   @alt_f7   @alt_f8   @alt_f9   @alt_f10  @alt_f11   @alt_f12    @alt_prnt @alt_pause @alt_del
-  @xle       @alt_1    @alt_2    @alt_3    @alt_4    @alt_5    @alt_6    @alt_7    @alt_8    @alt_9    @alt_0    @alt_-     @alt_=      @alt_bspc       @alt_home
-  @alt_tab   @alt_q    @alt_w    @alt_e    @alt_r    @alt_t    @alt_y    @alt_u    @alt_i    @alt_o    @alt_p    @alt_[     @alt_]      @alt_\          @alt_pgup
-  @alt_caps  @alt_a    @alt_s    @alt_d    @alt_f    @alt_g    @alt_h    @alt_j    @alt_k    @alt_l    @alt_;    @alt_'     @alt_ret               @alt_pgdn
-  @alt_lsft  @alt_z    @alt_x    @alt_c    @alt_v    @alt_b    @alt_n    @alt_m    @alt_,    @alt_.    @alt_/    @alt_rsft         @alt_up         @alt_end
-  @alt_lctl  @alt_lmet @alt_lalt      @xls                                         @alt_ralt @alt_cmps @alt_rctl       @alt_left   @alt_down   @alt_rght
+  @a-esc   @a-f1   @a-f2   @a-f3   @a-f4   @a-f5   @a-f6   @a-f7   @a-f8   @a-f9   @a-f10  @a-f11   @a-f12    @a-prnt @a-pause @a-del
+  @xle       @a-1    @a-2    @a-3    @a-4    @a-5    @a-6    @a-7    @a-8    @a-9    @a-0    @a--     @a-=      @a-bspc       @a-home
+  @a-tab   @a-q    @a-w    @a-e    @a-r    @a-t    @a-y    @a-u    @a-i    @a-o    @a-p    @a-[     @a-]      @a-\          @a-pgup
+  @a-caps  @a-a    @a-s    @a-d    @a-f    @a-g    @a-h    @a-j    @a-k    @a-l    @a-;    @a-'     @a-ret               @a-pgdn
+  @a-lsft  @a-z    @a-x    @a-c    @a-v    @a-b    @a-n    @a-m    @a-,    @a-.    @a-/    @a-rsft         @a-up         @a-end
+  @a-lctl  @a-lmet @a-lalt      @xls                                         @a-ralt @a-cmps @a-rctl       @a-left   @a-down   @a-rght
   )
-
-(defalias 
-  srt (tap-hold-next-release 200 C-a lsft)
-)
-
-(deflayer sft
-  @s_esc   @s_f1   @s_f2   @s_f3   @s_f4   @s_f5   @s_f6   @s_f7   @s_f8   @s_f9   @s_f10  @s_f11   @s_f12    @s_prnt @s_pause @s_del
-  @s_`     @s_1    @s_2    @s_3    @s_4    @s_5    @s_6    @s_7    @s_8    @s_9    @s_0    @s_-     @s_=      @s_bspc       @s_home
-  @s_tab   @s_q    @s_w    @s_e    @s_r    @s_t    @s_y    @s_u    @s_i    @s_o    @s_p    @s_[     @s_]      @s_\          @s_pgup
-  @s_lmet  @s_a    @s_s    @s_d    @s_f    @s_g    @s_h    @s_j    @s_k    @s_l    @s_;    @s_'     @s_ret                    @s_pgdn
-  @s_lsft  @s_z    @s_x    @s_c    @s_v    @s_b    @s_n    @s_m    @s_,    @s_.    @s_/    @s_rsft         @s_up         @s_end
-  @s_lctl  @s_lmet @s_lalt      @s_spc                             @s_ralt @s_cmps @s_rctl       @s_left   @s_down   @s_rght
-  )
-
-;; sft-fallthrough
-(defalias 
-  s_esc (around lsft esc) s_f1 (around lsft f1) s_f2 (around lsft f2)
-  s_f3 (around lsft f3) s_f4 (around lsft f4) s_f5 (around lsft f5)
-  s_f6 (around lsft f6) s_f7 (around lsft f7) s_f8 (around lsft f8)
-  s_f9 (around lsft f9) s_f10 (around lsft f10) s_f11 (around lsft f11)
-  s_f12 (around lsft f12) s_prnt (around lsft prnt) s_pause (around lsft pause)
-  s_del (around lsft del) s_` (around lsft `) s_1 (around lsft 1)
-  s_2 (around lsft 2) s_3 (around lsft 3) s_4 (around lsft 4)
-  s_5 (around lsft 5) s_6 (around lsft 6) s_7 (around lsft 7)
-  s_8 (around lsft 8) s_9 (around lsft 9) s_0 (around lsft 0)
-  s_- (around lsft -) s_= (around lsft =) s_bspc (around lsft bspc)
-  s_home (around lsft home) s_tab (around lsft tab) s_q (around lsft q)
-  s_w (around lsft w) s_e (around lsft e) s_r (around lsft r)
-  s_t (around lsft t) s_y (around lsft y) s_u (around lsft u)
-  s_i (around lsft i) s_o (around lsft o) s_p (around lsft p)
-  s_[ (around lsft [) s_] (around lsft ]) s_\ (around lsft \\)
-  s_pgup (around lsft pgup) s_caps (around lsft caps) s_a (around lsft a)
-  s_s (around lsft s) s_d (around lsft d) s_f (around lsft f)
-  s_g (around lsft g) s_h (around lsft h) s_j (around lsft j)
-  s_k (around lsft k) s_l (around lsft l) s_; (around lsft ;)
-  s_' (around lsft ') s_ret (around lsft ret) s_pgdn (around lsft pgdn)
-  s_lsft (around lsft lsft) s_z (around lsft z) s_x (around lsft x)
-  s_c (around lsft c) s_v (around lsft v) s_b (around lsft b)
-  s_n (around lsft n) s_m (around lsft m) s_, (around lsft ,)
-  s_. (around lsft .) s_/ (around lsft /) s_rsft (around lsft rsft)
-  s_up (around lsft up) s_end (around lsft end) s_lctl (around lsft lctl)
-  s_lmet (around lsft lmet) s_lalt (around lsft lalt) s_spc (around lsft spc)
-  s_ralt (around lsft ralt) s_cmps (around lsft cmps) s_rctl (around lsft rctl)
-  s_left (around lsft left) s_down (around lsft down) s_rght (around lsft rght)
-)
 
 ;; alt-fallthrough
 (defalias 
-  alt_esc (around lalt esc) alt_f1 (around lalt f1) alt_f2 (around lalt f2)
-  alt_f3 (around lalt f3) alt_f4 (around lalt f4) alt_f5 (around lalt f5)
-  alt_f6 (around lalt f6) alt_f7 (around lalt f7) alt_f8 (around lalt f8)
-  alt_f9 (around lalt f9) alt_f10 (around lalt f10) alt_f11 (around lalt f11)
-  alt_f12 (around lalt f12) alt_prnt (around lalt prnt) alt_pause (around lalt pause)
-  alt_del (around lalt del) alt_` (around lalt `) alt_1 (around lalt 1)
-  alt_2 (around lalt 2) alt_3 (around lalt 3) alt_4 (around lalt 4)
-  alt_5 (around lalt 5) alt_6 (around lalt 6) alt_7 (around lalt 7)
-  alt_8 (around lalt 8) alt_9 (around lalt 9) alt_0 (around lalt 0)
-  alt_- (around lalt -) alt_= (around lalt =) alt_bspc (around lalt bspc)
-  alt_home (around lalt home) alt_tab (around lalt tab) alt_q (around lalt q)
-  alt_w (around lalt w) alt_e (around lalt e) alt_r (around lalt r)
-  alt_t (around lalt t) alt_y (around lalt y) alt_u (around lalt u)
-  alt_i (around lalt i) alt_o (around lalt o) alt_p (around lalt p)
-  alt_[ (around lalt [) alt_] (around lalt ]) alt_\ (around lalt \\)
-  alt_pgup (around lalt pgup) alt_caps (around lalt caps) alt_a (around lalt a)
-  alt_s (around lalt s) alt_d (around lalt d) alt_f (around lalt f)
-  alt_g (around lalt g) alt_h (around lalt h) alt_j (around lalt j)
-  alt_k (around lalt k) alt_l (around lalt l) alt_; (around lalt ;)
-  alt_' (around lalt ') alt_ret (around lalt ret) alt_pgdn (around lalt pgdn)
-  alt_lsft (around lalt lsft) alt_z (around lalt z) alt_x (around lalt x)
-  alt_c (around lalt c) alt_v (around lalt v) alt_b (around lalt b)
-  alt_n (around lalt n) alt_m (around lalt m) alt_, (around lalt ,)
-  alt_. (around lalt .) alt_/ (around lalt /) alt_rsft (around lalt rsft)
-  alt_up (around lalt up) alt_end (around lalt end) alt_lctl (around lalt lctl)
-  alt_lmet (around lalt lmet) alt_lalt (around lalt lalt) alt_spc (around lalt spc)
-  alt_ralt (around lalt ralt) alt_cmps (around lalt cmps) alt_rctl (around lalt rctl)
-  alt_left (around lalt left) alt_down (around lalt down) alt_rght (around lalt rght)
+  a-esc (around lalt esc) a-f1 mute a-f2 vold
+  a-f3 volu a-f4 brdn a-f5 brup
+  a-f6 pp a-f7 prev a-f8 next
+  a-f9 XX a-f10 XX a-f11 XX
+  a-f12 XX a-prnt (around lalt prnt) a-pause (around lalt pause)
+  a-del (around lalt del) a-` (around lalt `) a-1 (around lalt 1)
+  a-2 (around lalt 2) a-3 (around lalt 3) a-4 (around lalt 4)
+  a-5 (around lalt 5) a-6 (around lalt 6) a-7 (around lalt 7)
+  a-8 (around lalt 8) a-9 (around lalt 9) a-0 (around lalt 0)
+  a-- (around lalt -) a-= (around lalt =) a-bspc (around lalt bspc)
+  a-home (around lalt home) a-tab (around lalt tab) a-q (around lalt q)
+  a-w (around lalt w) a-e (around lalt e) a-r (around lalt r)
+  a-t (around lalt t) a-y (around lalt y) a-u (around lalt u)
+  a-i (around lalt i) a-o (around lalt o) a-p (around lalt p)
+  a-[ (around lalt [) a-] (around lalt ]) a-\ (around lalt \\)
+  a-pgup (around lalt pgup) a-caps (around lalt caps)
+  a-a 1 a-s 2 a-d 3 a-f 4 a-g 5 a-h 6 a-j 7 a-k 8 a-l 9 a-; 0
+  a-' (around lalt ') a-ret (around lalt ret) a-pgdn (around lalt pgdn)
+  a-lsft (around lalt lsft) a-z (around lalt z) a-x (around lalt x)
+  a-c (around lalt c) a-v (around lalt v) a-b (around lalt b)
+  a-n (around lalt n)
+  a-m - a-, (around lsft -) a-. (around lsft =) a-/ =
+a-rsft (around lalt rsft)
+  a-up (around lalt up) a-end (around lalt end) a-lctl (around lalt lctl)
+  a-lmet (around lalt lmet) a-lalt (around lalt lalt) a-spc (around lalt spc)
+  a-ralt (around lalt ralt) a-cmps (around lalt cmps) a-rctl (around lalt rctl)
+  a-left (around lalt left) a-down (around lalt down) a-rght (around lalt rght)
 )

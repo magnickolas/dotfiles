@@ -112,7 +112,13 @@ return {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
     event = "InsertEnter",
-    config = true,
+    opts = {
+      suggestion = {
+        keymap = {
+          accept = "<M-u>",
+        },
+      },
+    },
   },
   {
     "iamcco/markdown-preview.nvim",
@@ -149,4 +155,37 @@ return {
   "NoahTheDuke/vim-just",
   "tikhomirov/vim-glsl",
   "tpope/vim-fugitive",
+  {
+    "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        query_linter = {
+          enable = true,
+          use_virtual_text = true,
+          lint_events = { "BufWrite", "CursorHold" },
+        },
+      })
+    end,
+  },
+  {
+    "nvim-treesitter/playground",
+    config = function()
+      local ts = require("nvim-treesitter.configs")
+      ts.setup({
+        highlight = {
+          enable = true,
+        },
+        indent = { enable = true },
+        playground = {
+          enable = true,
+          disable = {},
+          updatetime = 25,
+          persist_queries = false,
+          keybindings = {
+            -- probably not relevant
+          },
+        },
+      })
+    end,
+  },
 }
