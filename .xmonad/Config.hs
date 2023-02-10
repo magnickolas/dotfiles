@@ -30,13 +30,15 @@ cfg =
       liveWallpaperServer = "x live-wallpaper run-server",
       lockScreen = "~/scripts/lockscreen.sh",
       lowerVolume = "pactl set-sink-volume @DEFAULT_SINK@ -5%",
-      terminal' = "wezterm",
+      terminal' = "konsole",
       passPrompt = "passmenu",
       passPromptType = "passmenu --type",
       raiseVolume = "pactl set-sink-volume @DEFAULT_SINK@ +5%",
       rustLspMultiplex = "~/.cargo/bin/ra-multiplex-server",
       scratchpadClass = sClass,
-      scratchpadTerminal = "wezterm start --class " ++ sClass,
+      scratchpadTerminal = "konsole --name " ++ sClass,
+      -- scratchpadTerminal = "wezterm start --class " ++ sClass,
+      -- scratchpadTerminal = "alacritty -o window.opacity=1 --class " ++ sClass,
       screenZoomer = "boomer",
       screensaver = "xscreensaver-command -lock",
       screensaverBg = "xscreensaver -no-splash",
@@ -68,7 +70,7 @@ cfg =
       xmobar = "~/.cabal/bin/myxmobar"
     }
   where
-    sClass = "wezterm.scratchpad"
+    sClass = "terminal.scratchpad"
     spotifyDbus event = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player." ++ event
 
 colors :: Colors

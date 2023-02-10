@@ -4,7 +4,7 @@ return {
     dependencies = {
       "rafamadriz/friendly-snippets",
       config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./snippets" } })
       end,
     },
     opts = {
@@ -14,14 +14,14 @@ return {
     -- stylua: ignore
     keys = {
       {
-        "<tab>",
+        "<c-j>",
         function()
           return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
         end,
         expr = true, remap = true, silent = true, mode = "i",
       },
       { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
+      -- { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
   },
 
@@ -70,6 +70,7 @@ return {
     opts = {
       servers = {
         asm_lsp = {},
+        taplo = {},
         bashls = {},
         clangd = {
           capabilities = {
@@ -144,7 +145,7 @@ return {
           },
         },
         vimls = {},
-        hls = {},
+        -- hls = {},
       },
       setup = {},
     },

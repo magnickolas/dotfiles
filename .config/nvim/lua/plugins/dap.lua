@@ -92,6 +92,7 @@ function M.config()
     },
   }
   dap.configurations.c = dap.configurations.cpp
+  dap.configurations.rust = dap.configurations.cpp
 
   local dapui = require("dapui")
   dap.listeners.after.event_initialized["dapui_config"] = function()

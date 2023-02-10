@@ -58,6 +58,11 @@ function mkcd {
 	mkdir -p "$1" && cd "$1"
 }
 
+function cl()
+{
+    cd "$1" && clear && ls --color=auto
+}
+
 function backup {
 	local backup_name="$1.original"
 	cp "$1" "${backup_name}"

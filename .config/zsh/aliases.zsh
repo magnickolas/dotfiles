@@ -38,7 +38,7 @@ alias ......="cd ../../../../.."
 alias .......="cd ../../../../../.."
 alias ........="cd ../../../../../../.."
 alias zudo='sudo zsh -c "$functions[$1]" "$@" '
-alias svim='sudoedit'
+alias svim='sudo -E nvim'
 alias prime-run='__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia'
 # alias cp='rsync -avhPe ssh --append-verify'
 _alias_if feh feh --scale-down # fit screen in image viewer

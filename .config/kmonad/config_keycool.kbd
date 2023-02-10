@@ -26,7 +26,7 @@
   tab   q    w    e    r    t    y    u    i    o    p    [     ]      \          pgup
   @meb  a    s    d    f    g    h    j    k    l    ;    '     ret               pgdn
   lsft  z    x    c    v    b    n    m    ,    .    /    rsft         up         end
-  lctl  lmet @act      spc                 ralt cmps rctl       left   down   rght
+  lctl  lmet @act      spc                 bspc cmps rctl       left   down   rght
   )
 
 (defalias 
@@ -61,15 +61,13 @@
   a-i (around lalt i) a-o (around lalt o) a-p (around lalt p)
   a-[ (around lalt [) a-] (around lalt ]) a-\ (around lalt \\)
   a-pgup (around lalt pgup) a-caps (around lalt caps)
-  a-a 1 a-s 2 a-d 3 a-f 4 a-g 5 a-h 6 a-j 7 a-k 8 a-l 9 a-; 0
+  a-a (around lalt a) a-s (around lalt s) a-d (around lalt d) a-f (around lalt f) a-g (around lalt g) a-h (around lalt h) a-j (around lalt j) a-k (around lalt k) a-l (around lalt l) a-; (around lalt ;)
   a-' (around lalt ') a-ret (around lalt ret) a-pgdn (around lalt pgdn)
-  a-lsft (around lalt lsft) a-z (around lalt z) a-x (around lalt x)
-  a-c (around lalt c) a-v (around lalt v) a-b (around lalt b)
-  a-n (around lalt n)
-  a-m - a-, (around lsft -) a-. (around lsft =) a-/ =
-a-rsft (around lalt rsft)
+  a-lsft (around lalt lsft)
+  a-z (around lalt z) a-x (around lalt x) a-c (around lalt c) a-v (around lalt v) a-b (around lalt b) a-n (around lalt n) a-m (around lalt m) a-, (around lalt ,) a-. (around lalt .) a-/ (around lalt /)
+  a-rsft (around lalt rsft)
   a-up (around lalt up) a-end (around lalt end) a-lctl (around lalt lctl)
   a-lmet (around lalt lmet) a-lalt (around lalt lalt) a-spc (around lalt spc)
-  a-ralt (around lalt ralt) a-cmps (around lalt cmps) a-rctl (around lalt rctl)
+  a-ralt (around lalt bspc) a-cmps (around lalt cmps) a-rctl (around lalt rctl)
   a-left (around lalt left) a-down (around lalt down) a-rght (around lalt rght)
 )

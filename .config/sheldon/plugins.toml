@@ -20,8 +20,8 @@ use = ["{async,pure}.zsh"]
 
 # deferred
 
-[plugins.fzf-tab]
-github = "Aloxaf/fzf-tab"
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
 apply = ["defer"]
 
 [plugins.zsh-autosuggestions]
@@ -29,12 +29,12 @@ github = "zsh-users/zsh-autosuggestions"
 use = ["{{ name }}.zsh"]
 apply = ["defer"]
 
-[plugins.fast-syntax-highlighting]
-github = "zdharma-continuum/fast-syntax-highlighting"
-apply = ["defer"]
-
 [plugins.forgit]
 github = "wfxr/forgit"
+apply = ["defer"]
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
 apply = ["defer"]
 
 [plugins.compinit]

@@ -14,9 +14,9 @@ end
 
 M.set_colorscheme = function(colorscheme)
   vim.o.background = "dark"
-  vim.cmd([[highlight StatusLine ctermbg=NONE cterm=NONE guibg=NONE gui=NONE]])
   vim.o.cursorline = false
   vim.cmd("colorscheme " .. colorscheme)
+  vim.cmd([[highlight StatusLine ctermbg=NONE cterm=NONE guibg=NONE gui=NONE]])
 end
 
 M.configure_backup = function()
@@ -45,8 +45,8 @@ M.configure_editor = function()
   vim.o.completeopt = "menuone,noinsert,noselect"
   vim.o.showmode = false
   vim.o.showcmd = false
-  vim.o.foldmethod = "marker"
-  vim.o.foldlevel = 0
+  -- vim.o.foldmethod = "marker"
+  vim.o.foldlevel = 99
   vim.o.autochdir = false
   vim.o.splitright = true
   vim.o.splitbelow = true
@@ -58,9 +58,14 @@ M.configure_editor = function()
   vim.o.ruler = true
   local rulericons = { "☃ ", "🎅", "🎄", "❄ " }
   math.randomseed(os.time())
+  -- color line and column in red
   vim.o.rulerformat = "%50(%=%#LineNr#%.50F "
     .. rulericons[math.random(#rulericons)]
     .. " %{strlen(&ft)?&ft:'none'} %l:%c %)"
+  -- vim.o.rulerformat = "%50(%= " .. rulericons[math.random(#rulericons)] .. " %{strlen(&ft)?&ft:'none'} %l:%c %)"
+  -- vim.o.rulerformat = "%20(%= %{strlen(&ft)?&ft:'none'} "
+  --   .. rulericons[math.random(#rulericons)]
+  --   .. " %m%r%6(%l:%c%) %)"
 
   if vim.fn.executable("rg") then
     vim.opt.grepprg = "rg --vimgrep --no-heading"
@@ -68,6 +73,12 @@ M.configure_editor = function()
   end
 
   vim.cmd([[ca tn tabnew]])
+end
+
+M.autocommands = function()
+  -- detect *.ii files as C++
+  vim.cmd([[au BufNewFile,BufRead *.ii set filetype=cpp]])
+  vim.cmd([[au VimLeave * set guicursor=a:ver1-blinkon0]])
 end
 
 return M

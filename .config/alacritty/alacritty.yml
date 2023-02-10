@@ -14,53 +14,14 @@ env:
   TERM: xterm-256color
 
 window:
-  # Window dimensions (changes require restart)
-  #
-  # Specified in number of columns/lines, not pixels.
-  # If both are `0`, this setting is ignored.
   dimensions:
     columns: 0
     lines: 0
-
-  # Window position (changes require restart)
-  #
-  # Specified in number of pixels.
-  # If the position is not set, the window manager will handle the placement.
-  #position:
-  #  x: 0
-  #  y: 0
-
-  # Window padding (changes require restart)
-  #
-  # Blank space added around the window in pixels. This padding is scaled
-  # by DPI and the specified value is always added at both opposing sides.
   padding:
     x: 0
     y: 0
-
-  # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
-
-  # Window decorations
-  #
-  # Values for `decorations`:
-  #     - full: Borders and title bar
-  #     - none: Neither borders nor title bar
-  #
-  # Values for `decorations` (macOS only):
-  #     - transparent: Title bar, transparent background and title bar buttons
-  #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: full
-
-  # Startup Mode (changes require restart)
-  #
-  # Values for `startup_mode`:
-  #   - Windowed
-  #   - Maximized
-  #   - Fullscreen
-  #
-  # Values for `startup_mode` (macOS only):
-  #   - SimpleFullscreen
+  decorations: none
   startup_mode: Windowed
 
   # Window title
@@ -72,12 +33,6 @@ window:
     instance: Alacritty
     # General application class
     general: Alacritty
-
-  # GTK theme variant (Linux only)
-  #
-  # Override the variant of the GTK theme. Commonly supported values are `dark` and `light`.
-  # Set this to `None` to use the default theme variant.
-  gtk_theme_variant: None
 
 scrolling:
   # Maximum number of lines in the scrollback buffer.
@@ -111,45 +66,17 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    # Font family
-    #
-    # Default:
-    #   - (macOS) Menlo
-    #   - (Linux) monospace
-    #   - (Windows) Consolas
-    #family: TerminessTTF Nerd Font Mono 
     family: Iosevka Term
-    #family: DejaVu Sans Mono for Powerline
-    #family: Fira Mono for Powerline
-
-    # The `style` can be specified to pick a specific face.
     style: Regular
-    #style: Book
-
-  # Bold font face
-  #bold:
-    # Font family
-    #
-    # If the bold family is not specified, it will fall back to the
-    # value specified for the normal font.
-    #family: monospace
-
-    # The `style` can be specified to pick a specific face.
-    #style: Bold
-
-  # Italic font face
-  #italic:
-    # Font family
-    #
-    # If the italic family is not specified, it will fall back to the
-    # value specified for the normal font.
-    #family: monospace
-
-    # The `style` can be specified to pick a specific face.
-    #style: Italic
+  bold:
+    family: Iosevka Term
+    style: Regular
+  italic:
+    family: Iosevka Term
+    style: Regular
 
   # Point size
-  size: 13
+  size: 16
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -163,25 +90,10 @@ font:
   glyph_offset:
     x: 0
     y: 0
-
-  # Thin stroke font rendering (macOS only)
-  #
-  # Thin strokes are suitable for retina displays, but for non-retina screens
-  # it is recommended to set `use_thin_strokes` to `false`
-  #
-  # macOS >= 10.14.x:
-  #
-  # If the font quality on non-retina display looks bad then set
-  # `use_thin_strokes` to `true` and enable font smoothing by running the
-  # following command:
-  #   `defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO`
-  #
-  # This is a global setting and will require a log out or restart to take
-  # effect.
-  # use_thin_strokes: true
+  builtin_box_drawing: true
 
 # If `true`, bold text is drawn using the bright color variants.
-draw_bold_text_with_bright_colors: true
+draw_bold_text_with_bright_colors: false
 
 schemes:
   nord: &nord
@@ -339,8 +251,37 @@ schemes:
       magenta: '#c678dd'
       cyan:    '#56b6c2'
       white:   '#d4d4d4'
+  gruvbox: &gruvbox
+    cursor:
+      text: '0x1d2021'
+      cursor: '0xd5c4a1'
+    primary:
+      background: '0x1d2021'
+      foreground: '0xd5c4a1'
 
-colors: *black
+    # Normal colors
+    normal:
+      black:   '0x928374'
+      red:     '0xfb4934'
+      green:   '0xb8bb26'
+      yellow:  '0xfabd2f'
+      blue:    '0x83a598'
+      magenta: '0xd3869b'
+      cyan:    '0x8ec07c'
+      white:   '0xd5c4a1'
+
+    # Bright colors
+    bright:
+      black:   '0x665c54'
+      red:     '0xfe8019'
+      green:   '0x6c8886'
+      yellow:  '0x504945'
+      blue:    '0xbdae93'
+      magenta: '0xebdbb2'
+      cyan:    '0xd65d0e'
+      white:   '0xfbf1c7'
+
+colors: *gruvbox
 
 # Visual Bell
 #
@@ -373,7 +314,7 @@ bell:
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
 window:
-  opacity: 0.4
+  opacity: 0.7
   dynamic_title: true
 
 selection:
@@ -391,11 +332,10 @@ cursor:
   #   - ▇ Block
   #   - _ Underline
   #   - | Beam
-  style: Block
-
-  # If this is `true`, the cursor will be rendered as a hollow box when the
-  # window is not focused.
-  unfocused_hollow: true
+  style:
+    shape: Beam
+    blinking: Off
+  unfocused_hollow: false
 
 # Live config reload (changes require restart)
 live_config_reload: true
@@ -450,7 +390,7 @@ debug:
   #   - Info
   #   - Debug
   #   - Trace
-  log_level: Warn
+  log_level: Info
 
   # Print all received window events.
   print_events: false

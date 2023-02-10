@@ -1,17 +1,11 @@
 local M = {}
 local opts = { noremap = true, silent = true }
 
-local function paste_keep_cursor_column(above)
-  return function()
-    vim.cmd("normal! " .. (above and "P" or "p") .. vim.fn.col(".") .. "|")
-  end
-end
-
 local u = require("utils").update
 
 M.general = {
-  { { "n" }, "p", paste_keep_cursor_column(false), opts },
-  { { "n" }, "P", paste_keep_cursor_column(true), opts },
+  -- { { "n" }, "p", paste_keep_cursor(), opts },
+  -- { { "n" }, "P", paste_keep_cursor(), opts },
   { "v", "<leader>y", '"+yg_', { desc = "Yank to clipboard" } },
   { { "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" } },
   { { "n", "v" }, "<leader>P", '"+P', { desc = "Paste from clipboard" } },
@@ -52,15 +46,37 @@ M.general = {
   { { "n" }, "<S-Left>", "<cmd>vertical resize -2<CR>", opts },
   { { "n" }, "<S-Right>", "<cmd>vertical resize +2<CR>", opts },
 
+  { { "n" }, "<leader>/", ":CommentToggle<CR>", opts },
+  { { "v" }, "<leader>/", ":'<,'>CommentToggle<CR>", opts },
+
+  { { "n", "v" }, "<A-i>", ":ToggleTerm<CR>", opts },
+  { { "i" }, "<A-i>", "<ESC>:ToggleTerm<CR>", opts },
+  { { "t" }, "<A-i>", "<C-\\><C-n>:ToggleTerm<CR>", opts },
+
   { { "n", "v" }, "<leader>wj", "<C-w>j", u(opts, { desc = "Move to pane below" }) },
   { { "n", "v" }, "<leader>wk", "<C-w>k", u(opts, { desc = "Move to pane above" }) },
   { { "n", "v" }, "<leader>wh", "<C-w>h", u(opts, { desc = "Move to pane left" }) },
   { { "n", "v" }, "<leader>wl", "<C-w>l", u(opts, { desc = "Move to pane right" }) },
+  { { "n", "v" }, "<leader>wo", "<C-w>o", u(opts, { desc = "Keep the only pane" }) },
 
   { { "n", "x" }, "gw", "*N", u(opts, { desc = "Cycle through last search" }) },
   { { "n", "v" }, "s", "f", opts }, -- remap s -> f since f is taken by `leap`
 
   { { "n" }, "<leader>tf", require("plugins.lsp.format").toggle, { desc = "Toggle format on Save" } },
+  { { "n" }, "<leader>b0", ":Godbolt<CR>-std=c++20 -O0<CR>", { desc = "Godbolt non-optimized" } },
+  { { "n" }, "<leader>b2", ":Godbolt<CR>-std=c++20 -O2<CR>", { desc = "Godbold optimized" } },
+  { { "n" }, "<leader>bo", ":Godbolt<CR>-std=c++20 -O3 -march=native<CR>", { desc = "Godbold optimized" } },
+  { { "v" }, "<leader>b0", ":'<,'>Godbolt<CR>-std=c++20 -O0<CR>", { desc = "Godbolt non-optimized" } },
+  { { "v" }, "<leader>b2", ":'<,'>Godbolt<CR>-std=c++20 -O2<CR>", { desc = "Godbold optimized" } },
+  { { "v" }, "<leader>bo", ":'<,'>Godbolt<CR>-std=c++20 -O3 -march=native<CR>", { desc = "Godbold optimized" } },
+  { { "n" }, "<leader>bs", ":GodboltCompiler telescope<CR>", { desc = "Godbold select compiler" } },
+  { { "v" }, "<leader>bs", ":'<,'>GodboltCompiler telescope<CR>", { desc = "Godbold select compiler" } },
+  { { "n" }, "<A-j>", ":m .+1<CR>==", opts },
+  { { "n" }, "<A-k>", ":m .-2<CR>==", opts },
+  { { "i" }, "<A-j>", "<Esc>:m .+1<CR>==gi", opts },
+  { { "i" }, "<A-k>", "<Esc>:m .-2<CR>==gi", opts },
+  { { "v" }, "<A-j>", ":m '>+1<CR>gv=gv", opts },
+  { { "v" }, "<A-k>", ":m '<-2<CR>gv=gv", opts },
 }
 
 return M

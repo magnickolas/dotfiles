@@ -13,7 +13,7 @@ tabletLayout =
     "ctrl shift =",
     "ctrl z",
     "e",
-    "ctrl shift z"
+    "ctrl y"
   ]
 
 ---

@@ -35,6 +35,7 @@ import XMonad
         terminal,
         workspaces
       ),
+    appName,
     className,
     get,
     gets,
@@ -199,7 +200,6 @@ main = do
                   do
                     spawnOnce $ kmonad cfg
                     spawnOnce $ kmonadKeycool cfg
-                    spawnOnce $ xmobar cfg
                     spawnOnce $ compositor cfg
                     spawn $ setWallpaper cfg
                     spawnOnce $ clipboardManager cfg
@@ -210,7 +210,8 @@ main = do
                     spawnOnce $ rustLspMultiplex cfg
                     -- workaround fixing text insertion
                     -- https://github.com/jordansissel/xdotool/issues/49
-                    spawnOnce "setxkbmap",
+                    spawnOnce "setxkbmap"
+                    spawnOnce $ "sleep 1 && " ++ xmobar cfg,
                 handleEventHook =
                   handleEventHook def
                     <+> multiScreenFocusHook
@@ -318,7 +319,7 @@ myScratchpads =
   [ NS
       (scratchpadClass cfg)
       (scratchpadTerminal cfg)
-      (className =? scratchpadClass cfg)
+      (appName =? scratchpadClass cfg <||> className =? scratchpadClass cfg)
       centerWinBig,
     NS (spotifyQt cfg) (spotifyQt cfg) (className =? spotifyQt cfg) centerWin
   ]
