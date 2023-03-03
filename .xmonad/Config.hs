@@ -52,6 +52,7 @@ cfg =
       spotifyToggle = spotifyDbus "PlayPause",
       suspend = "systemctl suspend",
       takeScreenshot = "flameshot gui",
+      tray = "stalonetray --background '#222222' --geometry '4x1-0-0' --max-geometry '4x1' --window-strut bottom --icon-gravity ES --grow-gravity E --slot-size '33x33' --icon-size 24 --kludges=force_icons_size",
       udiskie = "udiskie",
       workspace =
         Workspace
@@ -184,6 +185,7 @@ data Config = Config
     spotifyToggle :: String,
     suspend :: String,
     takeScreenshot :: String,
+    tray :: String,
     udiskie :: String,
     workspace :: Workspace,
     xcolor :: String,

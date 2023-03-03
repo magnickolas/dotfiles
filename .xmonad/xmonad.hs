@@ -127,6 +127,7 @@ import XMonad.Layout.Decoration
     fi,
     shrinkText,
   )
+import XMonad.Layout.FocusTracking (focusTracking)
 import XMonad.Layout.Hidden (hiddenWindows, hideWindow, popNewestHiddenWindow)
 import XMonad.Layout.LayoutModifier (ModifiedLayout)
 import XMonad.Layout.MultiToggle (EOT (EOT), mkToggle, (??))
@@ -144,7 +145,6 @@ import XMonad.Layout.Spacing
     Spacing,
     spacingRaw,
   )
-import XMonad.Layout.StateFull (FocusTracking (FocusTracking))
 import XMonad.Layout.TabBarDecoration
   ( XPPosition (Top),
     resizeVertical,
@@ -208,6 +208,7 @@ main = do
                     spawnOnce $ screensaverBg cfg
                     spawnOnce $ liveWallpaperServer cfg
                     spawnOnce $ rustLspMultiplex cfg
+                    spawnOnce $ tray cfg
                     -- workaround fixing text insertion
                     -- https://github.com/jordansissel/xdotool/issues/49
                     spawnOnce "setxkbmap"
@@ -353,6 +354,7 @@ myKKeys XConfig {modMask = winMask} =
       ((winMask .|. shiftMask, xK_q), kill),
       ((mod1Mask .|. shiftMask, xK_e), confirmPrompt promptConf "exit" $ io exitSuccess),
       ((winMask, xK_f), sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts),
+      -- , ((winMask, xK_o), safeSpawn "systemd-run" ["--user", "--slice=firefox.slice", "/bin/firefox"])
       ((winMask, xK_o), safeSpawnProg (browser cfg)),
       ((winMask, xK_minus), toggleSP $ scratchpadClass cfg),
       ((winMask, xK_equal), toggleSP $ spotifyQt cfg),
@@ -489,7 +491,7 @@ myLayoutHook =
         nmaster = 1
         ratio = 1 / 2
         delta = 2 / 100
-        tabs = renamed [Replace "Tabs"] $ addTabs (FocusTracking Nothing Simplest)
+        tabs = renamed [Replace "Tabs"] $ focusTracking (addTabs Simplest)
         addTabs l =
           tabBar shrinkText tabTheme Top $
             resizeVertical (fi $ decoHeight tabTheme) l
