@@ -45,6 +45,5 @@ export GO111MODULE=on
 export PURE_PROMPT_SYMBOL=" "
 export PURE_GIT_PULL=0
 export PURE_CMD_MAX_EXEC_TIME=1000000000
-export MALLOC_CHECK_=0
 
 skip_global_compinit=1
