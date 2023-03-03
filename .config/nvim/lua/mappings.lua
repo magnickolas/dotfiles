@@ -58,6 +58,7 @@ M.general = {
   { { "n", "v" }, "<leader>wh", "<C-w>h", u(opts, { desc = "Move to pane left" }) },
   { { "n", "v" }, "<leader>wl", "<C-w>l", u(opts, { desc = "Move to pane right" }) },
   { { "n", "v" }, "<leader>wo", "<C-w>o", u(opts, { desc = "Keep the only pane" }) },
+  { { "n" }, "<leader>wv", ":vsp<CR>", u(opts, { desc = "Vertical split" }) },
 
   { { "n", "x" }, "gw", "*N", u(opts, { desc = "Cycle through last search" }) },
   { { "n", "v" }, "s", "f", opts }, -- remap s -> f since f is taken by `leap`
@@ -77,6 +78,10 @@ M.general = {
   { { "i" }, "<A-k>", "<Esc>:m .-2<CR>==gi", opts },
   { { "v" }, "<A-j>", ":m '>+1<CR>gv=gv", opts },
   { { "v" }, "<A-k>", ":m '<-2<CR>gv=gv", opts },
+
+  { { "n" }, "<leader>o", ":Neorg workspace notes<CR>", opts },
+
+  { { "n" }, "<leader>gg", ":tab G<CR>", opts },
 }
 
 return M

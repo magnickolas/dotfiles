@@ -76,9 +76,79 @@ M.configure_editor = function()
 end
 
 M.autocommands = function()
-  -- detect *.ii files as C++
-  vim.cmd([[au BufNewFile,BufRead *.ii set filetype=cpp]])
-  vim.cmd([[au VimLeave * set guicursor=a:ver1-blinkon0]])
+  local function nvim_create_augroups(definitions)
+    for group_name, definition in pairs(definitions) do
+      vim.api.nvim_create_augroup(group_name, {})
+      for _, def in ipairs(definition) do
+        local command_name = table.remove(def, 1)
+        local pattern = table.remove(def, 1)
+        local opts = require("utils").update({ pattern = pattern }, def)
+        vim.api.nvim_create_autocmd(command_name, opts)
+      end
+    end
+  end
+  local autocmds = {
+    exit = {
+      -- https://github.com/neovim/neovim/issues/6005
+      -- In some terminals (e.g. Alacritty, Konsole),
+      -- the cursor is getting set to `block` after neovim exit.
+      --
+      -- Hack it for now and force set the desirable cursor style
+      -- right before Vim exit
+      {
+        "VimLeave",
+        "*",
+        callback = function()
+          vim.o.guicursor = "a:ver1-blinkon0"
+        end,
+      },
+    },
+    spell = {
+      {
+        "FileType",
+        "gitcommit,markdown",
+        callback = function()
+          vim.wo.spell = true
+        end,
+      },
+    },
+    cpp = {
+      -- disable buggy treesitter indentation
+      {
+        "FileType",
+        "cpp",
+        callback = function()
+          vim.bo.indentexpr = ""
+        end,
+      },
+    },
+    ftdetect = {
+      {
+        "BufEnter,BufRead",
+        "*.ii",
+        callback = function()
+          vim.bo.filetype = "cpp"
+        end,
+      },
+    },
+    help = {
+      {
+        "FileType",
+        "help",
+        callback = function()
+          vim.api.nvim_buf_set_keymap(0, "n", "<Return>", "<C-]>", { noremap = true })
+        end,
+      },
+      {
+        "FileType",
+        "help,man",
+        callback = function()
+          vim.api.nvim_buf_set_keymap(0, "n", "q", "<cmd>q<cr>", { noremap = true })
+        end,
+      },
+    },
+  }
+  nvim_create_augroups(autocmds)
 end
 
 return M

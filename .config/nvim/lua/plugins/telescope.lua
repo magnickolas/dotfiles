@@ -20,6 +20,10 @@ local function project_files(opts)
   end
 end
 
+local function show_hidden(opts)
+  return require("utils").update(opts, { hidden = true })
+end
+
 return {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
@@ -31,14 +35,21 @@ return {
     {
       "<leader>ff",
       function()
-        project_files(theme())
+        project_files(show_hidden(theme()))
       end,
-      desc = "Find File",
+      desc = "Find File in project dir",
+    },
+    {
+      "<leader>fc",
+      function()
+        tb().find_files(show_hidden(theme()))
+      end,
+      desc = "Find File in cwd",
     },
     {
       "<leader>fg",
       function()
-        tb().live_grep(theme())
+        tb().live_grep(show_hidden(theme()))
       end,
       desc = "",
     },
@@ -87,7 +98,7 @@ return {
     {
       "<leader>fb",
       function()
-        exts().file_browser.file_browser(theme())
+        exts().file_browser.file_browser(show_hidden(theme()))
       end,
       desc = "",
     },
