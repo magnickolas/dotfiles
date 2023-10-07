@@ -53,7 +53,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "WhoIsSethDaniel/toggle-lsp-diagnostics.nvim",
-      { "j-hui/fidget.nvim", config = true },
+      { "j-hui/fidget.nvim", config = true, tag = "legacy" },
       "jose-elias-alvarez/null-ls.nvim",
     },
     opts = {
@@ -151,7 +151,6 @@ return {
       require("mason-nvim-dap").setup({
         automatic_setup = true,
       })
-      require("mason-nvim-dap").setup_handlers()
       local ensure_installed = vim.tbl_keys(servers)
       ensure_installed.asm_lsp = nil
       require("mason-lspconfig").setup({ ensure_installed = ensure_installed })

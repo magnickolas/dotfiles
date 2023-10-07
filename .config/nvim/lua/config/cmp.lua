@@ -1,5 +1,11 @@
 return {
-  enabled = true,
+  enabled = function()
+    if vim.bo.buftype == "prompt" then
+      return false
+    end
+
+    return true
+  end,
   icons = {
     diagnostics = {
       Error = " ",

@@ -47,9 +47,6 @@ function M.on_attach(client, buffer)
   self:map("<leader>tdr", function()
     diagnostics_toggler().toggle_default()
   end, { desc = "default" })
-  require("cmp.config").enabled = function()
-    return require("config.cmp").enabled
-  end
   self:map("<leader>tc", function()
     require("config.cmp").enabled = not require("config.cmp").enabled
   end, { desc = "completion" })

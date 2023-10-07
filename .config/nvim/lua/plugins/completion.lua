@@ -85,6 +85,7 @@ return {
     end,
     config = function(_, opts)
       local cmp = require("cmp")
+      opts.enabled = require("config.cmp").enabled
       cmp.setup(opts)
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
