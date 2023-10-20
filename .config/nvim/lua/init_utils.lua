@@ -124,10 +124,17 @@ M.autocommands = function()
     },
     ftdetect = {
       {
-        "BufEnter,BufRead",
+        { "BufEnter", "BufRead" },
         "*.ii",
         callback = function()
           vim.bo.filetype = "cpp"
+        end,
+      },
+      {
+        { "BufEnter", "BufRead" },
+        "*.go",
+        callback = function()
+          require("plugins.lsp.format").autoformat = false
         end,
       },
     },

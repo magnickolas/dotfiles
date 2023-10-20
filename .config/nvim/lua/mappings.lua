@@ -79,8 +79,6 @@ M.general = {
   { { "v" }, "<A-j>", ":m '>+1<CR>gv=gv", opts },
   { { "v" }, "<A-k>", ":m '<-2<CR>gv=gv", opts },
 
-  { { "n" }, "<leader>o", ":Neorg workspace notes<CR>", opts },
-
   { { "n" }, "<leader>gg", ":tab G<CR>", opts },
 }
 
