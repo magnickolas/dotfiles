@@ -54,11 +54,9 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "WhoIsSethDaniel/toggle-lsp-diagnostics.nvim",
       { "j-hui/fidget.nvim", config = true, tag = "legacy" },
-      "jose-elias-alvarez/null-ls.nvim",
     },
     opts = {
       servers = {
-        asm_lsp = {},
         taplo = {},
         bashls = {},
         clangd = {
@@ -81,60 +79,19 @@ return {
             },
           },
         },
+        lua_ls = {
+          settings = {
+            Lua = {
+              workspace = {
+                checkThirdParty = "Disable",
+              },
+            },
+          },
+        },
         marksman = {},
         pyright = {},
         yamlls = {},
-        -- sumneko_lua = {
-        --   single_file_support = true,
-        --   settings = {
-        --     Lua = {
-        --       workspace = {
-        --         checkThirdParty = false,
-        --       },
-        --       completion = {
-        --         workspaceWord = true,
-        --         callSnippet = "Both",
-        --       },
-        --       misc = {
-        --         parameters = {
-        --           "--log-level=trace",
-        --         },
-        --       },
-        --       diagnostics = {
-        --         -- enable = false,
-        --         groupSeverity = {
-        --           strong = "Warning",
-        --           strict = "Warning",
-        --         },
-        --         groupFileStatus = {
-        --           ["ambiguity"] = "Opened",
-        --           ["await"] = "Opened",
-        --           ["codestyle"] = "None",
-        --           ["duplicate"] = "Opened",
-        --           ["global"] = "Opened",
-        --           ["luadoc"] = "Opened",
-        --           ["redefined"] = "Opened",
-        --           ["strict"] = "Opened",
-        --           ["strong"] = "Opened",
-        --           ["type-check"] = "Opened",
-        --           ["unbalanced"] = "Opened",
-        --           ["unused"] = "Opened",
-        --         },
-        --         unusedLocalExclude = { "_*" },
-        --       },
-        --       format = {
-        --         enable = false,
-        --         defaultConfig = {
-        --           indent_style = "space",
-        --           indent_size = "2",
-        --           continuation_indent_size = "2",
-        --         },
-        --       },
-        --     },
-        --   },
-        -- },
         vimls = {},
-        -- hls = {},
       },
       setup = {},
     },
@@ -149,10 +106,10 @@ return {
 
       require("mason").setup()
       require("mason-nvim-dap").setup({
-        automatic_setup = true,
+        ensure_installed = {},
+        automatic_installation = false,
       })
       local ensure_installed = vim.tbl_keys(servers)
-      ensure_installed.asm_lsp = nil
       require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
       require("mason-lspconfig").setup_handlers({
         function(server)
@@ -186,7 +143,7 @@ return {
         save_after_format = false,
         sources = {
           nls.builtins.formatting.prettierd,
-          nls.builtins.formatting.stylua,
+          -- nls.builtins.formatting.stylua,
           nls.builtins.diagnostics.shellcheck,
           nls.builtins.formatting.shfmt,
           nls.builtins.formatting.prettierd.with({

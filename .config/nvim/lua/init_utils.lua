@@ -56,16 +56,9 @@ M.configure_editor = function()
   vim.o.laststatus = 0
   vim.o.cmdheight = 1
   vim.o.ruler = true
-  local rulericons = { "☃ ", "🎅", "🎄", "❄ " }
   math.randomseed(os.time())
   -- color line and column in red
-  vim.o.rulerformat = "%50(%=%#LineNr#%.50F "
-    .. rulericons[math.random(#rulericons)]
-    .. " %{strlen(&ft)?&ft:'none'} %l:%c %)"
-  -- vim.o.rulerformat = "%50(%= " .. rulericons[math.random(#rulericons)] .. " %{strlen(&ft)?&ft:'none'} %l:%c %)"
-  -- vim.o.rulerformat = "%20(%= %{strlen(&ft)?&ft:'none'} "
-  --   .. rulericons[math.random(#rulericons)]
-  --   .. " %m%r%6(%l:%c%) %)"
+  vim.o.rulerformat = "%50(%=%#LineNr#%.50F " .. "%{strlen(&ft)?&ft:'none'} %l:%c %)"
 
   if vim.fn.executable("rg") then
     vim.opt.grepprg = "rg --vimgrep --no-heading"
