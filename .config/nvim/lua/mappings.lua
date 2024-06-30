@@ -80,6 +80,7 @@ M.general = {
     { { "v" },      "<A-k>",      ":m '<-2<CR>gv=gv",                                  opts },
 
     { { "n" },      "<leader>gg", ":tab G<CR>",                                        opts },
+    { { "i" },      "<C-j>",      "<ESC>",                                             opts },
 }
 
 return M

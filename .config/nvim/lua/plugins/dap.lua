@@ -10,6 +10,7 @@ local M = {
       end,
     },
     { "jbyuki/one-small-step-for-vimkind" },
+    { "nvim-neotest/nvim-nio" },
   },
 }
 
