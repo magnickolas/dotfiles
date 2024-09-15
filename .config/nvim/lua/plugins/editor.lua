@@ -26,22 +26,24 @@ return {
     event = "VeryLazy",
     opts = {
       plugins = { spelling = true },
-      key_labels = { ["<leader>"] = "SPC" },
+      replace = { ["<leader>"] = "SPC" },
+      preset = "modern",
+      delay = 0,
     },
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
-      wk.register({
+      wk.add({
         mode = { "n", "v" },
-        ["g"] = { name = "+goto" },
-        ["]"] = { name = "+next" },
-        ["["] = { name = "+prev" },
-        ["<leader>c"] = { name = "+code" },
-        ["<leader>f"] = { name = "+file" },
-        ["<leader>g"] = { name = "+git" },
-        ["<leader>t"] = { name = "+toggle" },
-        ["<leader>x"] = { name = "+diagnostics/quickfix" },
-        ["<leader>w"] = { name = "+windows" },
+        { "g", desc = "+goto" },
+        { "]", desc = "+next" },
+        { "[", desc = "+prev" },
+        { "<leader>c", desc = "+code" },
+        { "<leader>f", desc = "+file" },
+        { "<leader>g", desc = "+git" },
+        { "<leader>t", desc = "+toggle" },
+        { "<leader>x", desc = "+diagnostics/quickfix" },
+        { "<leader>w", desc = "+windows" },
       })
     end,
   },
