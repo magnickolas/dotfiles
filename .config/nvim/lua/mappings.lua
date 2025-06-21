@@ -58,9 +58,6 @@ M.general = {
   { { "n" }, "<S-Left>", "<cmd>vertical resize -2<CR>", opts },
   { { "n" }, "<S-Right>", "<cmd>vertical resize +2<CR>", opts },
 
-  { { "n" }, "<leader>/", ":CommentToggle<CR>", opts },
-  { { "v" }, "<leader>/", ":'<,'>CommentToggle<CR>", opts },
-
   { { "n", "v" }, "<A-i>", ":ToggleTerm<CR>", opts },
   { { "i" }, "<A-i>", "<ESC>:ToggleTerm<CR>", opts },
   { { "t" }, "<A-i>", "<C-\\><C-n>:ToggleTerm<CR>", opts },
@@ -153,6 +150,7 @@ M.general = {
 
   { { "n" }, "<leader>gg", ":tab G<CR>", opts },
   { { "i" }, "<C-j>", "<ESC>", opts },
+  { { "n" }, "<leader>u", function() require('undotree').toggle() end, opts },
 }
 
 return M

@@ -9,16 +9,24 @@ return {
     end,
   },
   {
-    "terrortylor/nvim-comment",
-    event = "VeryLazy",
+    "numToStr/Comment.nvim",
     opts = {
-      marker_padding = true,
-      comment_empty = true,
-      create_mappings = false,
-      hook = nil,
+      padding = true,
+      sticky = true,
+      ignore = nil,
+      opleader = {
+        line = "<leader>/",
+        block = "<leader>*",
+      },
+      mappings = {
+        basic = true,
+        extra = true,
+      },
+      pre_hook = nil,
+      post_hook = nil,
     },
     config = function(_, opts)
-      require("nvim_comment").setup(opts)
+      require("Comment").setup(opts)
     end,
   },
   {
@@ -98,7 +106,7 @@ return {
     config = function()
       local luatab = require("luatab")
       local devicon_def = luatab.helpers.devicon
-      local devicon = function(bufnr, isSelected)
+      local devicon = function(bufnr, _)
         return devicon_def(bufnr, false)
       end
       luatab.setup({ devicon = devicon })
@@ -114,19 +122,15 @@ return {
     build = "cd app && yarn install",
   },
   {
-    "junegunn/vim-easy-align",
-    event = "VeryLazy",
-    keys = {
-      { "ga", "<Plug>(EasyAlign)", mode = { "n", "x" }, desc = "Align" },
-    },
+    "echasnovski/mini.align",
+    version = false,
   },
   {
-    "simnalamburt/vim-mundo",
-  },
-  {
-    "norcalli/nvim-terminal.lua",
-    event = "VeryLazy",
+    "jiaoshijie/undotree",
     config = true,
+    requires = {
+      "nvim-lua/plenary.nvim",
+    }
   },
   "mg979/vim-visual-multi",
   {
