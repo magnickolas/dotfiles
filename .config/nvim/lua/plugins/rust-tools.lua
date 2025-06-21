@@ -8,6 +8,13 @@ local M = {
             server = {
                 -- cmd = { "ra-multiplex", "client" },
             },
+            default_settings = {
+                ['rust-analyzer'] = {
+                    cfg = {
+                        setTest = false,
+                    },
+                },
+            },
         }
     end,
     -- config = function()
