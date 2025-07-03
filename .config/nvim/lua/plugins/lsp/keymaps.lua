@@ -27,8 +27,8 @@ function M.on_attach(client, buffer)
   self:map("<leader>r", M.rename, { expr = true, desc = "Rename", has = "rename" })
 
   self:map("<leader>td", function()
-      vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-    end, { desc = "Toggle diagnostics" })
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+  end, { desc = "Toggle diagnostics" })
   -- local function diagnostics_toggler()
   --   return require("toggle_lsp_diagnostics")
   -- end

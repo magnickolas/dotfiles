@@ -150,7 +150,14 @@ M.general = {
 
   { { "n" }, "<leader>gg", ":tab G<CR>", opts },
   { { "i" }, "<C-j>", "<ESC>", opts },
-  { { "n" }, "<leader>u", function() require('undotree').toggle() end, opts },
+  {
+    { "n" },
+    "<leader>u",
+    function()
+      require("undotree").toggle()
+    end,
+    opts,
+  },
 }
 
 return M

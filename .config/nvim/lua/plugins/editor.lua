@@ -37,12 +37,15 @@ return {
       replace = { ["<leader>"] = "SPC" },
       preset = "modern",
       delay = 0,
+      triggers = {
+        { "<auto>", mode = "nso" },
+      },
     },
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        mode = { "n", "v" },
+        mode = { "n" },
         { "g", desc = "+goto" },
         { "]", desc = "+next" },
         { "[", desc = "+prev" },
@@ -130,7 +133,7 @@ return {
     config = true,
     requires = {
       "nvim-lua/plenary.nvim",
-    }
+    },
   },
   "mg979/vim-visual-multi",
   {
@@ -224,4 +227,5 @@ return {
   "pest-parser/pest.vim",
   "hashivim/vim-terraform",
   "folke/trouble.nvim",
+  "junegunn/vim-easy-align",
 }

@@ -52,6 +52,7 @@ M.configure_editor = function()
   vim.o.splitbelow = true
   vim.o.updatetime = 750
   vim.o.mouse = "a"
+  vim.o.messagesopt = "wait:0,history:500"
 
   vim.o.laststatus = 0
   vim.o.cmdheight = 1
