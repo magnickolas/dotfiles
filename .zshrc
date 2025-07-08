@@ -203,3 +203,4 @@ fi
 unset -f _have
 unset -f _source_if
 unset -f _alias_if
+unset ZSH_AUTOSUGGEST_USE_ASYNC
