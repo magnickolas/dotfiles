@@ -4,11 +4,11 @@ if [ ${PERF} = 1 ]; then zmodload zsh/zprof; fi
 setopt promptsubst
 
 function _make_prompt {
-    local PATH_FG="%F{#fabd2f}"
-    local BRK_FG="%F{#8ec07c}"
-    local SYM_FG="%F{#8ec07c}"
-    local RESET="%f"
-    PROMPT='${BRK_FG}${PATH_FG}%~${BRK_FG}${RESET}'$'\n''%(?.'${SYM_FG}' .'$'%F{red} %f) '
+    PATH_FG="%F{#fabd2f}"
+    BRK_FG="%F{#8ec07c}"
+    SYM_FG="%F{#8ec07c}"
+    RESET="%f"
+    PROMPT='${BRK_FG}${PATH_FG}%~$(git_branch)${BRK_FG}${RESET}'$'\n''%(?.'${SYM_FG}' .'$'%F{red} %f) '
 }
 _make_prompt
 unset -f _make_prompt
@@ -52,16 +52,26 @@ function _alias_if() {
     fi
 }
 
-# function git_branch {
-# 	BRANCH_REFS=$(git symbolic-ref HEAD 2>/dev/null) || return
-# 	GIT_BRANCH="${BRANCH_REFS#refs/heads/}"
-# 	[ -n "$GIT_BRANCH" ] && echo " ($GIT_BRANCH)"
-# }
+GIT_PROMPT_COLOR="%F{blue}"
+
+function git_branch {
+  local git_dir branch icon=""
+  git_dir=$(git rev-parse --git-dir 2>/dev/null) || return
+
+  branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null) \
+       || branch=$(git describe --tags --always 2>/dev/null)
+
+  if   [[ -f $git_dir/MERGE_HEAD ]]; then icon="🔀"
+  elif [[ -d $git_dir/rebase-merge || -d $git_dir/rebase-apply ]]; then icon="♻️"
+  fi
+
+  print -r -- "${GIT_PROMPT_COLOR} ${icon} ${branch}%f"
+}
 
 # Set window title to the current directory and optionally git branch
-# function precmd {
-# 	echo -ne "\e]0;$(dirs)$(git_branch)\a"
-# }
+function precmd {
+	echo -ne "\e]0;$(dirs)$(git_branch)\a"
+}
 
 function mkcd {
 	mkdir -p "$1" && cd "$1"
@@ -165,7 +175,31 @@ if [ ${PERF} = 1 ]; then zprof; fi
 
 eval "$(zoxide init zsh)"
 
+_alias_if ls eza
+_alias_if gcm    git commit -m
+_alias_if gca    git commit --amend
+_alias_if gpush  git push
+_alias_if gpull  git pull
+_alias_if gss    git status
+_alias_if gcl    git clone
+if _have git; then
+    forgit_log=glog
+    forgit_diff=gdf
+    forgit_add=ga
+    forgit_reset_head=igrh
+    forgit_ignore=igi
+    forgit_checkout_file=gcf
+    forgit_checkout_branch=gcb
+    forgit_checkout_commit=gco
+    forgit_clean=igclean
+    forgit_stash_show=igss
+    forgit_cherry_pick=gcp
+    forgit_rebase=grb
+    forgit_fixup=gfu
+    alias gdh='gdf HEAD'
+    alias gdhc='gdh --cached'
+fi
+
 unset -f _have
 unset -f _source_if
 unset -f _alias_if
-
