@@ -3,30 +3,17 @@ shell = "zsh"
 [templates]
 defer = """{% for file in files %}zsh-defer source "{{ file }}"\n{% endfor %}"""
 
-# completions
-
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
 
-# sourced
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
 
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
 
-[plugins.pure]
-# github = "rossmacarthur/pure"
-local = "~/.config/zsh/plugins/pure"
-use = ["{async,pure}.zsh"]
-
-# deferred
-
 [plugins.fast-syntax-highlighting]
 github = "zdharma-continuum/fast-syntax-highlighting"
-apply = ["defer"]
-
-[plugins.zsh-autosuggestions]
-github = "zsh-users/zsh-autosuggestions"
-use = ["{{ name }}.zsh"]
 apply = ["defer"]
 
 [plugins.forgit]
