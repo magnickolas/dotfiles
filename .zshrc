@@ -1,11 +1,22 @@
 PERF=0
 if [ ${PERF} = 1 ]; then zmodload zsh/zprof; fi
 
+setopt promptsubst
+
+function _make_prompt {
+    local PATH_FG="%F{#fabd2f}"
+    local BRK_FG="%F{#8ec07c}"
+    local SYM_FG="%F{#8ec07c}"
+    local RESET="%f"
+    PROMPT='${BRK_FG}${PATH_FG}%~${BRK_FG}${RESET}'$'\n''%(?.'${SYM_FG}' .'$'%F{red} %f) '
+}
+_make_prompt
+unset -f _make_prompt
+
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 setopt autocd
 setopt interactivecomments
-setopt no_nomatch
 setopt rm_star_silent
 
 bindkey -e
@@ -17,8 +28,6 @@ bindkey "^U" backward-kill-line
 bindkey '^[[Z' undo # Shift+tab
 # Alt + Backspace
 bindkey '^[[3;3~' backward-kill-word
-# Ctrl + Backspace behave like Ctrl + W
-bindkey -M emacs '^[[3^' kill-word
 
 HISTSIZE=100000000
 SAVEHIST=100000000
@@ -43,24 +52,19 @@ function _alias_if() {
     fi
 }
 
-function git_branch {
-	BRANCH_REFS=$(git symbolic-ref HEAD 2>/dev/null) || return
-	GIT_BRANCH="${BRANCH_REFS#refs/heads/}"
-	[ -n "$GIT_BRANCH" ] && echo " ($GIT_BRANCH)"
-}
+# function git_branch {
+# 	BRANCH_REFS=$(git symbolic-ref HEAD 2>/dev/null) || return
+# 	GIT_BRANCH="${BRANCH_REFS#refs/heads/}"
+# 	[ -n "$GIT_BRANCH" ] && echo " ($GIT_BRANCH)"
+# }
 
 # Set window title to the current directory and optionally git branch
-function precmd {
-	echo -ne "\e]0;$(dirs)$(git_branch)\a"
-}
+# function precmd {
+# 	echo -ne "\e]0;$(dirs)$(git_branch)\a"
+# }
 
 function mkcd {
 	mkdir -p "$1" && cd "$1"
-}
-
-function cl()
-{
-    cd "$1" && clear && ls --color=auto
 }
 
 function backup {
@@ -109,26 +113,8 @@ bindkey '^W' backward-kill-space-word
 
 zstyle ':completion:*' file-sort date
 
-perfdir=/sys/devices/system/cpu/cpufreq
-if [[ -f "${perfdir}"/policy0/energy_performance_preference ]]; then
-	function set_energy_perf_preference() {
-		local mode=$1
-		for i in {0..7}; do
-			echo "${mode}" |
-				sudo tee "${perfdir}"/policy"${i}"/energy_performance_preference &>/dev/null
-		done
-	}
-fi
-
 _source_if "$HOME/.ghcup/env"
 _source_if /home/magnickolas/.nix-profile/etc/profile.d/nix.sh
-
-config_dir=$HOME/.config/zsh
-if [[ -d ${config_dir} ]]; then
-	for f in "${config_dir}"/*.zsh; do
-		source "${f}"
-	done
-fi
 
 # >>> plugins
 eval "$(sheldon source)"
@@ -159,11 +145,27 @@ zstyle ':fzf-tab:complete:git-checkout:*' fzf-preview \
 	esac'
 zstyle ':fzf-tab:complete:tldr:argument-1' fzf-preview 'tldr --color always $word'
 
-# prompt
-zstyle ":prompt:pure:path" color "#fabd2f"
-zstyle ":prompt:pure:path_brackets" color "#8ec07c"
-zstyle ":prompt:pure:prompt:success" color "#8ec07c"
+
+if [[ ! -f $HOME/.fzf.zsh ]]; then
+	echo "Setup fzf..."
+	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+	~/.fzf/install --no-update-rc --key-bindings --completion --no-bash --no-fish &>/dev/null
+else
+	_source_if ~/.fzf.zsh
+fi
+
 # plugins <<<
+#
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 zsh-defer eval "$(direnv hook zsh)"
 if [ ${PERF} = 1 ]; then zprof; fi
+
+eval "$(zoxide init zsh)"
+
+unset -f _have
+unset -f _source_if
+unset -f _alias_if
+
