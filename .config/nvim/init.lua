@@ -13,6 +13,8 @@ vim.o.undodir = undo_dir
 vim.o.undofile = true
 vim.o.backup = true
 vim.o.backupdir = vim.fn.stdpath("state") .. "/backup"
+vim.o.swapfile = false
+vim.g.c_no_curly_error = 1
 
 local gh = "https://github.com/"
 vim.pack.add({
@@ -25,38 +27,44 @@ vim.pack.add({
     gh .. "mrcjkb/rustaceanvim",
     gh .. "saecki/crates.nvim",
     gh .. "mg979/vim-visual-multi",
-    gh .. "ggandor/leap.nvim",
-    { src=gh .. "Saghen/blink.cmp", version="v1.6.0" },
+    "https://codeberg.org/andyg/leap.nvim",
+    { src=gh .. "Saghen/blink.cmp", version="v1.9.1" },
     gh .. "nvim-treesitter/nvim-treesitter",
-    gh .. "nvim-lualine/lualine.nvim",
     gh .. "dyng/ctrlsf.vim",
     gh .. "lewis6991/gitsigns.nvim",
+    gh .. "1A7432/nvim-python-venv",
 })
 
+require "nvim-python-venv".setup({
+    auto_detect = true,
+    auto_activate = false,
+    auto_restart_lsp = false,
+    ui = {
+        notify = false,
+    },
+})
 require "setup_gruvbox_colorscheme"
 require "setup_lualine"
 require "lsp"
 require "oil".setup()
-require "leap".set_default_mappings()
+require "leap".add_default_mappings()
 require "blink.cmp".setup({
     keymap = {
       preset = "default",
       ["<c-a>"] = { "select_and_accept" },
     },
 })
-require 'nvim-treesitter.configs'.setup{
-    highlight = {
-        enable = {"pony"},
-    }
-}
+require "nvim-treesitter".setup()
 require "crates".setup{}
 require "gitsigns".setup{}
 
 require "mini.pick".setup({
     window = {
-        config = {
-            width = math.floor(vim.o.columns),
-        },
+        config = function()
+            return {
+                width = vim.o.columns,
+            }
+        end,
     },
 })
 require "mini.extra".setup()
@@ -92,9 +100,7 @@ nmap("tl", ":tabnext<CR>")
 nmap("th", ":tabprev<CR>")
 nmap("tn", ":tabnew<CR>")
 nmap("<a-l>", ":tabnext<cr>")
-nmap("tl", ":tabnext<cr>")
 nmap("<a-h>", ":tabprev<cr>")
-nmap("th", ":tabprev<cr>")
 nmap("<a-L>", ":tabm +1<cr>")
 nmap("<a-H>", ":tabm -1<cr>")
 nmap("<c-l>", ":wincmd w<cr>")

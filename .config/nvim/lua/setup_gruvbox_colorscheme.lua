@@ -8,7 +8,6 @@ require("gruvbox").setup({
     invert_selection = false,
     invert_signs = false,
     invert_tabline = false,
-    invert_intend_guides = false,
     inverse = true,
     contrast = "",
     palette_overrides = {},

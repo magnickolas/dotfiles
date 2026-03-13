@@ -27,10 +27,23 @@ vim.lsp.config("lua_ls", {
     },
 })
 
+vim.lsp.config("pyright", {
+    on_attach = function(client, bufnr)
+        local venv_path = require('nvim-python-venv.venv').detect(
+            client.config.root_dir,
+            require('nvim-python-venv.config').get()
+        )
+        if venv_path then
+            client.config.settings.python.pythonPath = require('nvim-python-venv.common.os').get_python_executable(venv_path)
+        end
+    end
+})
+
 vim.lsp.enable({
     "lua_ls",
     "pyright",
-    "ccls",
+    -- "ccls",
+    "clangd",
     "gopls",
 })
 

@@ -1,6 +1,4 @@
--- Eviline config for lualine
--- Author: shadmansaleh
--- Credit: glepnir
+vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim" })
 local lualine = require('lualine')
 
 -- Color table for highlights
@@ -87,14 +85,6 @@ local function ins_right(component)
   table.insert(config.sections.lualine_x, component)
 end
 
--- ins_left {
---   function()
---     return '▊'
---   end,
---   color = { fg = colors.blue }, -- Sets highlighting of component
---   padding = { left = 0, right = 1 }, -- We don't need space before this
--- }
-
 ins_left {
   -- mode component
   "mode",
@@ -128,12 +118,6 @@ ins_left {
   padding = { right = 1 },
 }
 
--- ins_left {
---   -- filesize component
---   'filesize',
---   cond = conditions.buffer_not_empty,
--- }
-
 ins_left {
   'filename',
   cond = conditions.buffer_not_empty,
@@ -141,8 +125,6 @@ ins_left {
 }
 
 ins_left { 'location' }
-
--- ins_left { 'progress', color = { fg = colors.fg, gui = 'bold' } }
 
 ins_left {
   'diagnostics',
@@ -154,14 +136,6 @@ ins_left {
     info = { fg = colors.cyan },
   },
 }
-
--- Insert mid section. You can make any number of sections in neovim :)
--- for lualine it's any number greater then 2
--- ins_left {
---   function()
---     return '%='
---   end,
--- }
 
 ins_right {
   -- Lsp server name .
@@ -183,14 +157,6 @@ ins_right {
   icon = ' LSP:',
   color = { fg = colors.green },
 }
-
--- Add components to right sections
--- ins_right {
---   'o:encoding', -- option component same as &encoding in viml
---   fmt = string.upper, -- I'm not sure why it's upper case either ;)
---   cond = conditions.hide_in_width,
---   color = { fg = colors.green, gui = 'bold' },
--- }
 
 ins_right {
   'filetype',
@@ -214,14 +180,6 @@ ins_right {
   },
   cond = conditions.hide_in_width,
 }
-
--- ins_right {
---   function()
---     return '▊'
---   end,
---   color = { fg = colors.blue },
---   padding = { left = 1 },
--- }
 
 -- Now don't forget to initialize lualine
 lualine.setup(config)
