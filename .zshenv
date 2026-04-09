@@ -1,9 +1,15 @@
-export PATH="$HOME/.local/bin:/usr/local/go/bin:$GOPATH/bin:$HOME/.cargo/bin${PATH:+:$PATH}"
+typeset -U path PATH
+path=(
+    "/opt/brew/bin"
+    "/opt/ponyc/bin"
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+    "${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
+    "/opt/homebrew/opt/binutils/bin"
+    "$HOME/.local/share/bob/nvim-bin"
+    $path
+)
+path=(${^path}(N/))
+export PATH
 
 export EDITOR=nvim
-export PAGER=nvimpager
-export MANPAGER=$PAGER
-export GOPATH="$HOME/.go"
-export GO111MODULE=on
-
-skip_global_compinit=1

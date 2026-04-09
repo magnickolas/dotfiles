@@ -26,8 +26,7 @@ bindkey "^[[1;3C" forward-word  # Alt + Right
 bindkey "^[[1;3D" backward-word # Alt + Left
 bindkey "^U" backward-kill-line
 bindkey '^[[Z' undo # Shift+tab
-# Alt + Backspace
-bindkey '^[[3;3~' backward-kill-word
+bindkey '^[[3;3~' backward-kill-word # Alt + Backspace
 
 HISTSIZE=100000000
 SAVEHIST=100000000
@@ -52,10 +51,20 @@ function _alias_if() {
     fi
 }
 
+function _zoxide_insert_path() {
+  local dir
+  dir="$(zoxide query -i)" || return
+  [[ -z "$dir" ]] && return
+  LBUFFER+="$dir"
+  zle reset-prompt
+}
+zle     -N   _zoxide_insert_path
+bindkey '^O' _zoxide_insert_path 
+
 GIT_PROMPT_COLOR="%F{blue}"
 
 function git_branch {
-  local git_dir branch icon=""
+  local git_dir branch icon="⎇"
   git_dir=$(git rev-parse --git-dir 2>/dev/null) || return
 
   branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null) \
@@ -68,27 +77,19 @@ function git_branch {
   print -r -- "${GIT_PROMPT_COLOR} ${icon} ${branch}%f"
 }
 
-# Set window title to the current directory and optionally git branch
+# Set window title to the current directory
 function precmd {
-	echo -ne "\e]0;$(dirs)$(git_branch)\a"
+	echo -ne "\e]0;$(dirs)\a"
 }
 
 function mkcd {
 	mkdir -p "$1" && cd "$1"
 }
 
-function backup {
-	local backup_name="$1.original"
-	cp "$1" "${backup_name}"
-	chmod a-w "${backup_name}"
-}
-
 function is_in {
     [[ "${$(pwd)##*/}" == "$1" ]] 
 }
 
-# use https://github.com/tsoding/cm
-# for interactive selection of ripgrep results
 if _have cm; then
 	function r {
         local args=()
@@ -124,16 +125,11 @@ bindkey '^W' backward-kill-space-word
 zstyle ':completion:*' file-sort date
 
 _source_if "$HOME/.ghcup/env"
-_source_if /home/magnickolas/.nix-profile/etc/profile.d/nix.sh
-
-# >>> plugins
-eval "$(sheldon source)"
 
 # completions
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ':fzf-tab:*' popup-min-size 200 0
-zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
 	fzf-preview 'echo ${(P)word}'
 zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview \
@@ -155,25 +151,15 @@ zstyle ':fzf-tab:complete:git-checkout:*' fzf-preview \
 	esac'
 zstyle ':fzf-tab:complete:tldr:argument-1' fzf-preview 'tldr --color always $word'
 
-
+# bootstrap fzf
 if [[ ! -f $HOME/.fzf.zsh ]]; then
 	echo "Setup fzf..."
 	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 	~/.fzf/install --no-update-rc --key-bindings --completion --no-bash --no-fish &>/dev/null
 else
-	_source_if ~/.fzf.zsh
+	source ~/.fzf.zsh
 fi
 
-# plugins <<<
-#
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-zsh-defer eval "$(direnv hook zsh)"
-if [ ${PERF} = 1 ]; then zprof; fi
-
-eval "$(zoxide init zsh)"
 
 _alias_if ls eza
 _alias_if gcm    git commit -m
@@ -185,22 +171,43 @@ _alias_if gcl    git clone
 if _have git; then
     forgit_log=glog
     forgit_diff=gdf
-    forgit_add=ga
-    forgit_reset_head=igrh
-    forgit_ignore=igi
-    forgit_checkout_file=gcf
-    forgit_checkout_branch=gcb
-    forgit_checkout_commit=gco
-    forgit_clean=igclean
-    forgit_stash_show=igss
-    forgit_cherry_pick=gcp
-    forgit_rebase=grb
-    forgit_fixup=gfu
+    forgit_stash_show=gstash
     alias gdh='gdf HEAD'
     alias gdhc='gdh --cached'
+    gback() {
+      setopt local_options unset
+      local input="$1"
+      local date_str
+      date_str=$(gdate -d "$input" --iso-8601=seconds) || { echo "Invalid date: $input"; return 1; }
+      shift
+      GIT_AUTHOR_DATE="$date_str" GIT_COMMITTER_DATE="$date_str" git commit "$@"
+    }
 fi
+
+skip_global_compinit=1
+
+eval "$(sheldon source)"
+
+# Disable fast-syntax-highlighting's `make` chroma. It shells out to
+# `make -pn` while editing `make ...`, which is expensive in larger repos.
+function _disable_fast_syntax_make_chroma() {
+    (( ${+FAST_HIGHLIGHT} )) && unset 'FAST_HIGHLIGHT[chroma-make]'
+    unfunction _disable_fast_syntax_make_chroma
+}
+zsh-defer _disable_fast_syntax_make_chroma
+
+zsh-defer eval "$(direnv hook zsh)"
+
+eval "$(zoxide init zsh)"
 
 unset -f _have
 unset -f _source_if
 unset -f _alias_if
 unset ZSH_AUTOSUGGEST_USE_ASYNC
+
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+ulimit -n 65536
+
+if [ ${PERF} = 1 ]; then zprof; fi
