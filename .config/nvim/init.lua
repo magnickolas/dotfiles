@@ -2,7 +2,7 @@ vim.g.mapleader = " "
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.o.expandtab = true
-vim.o.wrap = false
+vim.o.wrap = true
 vim.o.winborder = "rounded"
 vim.o.signcolumn = "yes"
 local undo_dir = vim.fn.expand("~/.vim/undo")
@@ -33,6 +33,7 @@ vim.pack.add({
     gh .. "dyng/ctrlsf.vim",
     gh .. "lewis6991/gitsigns.nvim",
     gh .. "1A7432/nvim-python-venv",
+    gh .. "simnalamburt/vim-mundo",
 })
 
 require "nvim-python-venv".setup({
@@ -45,6 +46,7 @@ require "nvim-python-venv".setup({
 })
 require "setup_gruvbox_colorscheme"
 require "setup_lualine"
+require "setup_mundo"
 require "lsp"
 require "oil".setup()
 require "leap".add_default_mappings()
@@ -120,3 +122,11 @@ nmap("<leader>h", MiniPick.builtin.help)
 nmap("<leader>?", function() MiniPick.start({ source = { items = vim.v.oldfiles } }) end)
 nmap("<leader>z", require "mini.misc".zoom)
 nmap("<leader>sf", ":CtrlSF ")
+nmap("<leader>u", "<cmd>MundoToggle<CR>")
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "json",
+    callback = function(ev)
+      nmap("%", "%", { buffer = ev.buf, remap = false, silent = true })
+    end,
+  })
