@@ -11,7 +11,12 @@ require("gruvbox").setup({
     inverse = true,
     contrast = "",
     palette_overrides = {},
-    overrides = {},
+    overrides = {
+        StatusLine = { bg = "NONE" },
+        StatusLineNC = { bg = "NONE" },
+        StatusLineTerm = { bg = "NONE" },
+        StatusLineTermNC = { bg = "NONE" },
+    },
     dim_inactive = false,
     transparent_mode = true,
 })
