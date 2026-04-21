@@ -16,6 +16,8 @@ vim.o.backupdir = vim.fn.stdpath("state") .. "/backup"
 vim.o.swapfile = false
 vim.g.c_no_curly_error = 1
 
+require "setup_conflict_marker"
+
 local gh = "https://github.com/"
 vim.pack.add({
     gh .. "stevearc/oil.nvim",
@@ -33,6 +35,7 @@ vim.pack.add({
     gh .. "dyng/ctrlsf.vim",
     gh .. "lewis6991/gitsigns.nvim",
     gh .. "1A7432/nvim-python-venv",
+    gh .. "rhysd/conflict-marker.vim",
     gh .. "simnalamburt/vim-mundo",
 })
 
