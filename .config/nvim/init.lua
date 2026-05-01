@@ -5,6 +5,7 @@ vim.o.expandtab = true
 vim.o.wrap = true
 vim.o.winborder = "rounded"
 vim.o.signcolumn = "yes"
+vim.opt.shortmess:append("I")
 local undo_dir = vim.fn.expand("~/.vim/undo")
 if vim.fn.isdirectory(undo_dir) == 0 then
     vim.fn.mkdir(undo_dir, "p")
@@ -19,7 +20,13 @@ vim.g.c_no_curly_error = 1
 require "setup_conflict_marker"
 
 local gh = "https://github.com/"
-vim.pack.add({
+local neogit = {
+    gh .. "neogitorg/neogit",
+    gh .. "nvim-lua/plenary.nvim",
+    gh .. "sindrets/diffview.nvim",
+    gh .. "nvim-tree/nvim-web-devicons",
+}
+vim.pack.add(vim.list_extend({
     gh .. "stevearc/oil.nvim",
     gh .. "echasnovski/mini.pick",
     gh .. "echasnovski/mini.extra",
@@ -36,8 +43,9 @@ vim.pack.add({
     gh .. "lewis6991/gitsigns.nvim",
     gh .. "1A7432/nvim-python-venv",
     gh .. "rhysd/conflict-marker.vim",
-    gh .. "simnalamburt/vim-mundo",
-})
+    gh .. "dhruvasagar/vim-table-mode",
+}, neogit))
+vim.cmd("packadd nvim.undotree")
 
 require "nvim-python-venv".setup({
     auto_detect = true,
@@ -49,8 +57,8 @@ require "nvim-python-venv".setup({
 })
 require "setup_gruvbox_colorscheme"
 require "setup_lualine"
-require "setup_mundo"
 require "lsp"
+vim.lsp.document_color.enable(true, nil, { style = "foreground" })
 require "oil".setup()
 vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap)", { silent = true, desc = "Leap current window" })
 vim.keymap.set("n", "S", "<Plug>(leap-from-window)", { silent = true, desc = "Leap from window" })
@@ -101,6 +109,15 @@ local function nmap(lhs, rhs, opts)
     vim.keymap.set("n", lhs, rhs, opts)
 end
 
+local function toggle_fugitive_status_tab()
+    if vim.b.fugitive_type == "index" then
+        vim.cmd.quit()
+        return
+    end
+
+    vim.cmd("tab Git")
+end
+
 vim.keymap.set("v", "<leader>y", '"+yg_')
 vim.keymap.set("v", "<leader>d", '"+yg_')
 vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
@@ -136,7 +153,9 @@ nmap("<leader>h", MiniPick.builtin.help)
 nmap("<leader>?", function() MiniPick.start({ source = { items = vim.v.oldfiles } }) end)
 nmap("<leader>z", require "mini.misc".zoom)
 nmap("<leader>sf", ":CtrlSF ")
-nmap("<leader>u", "<cmd>MundoToggle<CR>")
+nmap("<leader>g", require("setup_neogit").open, { desc = "Open Neogit" })
+nmap("dq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
+nmap("<leader>u", require("undotree").open)
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "json",
@@ -144,3 +163,10 @@ vim.api.nvim_create_autocmd("FileType", {
       nmap("%", "%", { buffer = ev.buf, remap = false, silent = true })
     end,
   })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function()
+        vim.cmd("TableModeEnable")
+    end,
+})
